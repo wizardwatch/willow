@@ -27,7 +27,6 @@
     address = "192.168.1.169";
     prefixLength = 24;
   } ];
-  networking.defaultGateway = "192.168.1.1";
   # networking.networkmanager.enable = true;
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
@@ -69,7 +68,7 @@
   # $ nix search wget
 	environment.systemPackages = with pkgs; [
     ## password entry for gui applications
-    polkit_gnome
+    nixmaster.polkit_gnome
     ## firefox with a touch of the farside
 		firefox-wayland
     ## bloat just got bloated

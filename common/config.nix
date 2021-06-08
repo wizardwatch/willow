@@ -13,6 +13,7 @@
   # services.xserver.enable = true;
   services.xserver.displayManager.lightdm.enable = false;
   networking.nameservers = [ "192.168.1.146" "1.1.1.1" ];
+  networking.defaultGateway = "192.168.1.1";
   networking.wireguard.enable = true;
   time.timeZone = "America/New_York";
 

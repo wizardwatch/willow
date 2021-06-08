@@ -9,6 +9,8 @@
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     # master channel
     nixmaster.url = "github:NixOS/nixpkgs";
+    # doesn't seem to work. 
+    iso.url = "github:nix-community/nixos-generators";
   };
   outputs = inputs:
     let
@@ -33,6 +35,11 @@
              };
           });
         };
+        iso = final: prev: {
+          nixmaster = (import inputs.iso{
+            inherit system;
+          });
+        };
       };
       # install helper functions
       lib = inputs.nixpkgs.lib;
@@ -50,12 +57,14 @@
         };
       };
       nixosConfigurations = {
-        nixos = lib.nixosSystem{
+        nixos = lib.makeOverridable lib.nixosSystem{
           # imports the system variable
           inherit system;
           # import the config file
           modules = [
             { nixpkgs.overlays = [ overlays.nixmaster ]; }
+            # does not work: gives error command flake not found
+            { nixpkgs.overlays = [ overlays.iso ]; }
             (./common/common.nix)
             (./common/hsctf.nix)
             (./machines + ("/" + hostname) + ("/" + hostname + ".nix"))
