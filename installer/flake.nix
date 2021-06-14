@@ -16,7 +16,7 @@
   outputs = { self, nixpkgs,  home-manager, iso, nixmaster, ...}:
     let
       system = "x86_64-linux";
-      hostname = "wyatt";
+      hostname = "installer";
       networking.hostname = "${hostname}";
       pkgs = import nixpkgs {
         # imports the system variable
@@ -45,13 +45,13 @@
       lib = nixpkgs.lib;
     in {
       homeManagaerConfigurations = {
-        wyatt = home-manager.lib.homeManagerConfiguration {
+        installer = home-manager.lib.homeManagerConfiguration {
           inherit system pkgs;
           username = hostname;
           homeDirectory = ("/home/" + hostname);
           configuration = {
             imports = [
-              (./machines + ("/" + hostname) + /homeManager.nix)
+              (../machines + ("/" + hostname) + /homeManager.nix)
             ];
           };
         };
@@ -65,9 +65,8 @@
             { nixpkgs.overlays = [ overlays.nixmaster ]; }
             # does not work: gives error command flake not found
             { nixpkgs.overlays = [ overlays.iso ]; }
-            (./common/common.nix)
-            (./common/hsctf.nix)
-            (./machines + ("/" + hostname) + ("/" + hostname + ".nix"))
+            (../common/common.nix)
+            (../machines + ("/" + hostname) + ("/" + hostname + ".nix"))
           ];
         };
       };

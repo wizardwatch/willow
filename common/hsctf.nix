@@ -35,5 +35,6 @@
     moreutils
     sqlmap
     metasploit
+    cutter
   ];
 }

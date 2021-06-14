@@ -22,5 +22,6 @@
     ## the prefered way to install rust
     rustup
     nixos-generators
+    wireguard
   ];
 }

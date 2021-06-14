@@ -1,15 +1,21 @@
-{ config, pkgs, fetchurl, ... }:
+# Edit this configuration file to define what should be installed on
+# your system.  Help is available in the configuration.nix(5) man page
+# and in the NixOS manual (accessible by running ‘nixos-help’).
+
+{ config, pkgs, ... }:
 let
-  GitHub_Username_Key = "AAAAB3NzaC1yc2EAAAADAQABAAABgQDBEq4NHUglnfwIZYT9dIV5RpYE5s+eGBs1DhX8ieoMXDDZDw/kRo9aeWqKlxElpVJepzHtydQdp73PPjYQT5BhuM7Nw/OKRIH2eEYN8BDqPsTJOVgnZ3287O8OStqnmCiBD2AmVEFuaxtnz5sL2PzsdAS20bvdnyig56TzGFkm3RnDrVfS+8RPbSmOzqVA9+xW4NeN/u1CA32VTfRjE696XpHG5Zg2ByCUGot0+yBLgkEj+RBiChg6rtnwga8QOgSLncZtjVS0WFH9u0lhoGBjOtL2qtMZkTVCLcjmE6Fa6Nd8igoss9JmbDQMh7McUxS1D9d4UE4Vh3IPAHAuaVbMvGNZ9upaye90Vt2PuejOXbnQ4dGKmlxq0wAMWx20uVbWiY1VimVeYPlMLeNOcVcHglVGkVChhgMEbDvsl6HcesfgR/tivHgPhXrkF9f2j80O53VIBWltqt2iz06xUiolQNYDYhq+HiXcQI11+gWRDrdgU5Q5B7OVWPVdXonTfkk=";
+  fetchKeys = username:
+    pkgs.fetchurl {
+      url ="https://github.com/${username}.keys";
+      sha256 = "9z/GwhwFwOKgqZ9UEMhjx/jd3cBseylmBgz8TqGIvvo=";
+    };
+  GitHub_Username = "wizardwatch";
 in
 {
   imports =
-    [
-      ./hardware-configuration.nix
-      ./unfree.nix
+    [ # Include the results of the hardware scan.
       ../../common/common_desktop.nix
       ../../common/emacs.nix
-      ../../common/WireGuard_Server.nix
     ];
   # Use the systemd-boot EFI boot loader. no touchy
   boot.loader.systemd-boot.enable = true;
@@ -19,10 +25,13 @@ in
   # Per-interface useDHCP will be mandatory in the future, so this generated config
   # replicates the default behaviour.
   networking.useDHCP = false;
-  networking.interfaces.enp0s31f6.ipv4.addresses = [ {
-    address = "192.168.1.169";
-    prefixLength = 24;
-  } ];  
+  networking = {
+    interfaces.enp12s0f1.ipv4.addresses = [ {
+      address = "192.168.1.2";
+      prefixLength = 24;
+    } ];
+  };
+  
   # networking.networkmanager.enable = true;
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
@@ -34,77 +43,20 @@ in
   #   font = "Lat2-Terminus16";
   #   keyMap = "us";
   # };
-
-  # Enable CUPS to print documents.
-  services.printing.enable = true;
-  # amd gpu
-  boot.initrd.kernelModules = [ "amdgpu" ];
-  services.xserver.videoDrivers = [ "amdgpu" ];
-  # Enable touchpad support (enabled default in most desktopManager).
-  # services.xserver.libinput.enable = true;
-  
-  # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.wyatt = {
+  systemd.services.sshd.wantedBy = pkgs.lib.mkForce [ "multi-user.target" ];
+  users.users.installer = {
     isNormalUser = true;
     extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
-    openssh.authorizedKeys.keys = [ ("${GitHub_Username_Key}") ];
     #shell = pkgs.nushell;
+    openssh.authorizedKeys.keyFiles = [ (fetchKeys "${GitHub_Username}") ];
+    password = "password";
   };
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
 	environment.systemPackages = with pkgs; [
-    ## password entry for gui applications
-    nixmaster.polkit_gnome
-    ## firefox with a touch of the farside
-		firefox-wayland
-    ## bloat just got bloated
-    # electron
-    ## is it wrong to use a pulse audio tool with pipewire
-		pavucontrol
-    ## stupid noncompliant websites
-    # chromium
-    ## no longer using nushell. It is too nu
-    nushell
-    ## if only I could draw
-    krita
-    ## pipewire equalizer
-    pulseeffects-pw
-    ## local password manager. Replaced by 'the cloud'
-    # pass
-    ## Spell check only tested in emacs
-    hunspell
-    hunspellDicts.en_US-large
-    ## desktop notifications
-    libnotify
-    ## terminal pdf compressor
-    ghostscript
-    ## file browser
-    gnome3.nautilus
-    # doesn't work due to a lack of the overall gnome package group
-    gnome3.gnome-tweak-tool
-    ## java extra credit
-    # greenfoot
-    ## remote into ras-pi
-    nomachine-client
-    ## doesn't seem to work on wayland
-    #lxappearance
-    obs-studio
-    ## obs for wlroots
-    obs-wlrobs
-    ## password manager
-    bitwarden
     bitwarden-cli
-    ## email, like snail mail, but harder to block the spam!
-    mailspring
-    ## font fix maybe. Allows use of gnome tweaks. I had to turn on aa.
-    gnome.gnome-settings-daemon
-    ## boring work just got a little more mundane
-    libreoffice-fresh
-    ## make the usbs into oses!
-    etcher
-    ## irc. It just won't die
-    weechat
+    parted
 	];
 	programs.sway = {
   	enable = true;
@@ -142,19 +94,13 @@ in
     ### probably not needed due to firefox-wayland
    	MOZ_ENABLE_WAYLAND = "1";
     ### makes emacs use .config instead of the home dir. ~/.config breaks at least sway
-	  XDG_CONFIG_HOME = "/home/wyatt/.config";
+	  XDG_CONFIG_HOME = "/home/installer/.config";
     ### shouldn't be needed but some software is bad
    	XDG_CURRENT_DESKTOP = "sway";
     ### fixes some ugly. TODO: more work on the right numbers
     GDK_SCALE = "1.5";
     GDK_DPI_SCALE = "1";
 	};
-  
-  #
-  # flatpak
-  #
-  # services.flatpak.enable = true;
-  
   # Let the passwords be stored in something other than plain text. Required for at least mailspring
   services.gnome.gnome-keyring.enable = true;
   # Some programs need SUID wrappers, can be configured further or are
@@ -164,12 +110,19 @@ in
   #   enable = true;
   #   enableSSHSupport = true;
   # };
+
+  # List services that you want to enable:
+
+  # Enable the OpenSSH daemon.
+  #
+  # services.openssh.enable = true;
+
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
-
+  
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
   # on your system were taken. It‘s perfectly fine and recommended to leave

@@ -16,6 +16,6 @@
   networking.defaultGateway = "192.168.1.1";
   networking.wireguard.enable = true;
   time.timeZone = "America/New_York";
-
-
+  services.openssh.enable = true;
+  services.openssh.passwordAuthentication = false;
 }
