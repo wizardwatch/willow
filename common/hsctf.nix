@@ -36,5 +36,7 @@
     sqlmap
     metasploit
     cutter
+    exploitdb
+    tldr
   ];
 }

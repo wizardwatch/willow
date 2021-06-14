@@ -26,7 +26,7 @@ in
   # replicates the default behaviour.
   networking.useDHCP = false;
   networking = {
-    interfaces.enp12s0f1.ipv4.addresses = [ {
+    interfaces.enp2s0.ipv4.addresses = [ {
       address = "192.168.1.2";
       prefixLength = 24;
     } ];
