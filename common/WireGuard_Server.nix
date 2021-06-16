@@ -10,7 +10,7 @@
     allowedTCPPorts = [ 22 26 465 587 ];
   };
   # added line for troubleshooting
-  networking.firewall.trustedInterfaces = [wg0];
+  # networking.firewall.trustedInterfaces = [wg0];
   networking.wireguard = {
     enable = true;
     interfaces = {

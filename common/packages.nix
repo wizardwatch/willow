@@ -1,4 +1,17 @@
-{config, pkgs, masterpkgs, ...}:
+{config, pkgs, ...}:
+let
+  my-python-packages = python-packages: with python-packages; [
+    pip
+    setuptools
+    wheel
+    pillow
+    numpy
+    click
+    
+    # other python packages you want
+  ]; 
+  python-with-my-packages = pkgs.python39.withPackages my-python-packages;
+in
 {
   environment.systemPackages = with pkgs; [
     ## source control; linus style
@@ -12,7 +25,7 @@
     ## manage my things
     home-manager
     ## python
-    python39
+    python-with-my-packages
     ## faster grep
     ripgrep
     ## god I hate java
@@ -23,5 +36,8 @@
     rustup
     nixos-generators
     wireguard
+    gcc
+    clang
+    unzip
   ];
 }

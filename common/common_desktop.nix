@@ -5,12 +5,12 @@
   #       #
   virtualisation.virtualbox.host.enable = true;
   users.extraGroups.vboxusers.members = [ "user-with-access-to-virtualbox" ];
-  /*
+ 
   environment.systemPackages = with pkgs; [
-    virtualbox
+    mpv
+    gimp
   ];
   
-  boot.extraModulePackages = with config.boot.kernelPackages; [ vboxdrv vboxnetadp vboxnetfit vboxpci ];*/
   fonts.fonts = with pkgs; [
     ## for everything except :
     jetbrains-mono

@@ -38,5 +38,9 @@
     cutter
     exploitdb
     tldr
+    zsteg
+    stegseek
+    sonic-visualiser
+    sage
   ];
 }
