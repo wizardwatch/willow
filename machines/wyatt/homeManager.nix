@@ -14,5 +14,6 @@
     theme.package = pkgs.dracula-theme;
     theme.name = "Dracula";
   };
+  imports = [./home_sway.nix];
 
 }

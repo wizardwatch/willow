@@ -1,12 +1,13 @@
 {config, pkgs, ...}:
 let
-  my-python-packages = python-packages: with python-packages; [
+   my-python-packages = python-packages: with python-packages; [
     pip
     setuptools
     wheel
     pillow
     numpy
     click
+    pycrypto
     
     # other python packages you want
   ]; 

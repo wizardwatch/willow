@@ -13,7 +13,7 @@
     iso.url = "github:nix-community/nixos-generators";
     # Set up an ssh key on github
   };
-  outputs = { self, nixpkgs,  home-manager, iso, nixmaster, ...}:
+  outputs = { self, nixpkgs, home-manager, iso, nixmaster, ...}:
     let
       system = "x86_64-linux";
       hostname = "wyatt";
@@ -44,7 +44,7 @@
       # install helper functions
       lib = nixpkgs.lib;
     in {
-      homeManagaerConfigurations = {
+      homeManagerConfigurations = {
         wyatt = home-manager.lib.homeManagerConfiguration {
           inherit system pkgs;
           username = hostname;

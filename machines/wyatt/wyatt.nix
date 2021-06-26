@@ -10,6 +10,7 @@ in
       ../../common/common_desktop.nix
       ../../common/emacs.nix
       ../../common/WireGuard_Server.nix
+      ../../common/ruby.nix
     ];
   # Use the systemd-boot EFI boot loader. no touchy
   boot.loader.systemd-boot.enable = true;

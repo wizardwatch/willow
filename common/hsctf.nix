@@ -26,7 +26,7 @@
     ghidra-bin
     burpsuite
     zap
-    ruby
+    #ruby
     perl
     python2Full
     thc-hydra
@@ -42,5 +42,7 @@
     stegseek
     sonic-visualiser
     sage
+    mysql80
+    sqlite
   ];
 }
