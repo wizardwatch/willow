@@ -16,7 +16,8 @@
   outputs = { self, nixpkgs, home-manager, iso, nixmaster, ...}:
     let
       system = "x86_64-linux";
-      hostname = "wyatt";
+      hostname = "wizardwatch";
+      username = "wyatt";
       networking.hostname = "${hostname}";
       pkgs = import nixpkgs {
         # imports the system variable
@@ -46,9 +47,8 @@
     in {
       homeManagerConfigurations = {
         wyatt = home-manager.lib.homeManagerConfiguration {
-          inherit system pkgs;
-          username = hostname;
-          homeDirectory = ("/home/" + hostname);
+          inherit system pkgs username;
+          homeDirectory = ("/home/" + username + "/.config");
           configuration = {
             imports = [
               (./machines + ("/" + hostname) + /homeManager.nix)
@@ -67,7 +67,14 @@
             { nixpkgs.overlays = [ overlays.iso ]; }
             (./common/common.nix)
             (./common/hsctf.nix)
-            (./machines + ("/" + hostname) + ("/" + hostname + ".nix"))
+            (./machines + ("/" + hostname) + /main.nix)
+            /*
+            home-manager.nixosModules.home-manager{
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.users.wyatt = ./machines + ("/" + hostname) + /homeManager.nix; 
+            }
+            */
           ];
         };
       };

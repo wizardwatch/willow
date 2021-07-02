@@ -23,7 +23,6 @@
     hexdump
     binutils
     gdb-multitarget
-    ghidra-bin
     burpsuite
     zap
     #ruby

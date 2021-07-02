@@ -15,5 +15,17 @@
     theme.name = "Dracula";
   };
   imports = [./home_sway.nix];
-
+  programs.foot = {
+    enable = true;
+    settings = {
+      main = {
+        term = "xterm-256color";
+        font = "JetBrains Mono:size=14";
+        dpi-aware = "yes";
+      };
+      mouse = {
+        hide-when-typing = "yes";
+      };
+    };
+  };
 }
