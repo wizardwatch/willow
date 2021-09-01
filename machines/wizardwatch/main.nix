@@ -8,9 +8,10 @@ in
       ./hardware-configuration.nix
       ./unfree.nix
       ../../common/common_desktop.nix
-      ../../common/emacs.nix
-      ../../common/WireGuard_Server.nix
+      #../../common/emacs.nix
+      #../../common/WireGuard_Server.nix
       ../../common/ruby.nix
+      ../../common/qtile.nix
     ];
   # Use the systemd-boot EFI boot loader. no touchy
   boot.loader.systemd-boot.enable = true;
@@ -23,7 +24,7 @@ in
   networking.interfaces.enp0s31f6.ipv4.addresses = [ {
     address = "192.168.1.169";
     prefixLength = 24;
-  } ];  
+  } ];
 
   # Select internationalisation properties.
   # i18n.defaultLocale = "en_US.UTF-8";
@@ -33,116 +34,107 @@ in
   # };
 
   # Enable CUPS to print documents.
-  services.printing.enable = true;
+  services.printing = {
+    enable = true;
+    drivers = with pkgs; [
+      gutenprint
+      brlaser
+      mfcl2740dwcupswrapper
+    ];
+  };
   # amd gpu
   boot.initrd.kernelModules = [ "amdgpu" ];
-  services.xserver.videoDrivers = [ "amdgpu" ];
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
   
   # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.wyatt = {
-    isNormalUser = true;
-    extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
-    openssh.authorizedKeys.keys = [ ("${publicKey}") ];
-    #shell = pkgs.nushell;
-  };
-
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
-	environment.systemPackages = with pkgs; [
-    ## password entry for gui applications
-    nixmaster.polkit_gnome
-    ## firefox with a touch of the farside
-		firefox-wayland
-    ## bloat just got bloated
-    # electron
-    ## is it wrong to use a pulse audio tool with pipewire
-		pavucontrol
-    ## if only I could draw
-    krita
-    ## pipewire equalizer
-    pulseeffects-pw
-    ## local password manager. Replaced by 'the cloud'
-    # pass
-    ## Spell check only tested in emacs
-    hunspell
-    hunspellDicts.en_US-large
-    ## desktop notifications
-    libnotify
-    ## terminal pdf compressor
-    ghostscript
-    ## file browser
-    gnome3.nautilus
-    # doesn't work due to a lack of the overall gnome package group
-    gnome3.gnome-tweak-tool
-    ## java extra credit
-    # greenfoot
-    ## remote into ras-pi
-    nomachine-client
-    ## doesn't seem to work on wayland
-    #lxappearance
-    obs-studio
-    ## obs for wlroots
-    obs-studio-plugins.wlrobs
-    ## password manager
-    bitwarden
-    bitwarden-cli
-    ## email, like snail mail, but harder to block the spam!
-    mailspring
-    ## font fix maybe. Allows use of gnome tweaks. I had to turn on aa.
-    gnome.gnome-settings-daemon
-    ## boring work just got a little more mundane
-    libreoffice-fresh
-    ## make the usbs into oses!
-    etcher
-    ## irc. It just won't die
-    weechat
-    radeontop
-    qtile
-	];
-	programs.sway = {
-  	enable = true;
- 		wrapperFeatures.gtk = true; # so that gtk works properly
-		extraPackages = with pkgs; [
-		  swaylock
-		  swayidle
-		  wl-clipboard
-		  waybar
-		  clipman
-		  xwayland
-		  mako # notification daemon
-		  alacritty # Alacritty is the default terminal in the config
-   	  wofi
-		  oguri
-		  grim
-		  slurp
-  	];
+	programs.fish.enable = true;
+	users.users.wyatt = {
+		isNormalUser = true;
+		extraGroups = [ "wheel" "mpd" "audio" ]; # Enable ‘sudo’ for the user.
+		openssh.authorizedKeys.keys = [ ("${publicKey}") ];
+		shell = pkgs.fish;
 	};
+	# List packages installed in system profile. To search, run:
+	# $ nix search wget
+	environment.systemPackages = with pkgs; [
+                alacritty
+                kitty
+                ## password entry for gui applications
+                appimage-run 
+                nixmaster.polkit_gnome
+		## firefox
+		firefox
+		## is it wrong to use a pulse audio tool with pipewire
+		pavucontrol
+		## if only I could draw
+		krita
+		## pipewire equalizer
+		pulseeffects-pw
+		#only tested in emacs
+		hunspell
+		hunspellDicts.en_US-large
+		## desktop notifications
+		libnotify
+		## terminal pdf compressor
+		#ghostscript
+		## file browser
+		gnome3.nautilus
+		# doesn't work due to a lack of the overall gnome package group
+		gnome3.gnome-tweak-tool
+		## remote into ras-pi
+		nomachine-client
+		obs-studio
+		## obs for wlroots
+		#obs-studio-plugins.wlrobs
+		## password manager
+		bitwarden
+		#bitwarden-cli
+		### email, like snail mail, but harder to block the spam!
+		mailspring
+		## font fix maybe. Allows use of gnome tweaks. I had to turn on aa.
+		gnome.gnome-settings-daemon
+		## boring work just got a little more mundane
+		libreoffice-fresh
+		## make the usbs into oses!
+		etcher
+		## irc. It just won't die
+		#weechat
+		radeontop
+		broot
+		nyxt
+		#for neovim
+		#perl
+		#perl534Packages.ArchiveZip
+		#perl534Packages.Appcpanminus
+		#perl534Packages.
+                ncmpcpp
+        #gnumake
+	];
 	#
 	# XDG-desktop-screenshare
 	#
 	xdg = {
-  	portal = {
-    	enable = true;
-    	extraPortals = with pkgs; [
-      	xdg-desktop-portal-wlr
-        # xdg-desktop-portal-gtk
-    	];
-      ## fixes gtk themeing so that it uses the .config. set to true in order to use native file pickers
-    	gtkUsePortal = false;
+		portal = {
+			enable = true;
+			extraPortals = with pkgs; [
+				# xdg-desktop-portal-wlr
+				# xdg-desktop-portal-gtk
+		 	];
+			## fixes gtk themeing so that it uses the .config. set to true in order to use native file pickers
+			gtkUsePortal = false;
 		};
 	};
 	environment.sessionVariables = {
-    ### probably not needed due to firefox-wayland
-   	MOZ_ENABLE_WAYLAND = "1";
-    ### makes emacs use .config instead of the home dir. ~/.config breaks at least sway
-	  XDG_CONFIG_HOME = "/home/wyatt/.config";
-    ### shouldn't be needed but some software is bad
-   	XDG_CURRENT_DESKTOP = "sway";
-    ### fixes some ugly. TODO: more work on the right numbers
-    GDK_SCALE = "1.5";
-    GDK_DPI_SCALE = "1";
+		### probably not needed due to firefox-wayland
+		#MOZ_ENABLE_WAYLAND = "1";
+		### makes emacs use .config instead of the home dir. ~/.config breaks at least sway
+		XDG_CONFIG_HOME = "/home/wyatt/.config";
+		### shouldn't be needed but some software is bad
+		#XDG_CURRENT_DESKTOP = "sway";
+		### fixes some ugly. TODO: more work on the right numbers
+		GDK_SCALE = "1.5";
+		GDK_DPI_SCALE = "1";
 	};
   
   #
@@ -150,8 +142,27 @@ in
   #
   # services.flatpak.enable = true;
   
+  
   # Let the passwords be stored in something other than plain text. Required for at least mailspring
-  services.gnome.gnome-keyring.enable = true;
+  services = {
+    gnome.gnome-keyring.enable = true;
+    mpd = {
+      musicDirectory = "/var/lib/mpd/music/";
+      #package = pkgs.nixmaster.mpd;
+      enable = true;
+      # user = "wyatt";
+      # group = "pulse";
+      extraConfig = '' 
+      audio_output {
+         type "pulse"
+         name "Pulsef"
+       }
+      ''; 
+    };
+    ympd = {
+      enable = true;
+    }; 
+  };
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;

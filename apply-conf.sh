@@ -1,3 +1,3 @@
 #!/bin/sh
-nix build -v .#homeManagerConfigurations.wyatt.activationPackage
-./result/activate
+nix build -v .#homeManagerConfigurations.wyatt.activationPackage --show-trace
+bash ./result/activate
