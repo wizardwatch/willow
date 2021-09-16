@@ -1,4 +1,4 @@
-{ config, pkgs, fetchurl, ... }:
+{ config, inputs, pkgs, fetchurl, ... }:
 let
   publicKey = "AAAAB3NzaC1yc2EAAAADAQABAAABgQDBEq4NHUglnfwIZYT9dIV5RpYE5s+eGBs1DhX8ieoMXDDZDw/kRo9aeWqKlxElpVJepzHtydQdp73PPjYQT5BhuM7Nw/OKRIH2eEYN8BDqPsTJOVgnZ3287O8OStqnmCiBD2AmVEFuaxtnz5sL2PzsdAS20bvdnyig56TzGFkm3RnDrVfS+8RPbSmOzqVA9+xW4NeN/u1CA32VTfRjE696XpHG5Zg2ByCUGot0+yBLgkEj+RBiChg6rtnwga8QOgSLncZtjVS0WFH9u0lhoGBjOtL2qtMZkTVCLcjmE6Fa6Nd8igoss9JmbDQMh7McUxS1D9d4UE4Vh3IPAHAuaVbMvGNZ9upaye90Vt2PuejOXbnQ4dGKmlxq0wAMWx20uVbWiY1VimVeYPlMLeNOcVcHglVGkVChhgMEbDvsl6HcesfgR/tivHgPhXrkF9f2j80O53VIBWltqt2iz06xUiolQNYDYhq+HiXcQI11+gWRDrdgU5Q5B7OVWPVdXonTfkk=";
 in
@@ -44,20 +44,34 @@ in
   };
   # amd gpu
   boot.initrd.kernelModules = [ "amdgpu" ];
+  security.pam.services.swaylock = {};
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
   
   # Define a user account. Don't forget to set a password with ‘passwd’.
-	programs.fish.enable = true;
+#	programs.fish.enable = true;
+        programs.zsh.enable = true;
 	users.users.wyatt = {
 		isNormalUser = true;
 		extraGroups = [ "wheel" "mpd" "audio" ]; # Enable ‘sudo’ for the user.
 		openssh.authorizedKeys.keys = [ ("${publicKey}") ];
-		shell = pkgs.fish;
+                #shell = pkgs.fish;
+                shell = pkgs.zsh;
 	};
 	# List packages installed in system profile. To search, run:
 	# $ nix search wget
 	environment.systemPackages = with pkgs; [
+          #overlaystwo.eww
+          starship
+          fuzzel
+          xdg-desktop-portal-wlr
+          grim
+          slurp
+          wl-clipboard
+          seatd
+          kanshi
+          wlr-randr
+          swaylock
                 alacritty
                 kitty
                 ## password entry for gui applications
@@ -109,16 +123,21 @@ in
 		#perl534Packages.Appcpanminus
 		#perl534Packages.
                 ncmpcpp
+                helvum
+                river
+                kile-wl
         #gnumake
 	];
-	#
+        security.polkit.enable = true; #for river maybe
+        programs.dconf.enable = true;
+        #
 	# XDG-desktop-screenshare
 	#
 	xdg = {
 		portal = {
 			enable = true;
 			extraPortals = with pkgs; [
-				# xdg-desktop-portal-wlr
+				xdg-desktop-portal-wlr
 				# xdg-desktop-portal-gtk
 		 	];
 			## fixes gtk themeing so that it uses the .config. set to true in order to use native file pickers
@@ -146,19 +165,16 @@ in
   # Let the passwords be stored in something other than plain text. Required for at least mailspring
   services = {
     gnome.gnome-keyring.enable = true;
-    mpd = {
-      musicDirectory = "/var/lib/mpd/music/";
-      #package = pkgs.nixmaster.mpd;
-      enable = true;
-      # user = "wyatt";
-      # group = "pulse";
-      extraConfig = '' 
-      audio_output {
-         type "pulse"
-         name "Pulsef"
-       }
-      ''; 
-    };
+    #mpd = {
+    # musicDirectory = "/var/lib/mpd/music/";
+    #  enable = true;
+    #  extraConfig = '' 
+    #  audio_output {
+    #     type "pulse"
+    #     name "Pulsef"
+    #   }
+    #  ''; 
+    #};
     ympd = {
       enable = true;
     }; 

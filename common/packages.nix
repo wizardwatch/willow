@@ -32,7 +32,8 @@ let
 in{
 	environment.systemPackages = with pkgs; [
 		## source control; linus style
-		git
+                jq
+                git
 		## download the web right to your own computer!
 		wget
 		## monitor all the things, except gpu usage.
