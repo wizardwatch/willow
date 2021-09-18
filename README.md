@@ -14,4 +14,4 @@ I have 3 monitors. I mainly use my ultrawide and drawing tablet and am consideri
 
 ## Other
 
-I use Home-manager and am slowly migrating my configs there. I do maintain the configs software that I no longer use, so if you try anything and find it does not work, please open an issue and I will fix it.
+I use Home-manager and I'm slowly migrating my configs there. I still maintain software that I don't use, so let me know if anything is broken by [creating an issue.](https://github.com/wizardwatch/flake/issues/new/choose)
