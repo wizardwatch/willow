@@ -1,4 +1,4 @@
-{ config, inputs, pkgs, fetchurl, ... }:
+{ config, inputs, pkgs, fetchurl, eww, ... }:
 let
   publicKey = "AAAAB3NzaC1yc2EAAAADAQABAAABgQDBEq4NHUglnfwIZYT9dIV5RpYE5s+eGBs1DhX8ieoMXDDZDw/kRo9aeWqKlxElpVJepzHtydQdp73PPjYQT5BhuM7Nw/OKRIH2eEYN8BDqPsTJOVgnZ3287O8OStqnmCiBD2AmVEFuaxtnz5sL2PzsdAS20bvdnyig56TzGFkm3RnDrVfS+8RPbSmOzqVA9+xW4NeN/u1CA32VTfRjE696XpHG5Zg2ByCUGot0+yBLgkEj+RBiChg6rtnwga8QOgSLncZtjVS0WFH9u0lhoGBjOtL2qtMZkTVCLcjmE6Fa6Nd8igoss9JmbDQMh7McUxS1D9d4UE4Vh3IPAHAuaVbMvGNZ9upaye90Vt2PuejOXbnQ4dGKmlxq0wAMWx20uVbWiY1VimVeYPlMLeNOcVcHglVGkVChhgMEbDvsl6HcesfgR/tivHgPhXrkF9f2j80O53VIBWltqt2iz06xUiolQNYDYhq+HiXcQI11+gWRDrdgU5Q5B7OVWPVdXonTfkk=";
 in
@@ -45,8 +45,6 @@ in
   # amd gpu
   boot.initrd.kernelModules = [ "amdgpu" ];
   security.pam.services.swaylock = {};
-  # Enable touchpad support (enabled default in most desktopManager).
-  # services.xserver.libinput.enable = true;
   
   # Define a user account. Don't forget to set a password with ‘passwd’.
 #	programs.fish.enable = true;
@@ -62,6 +60,7 @@ in
 	# $ nix search wget
 	environment.systemPackages = with pkgs; [
           #overlaystwo.eww
+          eww.defaultPackage.x86_64-linux
           starship
           fuzzel
           xdg-desktop-portal-wlr
@@ -117,16 +116,10 @@ in
 		radeontop
 		broot
 		nyxt
-		#for neovim
-		#perl
-		#perl534Packages.ArchiveZip
-		#perl534Packages.Appcpanminus
-		#perl534Packages.
                 ncmpcpp
                 helvum
                 river
                 kile-wl
-        #gnumake
 	];
         security.polkit.enable = true; #for river maybe
         programs.dconf.enable = true;
@@ -165,16 +158,6 @@ in
   # Let the passwords be stored in something other than plain text. Required for at least mailspring
   services = {
     gnome.gnome-keyring.enable = true;
-    #mpd = {
-    # musicDirectory = "/var/lib/mpd/music/";
-    #  enable = true;
-    #  extraConfig = '' 
-    #  audio_output {
-    #     type "pulse"
-    #     name "Pulsef"
-    #   }
-    #  ''; 
-    #};
     ympd = {
       enable = true;
     }; 

@@ -11,12 +11,8 @@ inputs = rec {
 	nixmaster.url = "github:NixOS/nixpkgs";
         neovim-nightly.url = "github:nix-community/neovim-nightly-overlay";
         eww.url = "github:elkowar/eww";
-        # eww = { url = "github:elkowar/eww"; flake = false; };
-	# Doesn't seem to work.
-	# iso.url = "github:nix-community/nixos-generators";
-	# Set up an ssh key on github
 };
-outputs = { self, nixpkgs, home-manager, /* iso,*/ neovim-nightly, nixmaster, eww, ...}:
+outputs = { self, nixpkgs, home-manager, /* iso,*/ neovim-nightly, nixmaster, eww, ...}@inputs:
 let
 	system = "x86_64-linux";
 	hostname = "wizardwatch";
@@ -39,25 +35,7 @@ let
 				};
 			});
                       };
-                      #eww = eww.defaultPackage.${system}.eww;
-                      /*
-                      eww = final: prev: {
-                        eww = (import eww {
-                          inherit system;
-                        });
-                      };
-                      */
-		#iso = final: prev: {
-		#	nixmaster = (import iso{
-		#		inherit system;
-		#	});
-		#};
               };
-              overlaystwo =[
-                {
-                 eww = eww.defaultPackage.${system}.eww;  
-               }
-               ];
 	# install helper functions
 	lib = nixpkgs.lib;
 	in {
@@ -78,12 +56,9 @@ let
 			# imports the system variable
 			inherit system; 
                         # import the config file
-                        #inherit eww;
                         modules = [
-                                
+                           { _module.args = inputs; }               
 				{ nixpkgs.overlays = [ overlays.nixmaster ]; }
-				# does not work: gives error command flake not found
-				#{ nixpkgs.overlays = [ overlays.iso ]; }
 				(./common/common.nix)
 				#(./common/hsctf.nix)
 				(./machines + ("/" + hostname) + /main.nix)
