@@ -17,5 +17,11 @@
 	time.timeZone = "America/New_York";
 	services.openssh.enable = true;
 	services.openssh.passwordAuthentication = false;
-	services.dbus.packages = [ pkgs.gnome3.dconf ];
+        services.dbus.packages = [ pkgs.gnome3.dconf ];
+        services = {
+          transmission = {
+            enable = true;
+            port = 9091;
+          };
+        };
 }

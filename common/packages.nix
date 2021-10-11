@@ -31,8 +31,9 @@ let
 	};
 in{
 	environment.systemPackages = with pkgs; [
-		## source control; linus style
+                ffmpeg
                 jq
+                ## source control; linus style
                 git
 		## download the web right to your own computer!
 		wget

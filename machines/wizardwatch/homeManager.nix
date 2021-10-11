@@ -34,6 +34,7 @@
           ./ncmpcpp.nix
           ./mako.nix
           ./starship.nix
+          ./sway.nix
         ];
 	programs.foot = {
 		enable = true;

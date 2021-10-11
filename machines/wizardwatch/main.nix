@@ -57,10 +57,20 @@ in
                 shell = pkgs.zsh;
 	};
 	# List packages installed in system profile. To search, run:
-	# $ nix search wget
+        # $ nix search wget
+       # self: super: {
+        #eww = super.eww.overrideAttrs (oldAttrs: rec {
+         # patches = oldAttrs.patches ++ [
+          #  (super.fetchpatch{
+           #   cargoBuildOptions = "--release --no-default-features --features=wayland";
+            #}) 
+          #];
+        #});
+     # };
 	environment.systemPackages = with pkgs; [
           #overlaystwo.eww
-          eww.defaultPackage.x86_64-linux
+          (eww.defaultPackage.x86_64-linux)
+          musescore
           starship
           fuzzel
           xdg-desktop-portal-wlr
@@ -120,6 +130,7 @@ in
                 helvum
                 river
                 kile-wl
+                multimc
 	];
         security.polkit.enable = true; #for river maybe
         programs.dconf.enable = true;
