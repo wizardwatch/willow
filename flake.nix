@@ -46,7 +46,7 @@ let
 			configuration = {
 				nixpkgs.overlays = [ neovim-nightly.overlay ];
 				imports = [
-					(./machines + ("/" + hostname) + /homeManager.nix)
+					(./machines + ("/" + hostname) + /dotfiles/main.nix)
 				];
 			};
 		};

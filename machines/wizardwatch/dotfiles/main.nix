@@ -26,15 +26,26 @@
 		font.size = 14;
 		theme.package = pkgs.dracula-theme;
 		theme.name = "Dracula";
-	};
+        };
+        home.file = {
+          river = { 
+            source = ./wayland/init;
+            target = "./.config/river/init";
+          };
+          eww = {
+            source = ./other/eww;
+            recursive = true;
+            target = "./.config/eww/";
+          };
+        };
         imports = [
-          ./nvim/neovim.nix
-          ./waybar.nix
-          ./kanshi.nix
-          ./ncmpcpp.nix
-          ./mako.nix
-          ./starship.nix
-          ./sway.nix
+          ./textEditors/neovim.nix
+          ./wayland/waybar.nix
+          ./wayland/kanshi.nix
+          ./wayland/mako.nix
+          ./wayland/sway.nix
+          ./other/ncmpcpp.nix
+          ./other/starship.nix
         ];
 	programs.foot = {
 		enable = true;

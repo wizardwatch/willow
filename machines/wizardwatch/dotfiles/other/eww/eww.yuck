@@ -1,0 +1,51 @@
+(defwindow time
+	:monitor 1
+	:windowtype "dock"
+        :geometry (geometry 	:x "10px"
+	                        :y "10px"
+				:width "98%"
+                        	:anchor "top center")
+	:exclusive "true"
+	(windowtitle)
+)
+(defpoll time :interval "1s"
+  "date '+%H:%M:%S %b %d, %Y'")
+(defwidget sidestuff []
+	(box 	:class "sidestuff"
+		:orientation "h"
+		:halign "end"
+		time
+	)
+)
+(defwidget workspaces []
+  (box :class "workspaces"
+       :orientation "h"
+       :space-evenly true
+       :halign "start"
+       :spacing 10
+    (button :onclick "wmctrl -s 0" 1)
+    (button :onclick "wmctrl -s 1" 2)
+    (button :onclick "wmctrl -s 2" 3)
+    (button :onclick "wmctrl -s 3" 4)
+    (button :onclick "wmctrl -s 4" 5)
+    (button :onclick "wmctrl -s 5" 6)
+    (button :onclick "wmctrl -s 6" 7)
+    (button :onclick "wmctrl -s 7" 8)
+    (button :onclick "wmctrl -s 8" 9)))
+(defpoll rister 
+	:interval "1s" "echo \"{}\"| ristate -vt -t -w | jq '.title' -r --unbuffered & pkill ristate")
+(defwidget middlestuff []
+	(box :class "middlestuff"
+		:halign "center"
+		rister
+		
+	)
+)
+(defwidget windowtitle []
+	(box  
+		 :orientation "horizontal"
+		(workspaces)
+		(middlestuff)
+		(sidestuff)	
+	)
+)
