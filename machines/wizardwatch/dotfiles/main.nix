@@ -44,6 +44,7 @@
           ./wayland/kanshi.nix
           ./wayland/mako.nix
           ./wayland/sway.nix
+          ./x/main.nix
           ./other/ncmpcpp.nix
           ./other/starship.nix
         ];

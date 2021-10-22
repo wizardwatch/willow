@@ -11,7 +11,8 @@ in
       #../../common/emacs.nix
       #../../common/WireGuard_Server.nix
       ../../common/ruby.nix
-      ../../common/qtile.nix
+      #../../common/qtile.nix
+      ../../common/xserver.nix
     ];
   # Use the systemd-boot EFI boot loader. no touchy
   boot.loader.systemd-boot.enable = true;
@@ -72,7 +73,7 @@ in
           (eww.defaultPackage.x86_64-linux)
           musescore
           starship
-          fuzzel
+          #fuzzel
           xdg-desktop-portal-wlr
           grim
           slurp
@@ -81,6 +82,7 @@ in
           kanshi
           wlr-randr
           swaylock
+          haskellPackages.wizardwatch-xmonad
                 alacritty
                 kitty
                 ## password entry for gui applications

@@ -11,8 +11,21 @@ inputs = rec {
 	nixmaster.url = "github:NixOS/nixpkgs";
         neovim-nightly.url = "github:nix-community/neovim-nightly-overlay";
         eww.url = "github:elkowar/eww";
+        xmonad.url = "github:xmonad/xmonad";
+        xmonad-contrib.url = "github:xmonad/xmonad-contrib";
+        # Hibernating for when xmonad-extras gets a flake
+        # xmonad-extras.url = "github:xmonad/xmonad-extras";
 };
-outputs = { self, nixpkgs, home-manager, /* iso,*/ neovim-nightly, nixmaster, eww, ...}@inputs:
+outputs = { self, 
+            nixpkgs, 
+            home-manager,
+            neovim-nightly,
+            nixmaster,
+            eww,
+            xmonad,
+            xmonad-contrib,
+            #xmonad-extras, 
+...}@inputs:
 let
 	system = "x86_64-linux";
 	hostname = "wizardwatch";
@@ -44,7 +57,7 @@ let
 			inherit system pkgs username;
 			homeDirectory = ("/home/" + username + "/.config");
 			configuration = {
-				nixpkgs.overlays = [ neovim-nightly.overlay ];
+				nixpkgs.overlays = [ neovim-nightly.overlay xmonad.overlay xmonad-contrib.overlay (import ./overlays)];
 				imports = [
 					(./machines + ("/" + hostname) + /dotfiles/main.nix)
 				];
@@ -58,7 +71,7 @@ let
                         # import the config file
                         modules = [
                            { _module.args = inputs; }               
-				{ nixpkgs.overlays = [ overlays.nixmaster ]; }
+				{ nixpkgs.overlays = [ overlays.nixmaster xmonad.overlay xmonad-contrib.overlay (import ./overlays)]; }
 				(./common/common.nix)
 				#(./common/hsctf.nix)
 				(./machines + ("/" + hostname) + /main.nix)

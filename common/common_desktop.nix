@@ -15,24 +15,39 @@
 		# for rifle used with broot
 		ranger
 	];
-	fonts.fonts = with pkgs; [
+        #fonts.fonts = with pkgs; [
 		## for everything except :
-		jetbrains-mono
+        #	jetbrains-mono
 		## for emacs, duh
 		#emacs-all-the-icons-fonts
 		## for waybar icons
 		#font-awesome
 		## non monospaced text sexifier.
 		#roboto
-	];
-	fonts.fontconfig.defaultFonts.monospace = [
-		"JetBrains Mono"
-	];
+        #];
+        #fonts.fontconfig.defaultFonts.monospace = [
+        #	"JetBrains Mono"
+        #      ];
+        fonts = {
+          fontconfig = {
+            enable = true;
+            defaultFonts = {
+              monospace = [ "Iosevka Nerd Font" ];
+              serif = [ "Iosevka Etoile" ];
+              sansSerif = [ "Iosevka Aile" ];
+            };
+          };
+          fonts = with pkgs; [
+            (iosevka-bin.override { variant = "aile"; })
+            (iosevka-bin.override { variant = "etoile"; })
+            (nerdfonts.override { fonts = [ "Iosevka" ]; })
+          ];
+        };
 	#fonts.fontconfig.defaultFonts.sansSerif = [
 	#	"Roboto-Regular"
 	#];
 	## fixes some problems problems with pure gtk applications a little bit.
-	fonts.fontconfig.hinting.enable = false;
+        # fonts.fontconfig.hinting.enable = false;
 	## made some fonts look really bad
 	#fonts.fontconfig.antialias = false;
 	#          #

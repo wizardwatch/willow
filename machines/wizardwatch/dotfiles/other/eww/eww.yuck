@@ -1,11 +1,12 @@
 (defwindow time
-	:monitor 1
+	:monitor 0
 	:windowtype "dock"
+	:reserve (struts :side "top" :distance "4%")
         :geometry (geometry 	:x "10px"
 	                        :y "10px"
 				:width "98%"
+				:height "10px"
                         	:anchor "top center")
-	:exclusive "true"
 	(windowtitle)
 )
 (defpoll time :interval "1s"
@@ -32,13 +33,9 @@
     (button :onclick "wmctrl -s 6" 7)
     (button :onclick "wmctrl -s 7" 8)
     (button :onclick "wmctrl -s 8" 9)))
-(defpoll rister 
-	:interval "1s" "echo \"{}\"| ristate -vt -t -w | jq '.title' -r --unbuffered & pkill ristate")
 (defwidget middlestuff []
 	(box :class "middlestuff"
 		:halign "center"
-		rister
-		
 	)
 )
 (defwidget windowtitle []
