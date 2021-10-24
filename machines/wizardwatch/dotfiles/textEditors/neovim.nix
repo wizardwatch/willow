@@ -49,6 +49,7 @@ EOF'';
                                 }
                                 ale
                                 LanguageTool-nvim
+                                vim-hexokinase
 			];
 			extraPackages = with pkgs;  [
 				neovim-remote
@@ -63,6 +64,7 @@ EOF'';
                                 hi spellbad gui=undercurl guisp=red cterm=undercurl
                                 set spell
                                 let g:languagetool_server_jar='${pkgs.languagetool}/share/languagetool-server.jar'
+                                let g:Hexokinase_highlighters = [ 'virtual' ] 
 			'';
 		};
 }
