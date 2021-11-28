@@ -46,7 +46,7 @@
 			];
 			libinput.enable = true;
 			displayManager.startx.enable = true;
-			videoDrivers = [ "amdgpu" ];
+			videoDrivers = [ "amdgpu" "intel"];
 		};
 	};
 	environment.systemPackages = with pkgs; [
@@ -58,6 +58,6 @@
 		arandr
         ];
         imports = [
-            ./qtile.nix
+            ../../common/qtile.nix
         ];      
 }

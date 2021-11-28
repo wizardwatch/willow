@@ -2,7 +2,10 @@
 let
   menu = "wofi -f -S run -i";
   modifier = "Mod4";
-in { 
+in {
+  home.packages = with pkgs; [
+    wofi
+  ];
   home.sessionVariables = {
     MOZ_ENABLE_WAYLAND = "1";
     MOZ_USE_XINPUT2 = "1";
