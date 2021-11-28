@@ -73,6 +73,8 @@ in
           (eww.defaultPackage.x86_64-linux)
           musescore
           starship
+          inkscape
+          openscad
           #fuzzel
           xdg-desktop-portal-wlr
           grim

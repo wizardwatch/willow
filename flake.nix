@@ -13,8 +13,7 @@ inputs = rec {
         eww.url = "github:elkowar/eww";
         xmonad.url = "github:xmonad/xmonad";
         xmonad-contrib.url = "github:xmonad/xmonad-contrib";
-        # Hibernating for when xmonad-extras gets a flake
-        # xmonad-extras.url = "github:xmonad/xmonad-extras";
+        nix-doom-emacs.url = "github:vlaci/nix-doom-emacs";
 };
 outputs = { self, 
             nixpkgs, 
@@ -24,7 +23,7 @@ outputs = { self,
             eww,
             xmonad,
             xmonad-contrib,
-            #xmonad-extras, 
+            nix-doom-emacs, 
 ...}@inputs:
 let
 	system = "x86_64-linux";
@@ -57,9 +56,14 @@ let
 			inherit system pkgs username;
 			homeDirectory = ("/home/" + username + "/.config");
 			configuration = {
-				nixpkgs.overlays = [ neovim-nightly.overlay xmonad.overlay xmonad-contrib.overlay (import ./overlays)];
+                          nixpkgs.overlays = [ neovim-nightly.overlay xmonad.overlay xmonad-contrib.overlay (import ./overlays)];
+                          programs.doom-emacs = {
+                              enable = true;
+                              doomPrivateDir = ./machines/wizardwatch/dotfiles/textEditors/emacs/doom;
+                          };
 				imports = [
-					(./machines + ("/" + hostname) + /dotfiles/main.nix)
+                                  (./machines + ("/" + hostname) + /dotfiles/main.nix)
+                                  nix-doom-emacs.hmModule
 				];
 			};
 		};

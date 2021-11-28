@@ -40,125 +40,7 @@
 (use-package undo-tree)
 (require 'undo-tree)
 
-;; treemacs
-
-;; (use-package treemacs
-;;   :ensure t
-;;   :defer t
-;;   :init
-;;   (with-eval-after-load 'winum
-;;     (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
-;;   :config
-  ;; (progn
-  ;;   (setq treemacs-collapse-dirs		   (if treemacs-python-executable 3 0)
-  ;; 	  treemacs-deferred-git-apply-delay	   0.5
-  ;; 	  treemacs-directory-name-transformer	   #'identity
-  ;; 	  treemacs-display-in-side-window	   t
-  ;; 	  treemacs-eldoc-display		   t
-  ;; 	  treemacs-file-event-delay		   5000
-  ;; 	  treemacs-file-extension-regex		   treemacs-last-period-regex-value
-  ;; 	  treemacs-file-follow-delay		   0.2
-  ;; 	  treemacs-file-name-transformer	   #'identity
-  ;; 	  treemacs-follow-after-init		   t
-  ;; 	  treemacs-git-command-pipe		   ""
-  ;; 	  treemacs-goto-tag-strategy		   'refetch-index
-  ;; 	  treemacs-indentation			   4
-  ;; 	  treemacs-indentation-string              " "
-  ;; 	  treemacs-is-never-other-window	   nil
-  ;; 	  treemacs-max-git-entries		   5000
-  ;; 	  treemacs-missing-project-action	   'ask
-  ;; 	  treemacs-move-forward-on-expand	   nil
-  ;; 	  treemacs-no-png-images		   nil
-  ;; 	  treemacs-no-delete-other-windows	   t
-  ;; 	  treemacs-project-follow-cleanup	   nil
-  ;; 	  treemacs-persist-file			   (expand-file-name ".cache/treemacs-persist" user-emacs-directory)
-  ;; 	  treemacs-position			   'left
-  ;; 	  treemacs-read-string-input		   'from-child-frame
-  ;; 	  treemacs-recenter-distance		   0.1
-  ;; 	  treemacs-recenter-after-file-follow	   nil
-  ;; 	  treemacs-recenter-after-tag-follow	   nil
-  ;; 	  treemacs-recenter-after-project-jump	   'always
-  ;; 	  treemacs-recenter-after-project-expand   'on-distance
-  ;; 	  treemacs-show-cursor			   nil
-  ;; 	  treemacs-show-hidden-files		   nil
-  ;; 	  treemacs-silent-filewatch		   nil
-  ;; 	  treemacs-silent-refresh		   nil
-  ;; 	  treemacs-sorting			   'alphabetic-asc
-  ;; 	  treemacs-space-between-root-nodes	   t
-  ;; 	  treemacs-tag-follow-cleanup		   t
-  ;; 	  treemacs-tag-follow-delay		   1.5
-  ;; 	  treemacs-user-mode-line-format	   nil
-  ;; 	  treemacs-user-header-line-format	   nil
-  ;; 	  treemacs-width			   75
-  ;; 	  treemacs-workspace-switch-cleanup	   nil
-  ;; 	  )
-    
-  ;;   ;; The default width and height of the icons is 22 pixels. If you are
-  ;;   ;; using a Hi-DPI display, uncomment this to double the icon size.
-  ;;   ;; (treemacs-resize-icons 44)
-    
-  ;;   (treemacs-follow-mode t)
-  ;;  ;;  (treemacs-filewatch-mode t)
-;;   ;;   (treemacs-fringe-indicator-mode 'a
-;; 				    lways)
-;;     (pcase (cons (not (null (executable-find "git")))
-;; 		 (not (null treemacs-python-executable)))
-;;       (`(t . t)
-;;        (treemacs-git-mode 'deferred))
-;;       (`(t . _)
-;;        (treemacs-git-mode 'simple))))
-;;   :bind
-;;   (:map global-map
-;; 	("M-0"		 . treemacs-select-window)
-;; 	("C-x t 1"	 . treemacs-delete-other-windows)
-;; 	("C-x t t"	 . treemacs)
-;; 	("C-x t B"	 . treemacs-bookmark)
-;; 	("C-x t C-t" . treemacs-find-file)
-;; 	("C-x t M-t" . treemacs-find-tag)))
-
-;; (use-package treemacs-evil
-;;   :after (treemacs evil)
-;;   :ensure t)
-
-;; (use-package treemacs-projectile
-;;   :after (treemacs projectile)
-;;   :ensure t)
-
-;; (use-package treemacs-icons-dired
-;;   :after (treemacs dired)
-;;   :ensure t
-;;   :config (treemacs-icons-dired-mode))
-
-;; (use-package treemacs-magit
-;;   :after (treemacs magit)
-;;   :ensure t)
-
-;; (use-package treemacs-persp ;;treemacs-perspective if you use perspective.el vs. persp-mode
-;;   :after (treemacs persp-mode) ;;or perspective vs. persp-mode
-;;   :ensure t
-;;   :config (treemacs-set-scope-type 'Perspectives))
-;; (treemacs)
-
-;; Centaur Tabs
-
-;; (use-package centaur-tabs
-;;   :init
-;;   (setq centaur-taba-enable-keyb-bindings t)
-;;   :demand
-;;   :config
-;;   (centaur-tabs-mode t)
-;;   (setq centaur-tabs-set-icons t)
-;;   (setq centaur-tabs-height 32)
-;;   :bind
-;;   ("C-<prior>" . centaur-tabs-backward)
-;;   ("C-<next>" . centaur-tabs-forward))
-
-;; All The Icons
-
-;; (use-package all-the-icons)
-
 ;; buffer names
-
 
 (setq frame-title-format
     '((:eval (if (buffer-file-name)
@@ -173,8 +55,6 @@
 (setq frame-title-format '(:eval (if (eq major-mode 'dired-mode) "dired" ww/original-frame-title-format)))
 ;; dired
 
-
-
 (use-package dired-subtree
   :config
   (bind-keys :map dired-mode-map
@@ -186,6 +66,24 @@
 
 (use-package nix-mode
   :mode "\\.nix\\'")
+
+;; latex
+
+(use-package auctex
+	:demand t
+	:no-require t
+	:mode ("\\.tex\\'" . TeX-latex-mode)
+	:config
+	(setq TeX-auto-save t))
+(use-package tex-site
+  :ensure auctex
+  :no-require
+  :mode ("\\.tex\\" . TeX-latex-mode))
+
+(use-package tex-mode
+  :hook (TeX-mode . latex-electric-env-pair-mode))
+
+(add-hook 'pdf-tools-enabled-hook 'pdf-view-midnight-minor-mode)
 
 ;; OrgMode
 
@@ -231,7 +129,9 @@
   :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
          (java-mode . lsp)
          ;; if you want which-key integration
-         (lsp-mode . lsp-enable-which-key-integration))
+         (lsp-mode . lsp-enable-which-key-integration)
+	 	;;(haskell-mode . lsp)
+	 )
   :commands lsp)
 
 ;; optionally
@@ -246,6 +146,7 @@
 (use-package company)
 (require 'lsp-mode)
 (use-package lsp-java)
+(use-package haskell-mode)
 
 ;; pinentry
 

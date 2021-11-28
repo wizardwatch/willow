@@ -40,7 +40,7 @@
         };
         imports = [
           ./textEditors/neovim.nix
-          ./textEditors/emacs/main.nix
+          #./textEditors/emacs/main.nix
           ./wayland/waybar.nix
           ./wayland/kanshi.nix
           ./wayland/mako.nix
