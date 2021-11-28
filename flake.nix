@@ -11,8 +11,6 @@ inputs = rec {
 	nixmaster.url = "github:NixOS/nixpkgs";
         neovim-nightly.url = "github:nix-community/neovim-nightly-overlay";
         eww.url = "github:elkowar/eww";
-        xmonad.url = "github:xmonad/xmonad";
-        xmonad-contrib.url = "github:xmonad/xmonad-contrib";
         nix-doom-emacs.url = "github:vlaci/nix-doom-emacs";
 };
 outputs = { self, 
@@ -21,15 +19,11 @@ outputs = { self,
             neovim-nightly,
             nixmaster,
             eww,
-            xmonad,
-            xmonad-contrib,
             nix-doom-emacs, 
 ...}@inputs:
 let
 	system = "x86_64-linux";
-	hostname = "wizardwatch";
 	username = "wyatt";
-	networking.hostname = "${hostname}";
 	pkgs = import nixpkgs {
 		# imports the system variable
 		inherit system;
@@ -46,8 +40,8 @@ let
 					allowUnfree = true;
 				};
 			});
-                      };
-              };
+                };
+        };
 	# install helper functions
 	lib = nixpkgs.lib;
 	in {
@@ -56,31 +50,45 @@ let
 			inherit system pkgs username;
 			homeDirectory = ("/home/" + username + "/.config");
 			configuration = {
-                          nixpkgs.overlays = [ neovim-nightly.overlay xmonad.overlay xmonad-contrib.overlay (import ./overlays)];
                           programs.doom-emacs = {
                               enable = true;
                               doomPrivateDir = ./machines/wizardwatch/dotfiles/textEditors/emacs/doom;
                           };
+				nixpkgs.overlays = [ neovim-nightly.overlay (import ./overlays)];
 				imports = [
-                                  (./machines + ("/" + hostname) + /dotfiles/main.nix)
-                                  nix-doom-emacs.hmModule
+					(./users + ("/" + username) + /dotfiles/main.nix)
 				];
 			};
 		};
 	};
 	nixosConfigurations = {
-		nixos = lib.makeOverridable lib.nixosSystem{
+		wizardwatch = lib.makeOverridable lib.nixosSystem {
 			# imports the system variable
 			inherit system; 
                         # import the config file
+	                networking.hostname = "wizardwatch";
                         modules = [
-                           { _module.args = inputs; }               
-				{ nixpkgs.overlays = [ overlays.nixmaster xmonad.overlay xmonad-contrib.overlay (import ./overlays)]; }
+                                { _module.args = inputs; }               
+				{ nixpkgs.overlays = [ overlays.nixmaster  (import ./overlays)]; }
 				(./common/common.nix)
 				#(./common/hsctf.nix)
-				(./machines + ("/" + hostname) + /main.nix)
+				(./machines + ("/" + "wizardwatch") + /main.nix)
+			];
+                };
+        	pc1 = lib.makeOverridable lib.nixosSystem {
+			# imports the system variable
+                        inherit system;
+                        # import the config file
+                        modules = [
+                                { _module.args = inputs; }               
+				{ nixpkgs.overlays = [ overlays.nixmaster  (import ./overlays)]; }
+				(./common/common.nix)
+				#(./common/hsctf.nix)
+                                (./machines + ("/" + "pc1") + /main.nix)
+
 			];
 		};
+
 	};
 };
 }

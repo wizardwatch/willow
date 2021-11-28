@@ -5,34 +5,35 @@ in
 {
   imports =
     [
-      ./hardware-configuration.nix
-      ./unfree.nix
+      ./hw_config.nix
       ../../common/common_desktop.nix
-      #../../common/emacs.nix
-      #../../common/WireGuard_Server.nix
       ../../common/ruby.nix
-      #../../common/qtile.nix
-      ./xserver.nix
     ];
-  # Use the systemd-boot EFI boot loader. no touchy
+  # Use the systemd-boot EFI boot loader. This is required for uefi boot.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+  # Set up` networking
+  networking = {
+    # While my first machine, my desktop, is named wizardwatch moving forward all machines will get a suffix, dc for desktop computer, pc for portable computer, and server. This is followed by a number representing the order in which they where assimilated.
+    hostName = "pc1";
+    # Sometimes enp0s13f0u3u4 is not connected, it is a USB network adapter. By default this adds 1.5 minutes to the boot time while the nonexistent interface attempts to receive an IP address. This instead forks it immediately. 
+    dhcpcd = {
+      wait = "background";
+    };
+    interfaces = {
+      # built in wireless adapter
+      wlp0s20f3.useDHCP = true;
+      # USB Ethernet adapter
+      enp0s13f0u3u4.useDHCP = true;
+    };
+    wireless = { 
+      enable = true;
+    };
+  };
   # The global useDHCP flag is deprecated, therefore explicitly set to false here.
   # Per-interface useDHCP will be mandatory in the future, so this generated config
   # replicates the default behaviour.
   networking.useDHCP = false;
-  networking.interfaces.enp0s31f6.ipv4.addresses = [ {
-    address = "192.168.1.169";
-    prefixLength = 24;
-  } ];
-
-  # Select internationalisation properties.
-  # i18n.defaultLocale = "en_US.UTF-8";
-  # console = {
-  #   font = "Lat2-Terminus16";
-  #   keyMap = "us";
-  # };
 
   # Enable CUPS to print documents.
   services.printing = {
@@ -40,31 +41,19 @@ in
     drivers = with pkgs; [
       gutenprint
       brlaser
-      mfcl2740dwcupswrapper
     ];
   };
-  # amd gpu
-  boot.initrd.kernelModules = [ "amdgpu" ];
-  security.pam.services.swaylock = {};
-  
   # Define a user account. Don't forget to set a password with ‘passwd’.
         programs.zsh.enable = true;
 	users.users.wyatt = {
 		isNormalUser = true;
 		extraGroups = [ "wheel" "mpd" "audio" ]; # Enable ‘sudo’ for the user.
 		openssh.authorizedKeys.keys = [ ("${publicKey}") ];
-                #shell = pkgs.fish;
                 shell = pkgs.zsh;
 	};
-	# List packages installed in system profile. To search, run:
-        # $ nix search wget
 	environment.systemPackages = with pkgs; [
-          #overlaystwo.eww
-          (eww.defaultPackage.x86_64-linux)
           musescore
           starship
-          inkscape
-          openscad
           #fuzzel
           xdg-desktop-portal-wlr
           grim
@@ -86,7 +75,6 @@ in
 		pavucontrol
 		## if only I could draw
 		krita
-		## pipewire equalizer
 		pulseeffects-pw
 		#only tested in emacs
 		hunspell
@@ -100,13 +88,9 @@ in
 		# doesn't work due to a lack of the overall gnome package group
 		gnome3.gnome-tweak-tool
 		## remote into ras-pi
-		nomachine-client
 		obs-studio
-		## obs for wlroots
-		#obs-studio-plugins.wlrobs
 		## password manager
 		bitwarden
-		#bitwarden-cli
 		### email, like snail mail, but harder to block the spam!
 		mailspring
 		## font fix maybe. Allows use of gnome tweaks. I had to turn on aa.
@@ -115,16 +99,12 @@ in
 		libreoffice-fresh
 		## make the usbs into oses!
 		etcher
-		## irc. It just won't die
-		#weechat
 		radeontop
 		broot
 		nyxt
                 ncmpcpp
                 helvum
-                river
                 kile-wl
-                multimc
 	];
         security.polkit.enable = true; #for river maybe
         programs.dconf.enable = true;
@@ -167,11 +147,13 @@ in
       enable = true;
     }; 
   };
-  # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
+  # Some programs need SUID wrappers, can be configured further or are
+  # started in user sessions.
+  # programs.mtr.enable = true;
+  # programs.gnupg.agent = {
+  #   enable = true;
+  #   enableSSHSupport = true;
+  # };
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
@@ -179,5 +161,5 @@ in
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "20.09"; # Did you read the comment?
+  system.stateVersion = "21.11"; # Did you read the comment?
 }

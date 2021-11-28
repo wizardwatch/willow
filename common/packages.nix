@@ -31,6 +31,9 @@ let
 	};
 in{
 	environment.systemPackages = with pkgs; [
+                hugo
+                gcc
+                #clang-tools
                 ffmpeg
                 jq
                 ## source control; linus style
@@ -55,9 +58,8 @@ in{
 		rustup
 		#nixos-generators
 		wireguard
-		#gcc
-		#clang
-		unzip
+                tmux
+                unzip
                 # myKakoune
 		# tldr
 		tldr
