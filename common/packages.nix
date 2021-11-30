@@ -1,4 +1,4 @@
-{config, pkgs, ...}:
+{config, pkgs, wizardwatch_utils, ...}:
 let
 	my-python-packages = python-packages: with python-packages; [
 		pip
@@ -31,6 +31,7 @@ let
 	};
 in{
 	environment.systemPackages = with pkgs; [
+                (wizardwatch_utils.defaultPackage.x86_64-linux)
                 hugo
                 gcc
                 #clang-tools
@@ -42,8 +43,6 @@ in{
 		wget
 		## monitor all the things, except gpu usage.
 		htop
-		## the cool kids all use vim, so I should too.
-		#vim I now use neovim
 		## manage my things
 		home-manager
 		## python

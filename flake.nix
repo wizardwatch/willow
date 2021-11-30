@@ -12,6 +12,11 @@ inputs = rec {
         neovim-nightly.url = "github:nix-community/neovim-nightly-overlay";
         eww.url = "github:elkowar/eww";
         nix-doom-emacs.url = "github:vlaci/nix-doom-emacs";
+        # custom package
+        wizardwatch_utils = {
+          url = "path:./packages/wizardwatch_utils";
+          inputs.nixpkgs.follows = "nixpkgs";
+        };
 };
 outputs = { self, 
             nixpkgs, 
@@ -19,7 +24,8 @@ outputs = { self,
             neovim-nightly,
             nixmaster,
             eww,
-            nix-doom-emacs, 
+            nix-doom-emacs,
+            wizardwatch_utils,
 ...}@inputs:
 let
 	system = "x86_64-linux";
@@ -66,7 +72,6 @@ let
 			# imports the system variable
 			inherit system; 
                         # import the config file
-	                networking.hostname = "wizardwatch";
                         modules = [
                                 { _module.args = inputs; }               
 				{ nixpkgs.overlays = [ overlays.nixmaster  (import ./overlays)]; }
