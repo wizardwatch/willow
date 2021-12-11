@@ -41,10 +41,7 @@
         imports = [
           ./textEditors/neovim.nix
           #./textEditors/emacs/main.nix
-          ./wayland/waybar.nix
-          ./wayland/kanshi.nix
-          ./wayland/mako.nix
-          ./wayland/sway.nix
+          ./wayland/main.nix
           ./x/main.nix
           ./other/ncmpcpp.nix
           ./other/starship.nix

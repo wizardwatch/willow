@@ -13,7 +13,15 @@
                 # terminator
                 konsole
 		# for rifle used with broot
-		ranger
+                ranger
+                inkscape
+                openscad
+                musescore
+                pavucontrol
+                ## pipewire equalizer
+                pulseeffects-pw
+                ## if only I could draw
+                krita
 	];
         #fonts.fonts = with pkgs; [
 		## for everything except :

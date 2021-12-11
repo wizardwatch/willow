@@ -62,10 +62,6 @@ in
 	environment.systemPackages = with pkgs; [
           #overlaystwo.eww
           (eww.defaultPackage.x86_64-linux)
-          musescore
-          starship
-          inkscape
-          openscad
           #fuzzel
           xdg-desktop-portal-wlr
           grim
@@ -83,12 +79,6 @@ in
                 nixmaster.polkit_gnome
 		## firefox
 		firefox
-		## is it wrong to use a pulse audio tool with pipewire
-		pavucontrol
-		## if only I could draw
-		krita
-		## pipewire equalizer
-		pulseeffects-pw
 		#only tested in emacs
 		hunspell
 		hunspellDicts.en_US-large
@@ -103,8 +93,6 @@ in
 		## remote into ras-pi
 		nomachine-client
 		obs-studio
-		## obs for wlroots
-		#obs-studio-plugins.wlrobs
 		## password manager
 		bitwarden
 		#bitwarden-cli
@@ -155,12 +143,6 @@ in
 		GDK_DPI_SCALE = "1";
 	};
   
-  #
-  # flatpak
-  #
-  # services.flatpak.enable = true;
-  
-  
   # Let the passwords be stored in something other than plain text. Required for at least mailspring
   services = {
     gnome.gnome-keyring.enable = true;
@@ -168,12 +150,6 @@ in
       enable = true;
     }; 
   };
-  # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
-
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
   # on your system were taken. It‘s perfectly fine and recommended to leave

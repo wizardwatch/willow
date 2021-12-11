@@ -63,7 +63,8 @@ in{
 		# tldr
 		tldr
 		pandoc
-		texlive.combined.scheme-full
+                texlive.combined.scheme-full
+                starship
 	];
 
 }

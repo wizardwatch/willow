@@ -56,10 +56,6 @@ let
 			inherit system pkgs username;
 			homeDirectory = ("/home/" + username + "/.config");
 			configuration = {
-                          programs.doom-emacs = {
-                              enable = true;
-                              doomPrivateDir = ./machines/wizardwatch/dotfiles/textEditors/emacs/doom;
-                          };
 				nixpkgs.overlays = [ neovim-nightly.overlay (import ./overlays)];
 				imports = [
 					(./users + ("/" + username) + /dotfiles/main.nix)
