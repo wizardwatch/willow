@@ -1,0 +1,3 @@
+[submodule "packages/xtodoc"]
+	path = packages/xtodoc
+	url = git@github.com:wizardwatch/xtodoc.git

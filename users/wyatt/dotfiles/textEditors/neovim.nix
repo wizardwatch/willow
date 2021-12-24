@@ -19,34 +19,28 @@
 			withPython3 = true;
 			withRuby = true;
 			coc = {
-				enable = true;
-			};
+                          enable = true;
+                          settings = {
+                              languageserver = {
+                                nix = {
+                                  command = "rnix-lsp";
+                                  filetypes = [
+                                    "nix"
+                                  ];
+                                };
+                              };
+                            };
+                          };
 			vimAlias = true;
 			plugins = with pkgs.vimPlugins; [
 				coc-nvim
-				coc-vimtex
-				{
-                                        plugin = vimtex;
-                                        config = '' let g:vimtex_view_method = 'zathura' '';
-				}
-                                # { plugin = dracula-vim;
-                                #	optional = true;
-                                # }
+                                coc-vimtex
+                                coc-solargraph
+                                vimtex
                                 nvim-base16
 				vim-nix
                                 undotree
-                                {
-                                  plugin = nvim-treesitter;
-                                  config = ''lua <<EOF
-require'nvim-treesitter.configs'.setup {
-  ensure_installed = "maintained",
-  highlight = {
-    enable = true,
-    disable = {},
-  },
- }
-EOF'';
-                                }
+                                nvim-treesitter
                                 ale
                                 LanguageTool-nvim
                                 vim-hexokinase
@@ -54,17 +48,24 @@ EOF'';
 			extraPackages = with pkgs;  [
 				neovim-remote
                               ];
-                        # setting the colorscheme to dracula seems to break things due to alacritty 
-                        extraConfig = ''
+                        extraConfig = '' 
+                                lua <<EOF
+                                  require'nvim-treesitter.configs'.setup {
+                                    ensure_installed = "maintained",
+                                    highlight = {
+                                      enable = true,
+                                      disable = {},
+                                    },
+                                  }
+EOF                                
                                 let &t_8f="\<Esc>[38;2;%lu;%lu;%lum"
                                 let &t_8b="\<Esc>[48;2;%lu;%lu;%lum"                               
                                 set termguicolors
                                 colorscheme base16-dracula
                                 set spelllang=en
-                                hi spellbad gui=undercurl guisp=red cterm=undercurl
                                 set spell
-                                let g:languagetool_server_jar='${pkgs.languagetool}/share/languagetool-server.jar'
-                                let g:Hexokinase_highlighters = [ 'virtual' ] 
+                                let g:languagetool_server_jar = '${pkgs.languagetool}/share/languagetool-server.jar'
+                                let g:Hexokinase_highlighters = [ 'virtual' ]
 			'';
 		};
 }

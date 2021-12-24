@@ -48,7 +48,6 @@ in
   boot.initrd.kernelModules = [ "amdgpu" ];
   security.pam.services.swaylock = {};
   
-  # Define a user account. Don't forget to set a password with ‘passwd’.
         programs.zsh.enable = true;
 	users.users.wyatt = {
 		isNormalUser = true;
@@ -72,48 +71,31 @@ in
           wlr-randr
           swaylock
           haskellPackages.wizardwatch-xmonad
-                alacritty
-                kitty
-                ## password entry for gui applications
-                appimage-run 
-                nixmaster.polkit_gnome
-		## firefox
-		firefox
-		#only tested in emacs
-		hunspell
-		hunspellDicts.en_US-large
-		## desktop notifications
-		libnotify
-		## terminal pdf compressor
-		#ghostscript
-		## file browser
-		gnome3.nautilus
-		# doesn't work due to a lack of the overall gnome package group
-		gnome3.gnome-tweak-tool
-		## remote into ras-pi
-		nomachine-client
-		obs-studio
-		## password manager
-		bitwarden
-		#bitwarden-cli
-		### email, like snail mail, but harder to block the spam!
-		mailspring
-		## font fix maybe. Allows use of gnome tweaks. I had to turn on aa.
-		gnome.gnome-settings-daemon
-		## boring work just got a little more mundane
-		libreoffice-fresh
-		## make the usbs into oses!
-		etcher
-		## irc. It just won't die
-		#weechat
-		radeontop
-		broot
-		nyxt
-                ncmpcpp
-                helvum
-                river
-                kile-wl
-                multimc
+          appimage-run
+          ## password entry for gui applications
+          nixmaster.polkit_gnome
+	  ## firefox
+	  firefox
+	  #only tested in emacs
+	  hunspell
+	  hunspellDicts.en_US-large
+	  ## desktop notifications
+	  libnotify
+	  ## remote into ras-pi
+	  obs-studio
+	  ## password manager
+	  bitwarden
+	  ## email, like snail mail, but harder to block the spam!
+	  mailspring
+	  ## make the usbs into oses!
+	  etcher
+	  broot
+	  nyxt
+          ncmpcpp
+          helvum
+          river
+          kile-wl
+          multimc
 	];
         security.polkit.enable = true; #for river maybe
         programs.dconf.enable = true;

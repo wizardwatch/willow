@@ -1,6 +1,7 @@
 { pkgs, config, ... }:{
 	imports = [
 		./config.nix
-		./packages.nix
+                ./packages.nix
+                ./lsp.nix
 	];
 }

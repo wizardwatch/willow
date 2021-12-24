@@ -17,6 +17,10 @@ inputs = rec {
           url = "path:./packages/wizardwatch_utils";
           inputs.nixpkgs.follows = "nixpkgs";
         };
+        xtodoc = {
+          url = "path:./packages/xtodoc";
+          inputs.nixpkgs.follows = "nixpkgs";
+        };
 };
 outputs = { self, 
             nixpkgs, 
@@ -26,6 +30,7 @@ outputs = { self,
             eww,
             nix-doom-emacs,
             wizardwatch_utils,
+            xtodoc,
 ...}@inputs:
 let
 	system = "x86_64-linux";
@@ -72,7 +77,6 @@ let
                                 { _module.args = inputs; }               
 				{ nixpkgs.overlays = [ overlays.nixmaster  (import ./overlays)]; }
 				(./common/common.nix)
-				#(./common/hsctf.nix)
 				(./machines + ("/" + "wizardwatch") + /main.nix)
 			];
                 };
@@ -84,12 +88,10 @@ let
                                 { _module.args = inputs; }               
 				{ nixpkgs.overlays = [ overlays.nixmaster  (import ./overlays)]; }
 				(./common/common.nix)
-				#(./common/hsctf.nix)
                                 (./machines + ("/" + "pc1") + /main.nix)
 
 			];
 		};
-
 	};
 };
 }

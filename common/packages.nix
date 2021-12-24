@@ -31,7 +31,9 @@ let
 	};
 in{
 	environment.systemPackages = with pkgs; [
+                (xtodoc.defaultPackage.x86_64-linux)
                 (wizardwatch_utils.defaultPackage.x86_64-linux)
+                glow
                 hugo
                 gcc
                 #clang-tools
@@ -60,7 +62,6 @@ in{
                 tmux
                 unzip
                 # myKakoune
-		# tldr
 		tldr
 		pandoc
                 texlive.combined.scheme-full
