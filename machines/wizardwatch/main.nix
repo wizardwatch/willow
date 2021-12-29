@@ -59,8 +59,8 @@ in
 	# List packages installed in system profile. To search, run:
         # $ nix search wget
 	environment.systemPackages = with pkgs; [
-          #overlaystwo.eww
-          (eww.defaultPackage.x86_64-linux)
+          #(eww.defaultPackage.x86_64-linux{wayland = true;})
+          eww-wayland
           #fuzzel
           xdg-desktop-portal-wlr
           grim

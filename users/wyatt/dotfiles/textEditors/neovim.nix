@@ -48,7 +48,7 @@
 			extraPackages = with pkgs;  [
 				neovim-remote
                               ];
-                        extraConfig = '' 
+                        extraConfig = ''
                                 lua <<EOF
                                   require'nvim-treesitter.configs'.setup {
                                     ensure_installed = "maintained",
@@ -57,13 +57,12 @@
                                       disable = {},
                                     },
                                   }
-EOF                                
-                                let &t_8f="\<Esc>[38;2;%lu;%lu;%lum"
-                                let &t_8b="\<Esc>[48;2;%lu;%lu;%lum"                               
-                                set termguicolors
+EOF
+                                highlight TrailingWhitespace ctermbg=red guibg=red
+                                call matchadd("TrailingWhitespace", '\v\s+$')
+                                set spell
                                 colorscheme base16-dracula
                                 set spelllang=en
-                                set spell
                                 let g:languagetool_server_jar = '${pkgs.languagetool}/share/languagetool-server.jar'
                                 let g:Hexokinase_highlighters = [ 'virtual' ]
 			'';

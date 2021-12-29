@@ -1,4 +1,4 @@
-{config, pkgs, wizardwatch_utils, ...}:
+{config, pkgs, wizardwatch_utils, xtodoc, ...}:
 let
 	my-python-packages = python-packages: with python-packages; [
 		pip
