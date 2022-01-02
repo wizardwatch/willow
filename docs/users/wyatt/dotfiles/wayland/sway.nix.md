@@ -1,4 +1,8 @@
-```nix{pkgs, ...}:
+---
+title: sway.nix
+---
+```nix
+{pkgs, ...}:
 let
   menu = "wofi -f -S run -i";
   modifier = "Mod4";

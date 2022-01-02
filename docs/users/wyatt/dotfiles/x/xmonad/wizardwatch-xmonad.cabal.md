@@ -1,3 +1,7 @@
+---
+title: wizardwatch-xmonad.cabal
+---
+```
 cabal-version:      2.4
 name:               wizardwatch-xmonad
 version:            0.1.0.0
@@ -19,3 +23,4 @@ executable wizardwatch-xmonad
         X11,
         containers,
         utf8-string,
+```

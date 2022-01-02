@@ -1,4 +1,8 @@
-```nix{
+---
+title: flake.nix
+---
+```nix
+{
 description = "My system conf";
 inputs = rec {
 	# set the channel
@@ -21,9 +25,14 @@ inputs = rec {
           url = "github:wizardwatch/xtodoc";
           inputs.nixpkgs.follows = "nixpkgs";
         };
+        nixos-generators = {
+          url = "github:nix-community/nixos-generators";
+          inputs.nixpkgs.follows = "nixpkgs";
+        };
+        flake-utils.url = "github:numtide/flake-utils";
 };
-outputs = { self, 
-            nixpkgs, 
+outputs = { self,
+            nixpkgs,
             home-manager,
             neovim-nightly,
             nixmaster,
@@ -31,6 +40,8 @@ outputs = { self,
             nix-doom-emacs,
             wizardwatch_utils,
             xtodoc,
+            nixos-generators,
+            flake-utils,
 ...}@inputs:
 let
 	system = "x86_64-linux";
@@ -57,42 +68,59 @@ let
 	lib = nixpkgs.lib;
 	in {
 	homeManagerConfigurations = {
-		wyatt = home-manager.lib.homeManagerConfiguration {
-			inherit system pkgs username;
-			homeDirectory = ("/home/" + username + "/.config");
-			configuration = {
-				nixpkgs.overlays = [ neovim-nightly.overlay (import ./overlays)];
-				imports = [
-					(./users + ("/" + username) + /dotfiles/main.nix)
-				];
-			};
-		};
+	      wyatt = home-manager.lib.homeManagerConfiguration {
+	      inherit system pkgs username;
+	      homeDirectory = ("/home/" + username + "/.config");
+	      configuration = {
+	      nixpkgs.overlays = [ neovim-nightly.overlay (import ./overlays)];
+	      imports = [
+		(./users + ("/" + username) + /dotfiles/main.nix)
+	      ];
+            };
+	  };
 	};
 	nixosConfigurations = {
-		wizardwatch = lib.makeOverridable lib.nixosSystem {
-			# imports the system variable
-			inherit system; 
-                        # import the config file
-                        modules = [
-                                { _module.args = inputs; }               
-				{ nixpkgs.overlays = [ overlays.nixmaster  (import ./overlays)]; }
-				(./common/common.nix)
-				(./machines + ("/" + "wizardwatch") + /main.nix)
-			];
-                };
-        	pc1 = lib.makeOverridable lib.nixosSystem {
-			# imports the system variable
-                        inherit system;
-                        # import the config file
-                        modules = [
-                                { _module.args = inputs; }               
-				{ nixpkgs.overlays = [ overlays.nixmaster  (import ./overlays)]; }
-				(./common/common.nix)
-                                (./machines + ("/" + "pc1") + /main.nix)
+	  wizardwatch = lib.makeOverridable lib.nixosSystem {
+	    # imports the system variable
+	    inherit system;
+            # import the config file
+            modules = [
+              { _module.args = inputs; }
+	      { nixpkgs.overlays = [ overlays.nixmaster  (import ./overlays)]; }
+	      (./common/common.nix)
+	      (./machines/wizardwatch/main.nix)
+	    ];
+        };
+        pc1 = lib.makeOverridable lib.nixosSystem {
+	  # imports the system variable
+          inherit system;
+          # import the config file
+          modules = [
+            { _module.args = inputs; }
+            { nixpkgs.overlays = [
+                overlays.nixmaster
+                (import ./overlays)
+              ];
+            }
+	    (./common/common.nix)
+            (./machines/pc1/main.nix)
+	  ];
+        };
+      };
+      installer = nixos-generators.nixosGenerate {
+          pkgs = nixpkgs.legacyPackages.x86_64-linux;
+          modules = [
+            { _module.args = inputs; }
+            { nixpkgs.overlays = [
+                overlays.nixmaster
+                (import ./overlays)
+              ];
+            }
+            ./machines/installer/main.nix
+          ];
+          format = "iso";
+        };
 
-			];
-		};
-	};
 };
 }
 ```

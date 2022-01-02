@@ -1,3 +1,7 @@
+---
+title: config.el
+---
+```
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 
 ;; Place your private configuration here! Remember, you do not need to run 'doom
@@ -111,3 +115,4 @@
 ;;(setq auto-indent-indent-style 'aggressive)
 (setq doom-font (font-spec :family "JetBrains Mono" :size 18))
 ;;(setq auto-indent-disabled-modes-list 'org-mode) will break everything if uncommented
+```

@@ -1,4 +1,8 @@
-```nix{config, pkgs, wizardwatch_utils, xtodoc, ...}:
+---
+title: packages.nix
+---
+```nix
+{config, pkgs, wizardwatch_utils, xtodoc, ...}:
 let
 	my-python-packages = python-packages: with python-packages; [
 		pip
@@ -33,6 +37,7 @@ in{
 	environment.systemPackages = with pkgs; [
                 (xtodoc.defaultPackage.x86_64-linux)
                 (wizardwatch_utils.defaultPackage.x86_64-linux)
+                tree
                 glow
                 hugo
                 gcc
@@ -66,6 +71,8 @@ in{
 		pandoc
                 texlive.combined.scheme-full
                 starship
+                breeze-icons
+                tokei
 	];
 
 }

@@ -1,4 +1,8 @@
-```nix{config, pkgs, ...}:{
+---
+title: main.nix
+---
+```nix
+{config, pkgs, ...}:{
   home.file = {
     qtile = {
       source = ./config.py;

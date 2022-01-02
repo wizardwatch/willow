@@ -26,7 +26,7 @@ riverctl map normal $primary Q close
 riverctl map normal $primary N spawn fuzzel
 riverctl map normal Mod4 E exit
 riverctl map normal $primary Tab Return zoom
-riverctl map normal $primary M toggle-focused-tags $MusicTag  
+riverctl map normal $primary M toggle-focused-tags $MusicTag
 riverctl map normal $primary Tab zoom
 
 # TODO: Bind to scroll wheel

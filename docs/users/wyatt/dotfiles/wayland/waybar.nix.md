@@ -1,4 +1,8 @@
-```nix{config, pkgs, ...}:
+---
+title: waybar.nix
+---
+```nix
+{config, pkgs, ...}:
 {
   programs.waybar = {
     enable = true;

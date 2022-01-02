@@ -1,4 +1,8 @@
-```nix{ config, pkgs, ... }:{
+---
+title: xserver.nix
+---
+```nix
+{ config, pkgs, ... }:{
 	services = {
 		dbus = {
 			enable = true;

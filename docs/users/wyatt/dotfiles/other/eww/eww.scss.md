@@ -1,3 +1,7 @@
+---
+title: eww.scss
+---
+```
 
 * {
   all: unset; //Unsets everything so you can style everything from scratch
@@ -37,3 +41,4 @@ window {
 .workspaces button:active {
   //color: #50fa7b;
 }
+```

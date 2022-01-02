@@ -1,3 +1,7 @@
+---
+title: init.el
+---
+```
 ;;; init.el -*- lexical-binding: t; -*-
 
 ;; This file controls what Doom modules are enabled and what order they load
@@ -182,3 +186,4 @@
        :config
        ;;literate
        (default +bindings +smartparens))
+```

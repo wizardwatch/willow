@@ -33,12 +33,22 @@ def unlock()
     end
 end
 
+def installer()
+    puts 'Are you sure you want to generate the iso? yes/no'
+    confirm = $stdin.gets
+--  if confirm.chomp == 'yes'
+      puts `nix build .#installer`
+    end
+end
+
 input = ARGV
 case input.first
-when 'up' || 'update'
+when 'up'
   update(input)
 when 'user'
   apply_user(input)
 when 'unlock'
   unlock
+when 'installer'
+  installer
 end

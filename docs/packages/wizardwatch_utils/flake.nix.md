@@ -1,7 +1,11 @@
-```nix{
+---
+title: flake.nix
+---
+```nix
+{
   description = "Collection of utilities meant to be used with my NixOS configuration.";
-  
-  inputs = { 
+
+  inputs = {
     nixpkgs.url = "nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
   };
@@ -11,24 +15,24 @@
     pkgs = import nixpkgs {
       inherit system;
     };
-    wizardwatch_utils = (with pkgs; stdenv.mkDerivation {
-      pname = "wizardwatch_utils";
+    wut = (with pkgs; stdenv.mkDerivation {
+      pname = "wut";
       version = "0.0.2";
       src = ./.;
       installPhase = ''
         mkdir -p $out/bin
-        mv ./lib/wizardwatch_utils.rb $out/bin/wizardwatch_utils
-        chmod +x $out/bin/wizardwatch_utils
+        mv ./wut.rb $out/bin/wut
+        chmod +x $out/bin/wut
       '';
     });
   in rec {
       defaultApp = flake-utils.lib.mkApp {
         drv = defaultPackage;
       };
-      defaultPackage = wizardwatch_utils;
+      defaultPackage = wut;
       devShell = pkgs.mkShell {
         buildInputs = [
-          wizardwatch_utils
+          wut
         ];
       };
   });

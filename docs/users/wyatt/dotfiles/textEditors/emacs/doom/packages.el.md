@@ -1,3 +1,7 @@
+---
+title: packages.el
+---
+```
 ;; -*- no-byte-compile: t; -*-
 ;;; $DOOMDIR/packages.el
 
@@ -52,3 +56,4 @@
 (package! centaur-tabs)
 (package! auto-indent-mode)
 (package! latex-math-preview)
+```

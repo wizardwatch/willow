@@ -1,3 +1,7 @@
+---
+title: README.md
+---
+```
 # WizardWatch's fantastic NixOS config
 
 ## Text Editor
@@ -15,3 +19,4 @@ I have 3 monitors. I mainly use my ultrawide and drawing tablet and am consideri
 ## Other
 
 I use Home-manager and I'm slowly migrating my configs there. I still maintain software that I don't use, so let me know if anything is broken by [creating an issue.](https://github.com/wizardwatch/flake/issues/new/choose)
+```

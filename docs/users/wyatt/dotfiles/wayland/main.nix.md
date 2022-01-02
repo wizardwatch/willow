@@ -1,4 +1,11 @@
-```nix{pkgs, ...}:{
+---
+title: main.nix
+---
+```nix
+{pkgs, ...}:{
+  home.packages = with pkgs; [
+    fuzzel
+  ];
   imports = [
     ./waybar.nix
     ./sway.nix

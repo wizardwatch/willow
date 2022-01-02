@@ -1,4 +1,8 @@
-```nix{ config, inputs, pkgs, fetchurl, eww, ... }:
+---
+title: main.nix
+---
+```nix
+{ config, inputs, pkgs, fetchurl, eww, ... }:
 let
   publicKey = "AAAAB3NzaC1yc2EAAAADAQABAAABgQDBEq4NHUglnfwIZYT9dIV5RpYE5s+eGBs1DhX8ieoMXDDZDw/kRo9aeWqKlxElpVJepzHtydQdp73PPjYQT5BhuM7Nw/OKRIH2eEYN8BDqPsTJOVgnZ3287O8OStqnmCiBD2AmVEFuaxtnz5sL2PzsdAS20bvdnyig56TzGFkm3RnDrVfS+8RPbSmOzqVA9+xW4NeN/u1CA32VTfRjE696XpHG5Zg2ByCUGot0+yBLgkEj+RBiChg6rtnwga8QOgSLncZtjVS0WFH9u0lhoGBjOtL2qtMZkTVCLcjmE6Fa6Nd8igoss9JmbDQMh7McUxS1D9d4UE4Vh3IPAHAuaVbMvGNZ9upaye90Vt2PuejOXbnQ4dGKmlxq0wAMWx20uVbWiY1VimVeYPlMLeNOcVcHglVGkVChhgMEbDvsl6HcesfgR/tivHgPhXrkF9f2j80O53VIBWltqt2iz06xUiolQNYDYhq+HiXcQI11+gWRDrdgU5Q5B7OVWPVdXonTfkk=";
 in
@@ -16,7 +20,7 @@ in
   networking = {
     # While my first machine, my desktop, is named wizardwatch moving forward all machines will get a suffix, dc for desktop computer, pc for portable computer, and server. This is followed by a number representing the order in which they where assimilated.
     hostName = "pc1";
-    # Sometimes enp0s13f0u3u4 is not connected, it is a USB network adapter. By default this adds 1.5 minutes to the boot time while the nonexistent interface attempts to receive an IP address. This instead forks it immediately. 
+    # Sometimes enp0s13f0u3u4 is not connected, it is a USB network adapter. By default this adds 1.5 minutes to the boot time while the nonexistent interface attempts to receive an IP address. This instead forks it immediately.
     dhcpcd = {
       wait = "background";
     };
@@ -26,7 +30,7 @@ in
       # USB Ethernet adapter
       enp0s13f0u3u4.useDHCP = true;
     };
-    wireless = { 
+    wireless = {
       enable = true;
     };
   };
@@ -133,19 +137,13 @@ in
 		GDK_SCALE = "1.5";
 		GDK_DPI_SCALE = "1";
 	};
-  
-  #
-  # flatpak
-  #
   # services.flatpak.enable = true;
-  
-  
   # Let the passwords be stored in something other than plain text. Required for at least mailspring
   services = {
     gnome.gnome-keyring.enable = true;
     ympd = {
       enable = true;
-    }; 
+    };
   };
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.

@@ -1,3 +1,7 @@
+---
+title: flake.lock
+---
+```
 {
   "nodes": {
     "flake-utils": {
@@ -40,3 +44,4 @@
   "root": "root",
   "version": 7
 }
+```

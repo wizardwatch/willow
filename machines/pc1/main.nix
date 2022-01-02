@@ -16,7 +16,7 @@ in
   networking = {
     # While my first machine, my desktop, is named wizardwatch moving forward all machines will get a suffix, dc for desktop computer, pc for portable computer, and server. This is followed by a number representing the order in which they where assimilated.
     hostName = "pc1";
-    # Sometimes enp0s13f0u3u4 is not connected, it is a USB network adapter. By default this adds 1.5 minutes to the boot time while the nonexistent interface attempts to receive an IP address. This instead forks it immediately. 
+    # Sometimes enp0s13f0u3u4 is not connected, it is a USB network adapter. By default this adds 1.5 minutes to the boot time while the nonexistent interface attempts to receive an IP address. This instead forks it immediately.
     dhcpcd = {
       wait = "background";
     };
@@ -26,7 +26,7 @@ in
       # USB Ethernet adapter
       enp0s13f0u3u4.useDHCP = true;
     };
-    wireless = { 
+    wireless = {
       enable = true;
     };
   };
@@ -133,19 +133,13 @@ in
 		GDK_SCALE = "1.5";
 		GDK_DPI_SCALE = "1";
 	};
-  
-  #
-  # flatpak
-  #
   # services.flatpak.enable = true;
-  
-  
   # Let the passwords be stored in something other than plain text. Required for at least mailspring
   services = {
     gnome.gnome-keyring.enable = true;
     ympd = {
       enable = true;
-    }; 
+    };
   };
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.

@@ -1,4 +1,8 @@
-```nix{pkgs, config, ...}:
+---
+title: kanshi.nix
+---
+```nix
+{pkgs, config, ...}:
 {
   services.kanshi = {
     enable = true;

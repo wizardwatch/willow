@@ -1,4 +1,8 @@
-```nix{config, pkgs, ...}:{
+---
+title: emacs.nix
+---
+```nix
+{config, pkgs, ...}:{
 	environment.systemPackages = with pkgs; [
 		## the text editor of the past, today
 		emacs

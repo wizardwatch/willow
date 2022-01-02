@@ -1,4 +1,8 @@
-```nix{ config, pkgs, ...}:
+---
+title: common_desktop.nix
+---
+```nix
+{ config, pkgs, ...}:
 {
 	virtualisation.virtualbox.host.enable = true;
 	users.extraGroups.vboxusers.members = [ "user-with-access-to-virtualbox" ];

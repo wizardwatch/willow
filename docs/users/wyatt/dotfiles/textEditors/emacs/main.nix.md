@@ -1,4 +1,8 @@
-```nix{pkgs, config, ...}:
+---
+title: main.nix
+---
+```nix
+{pkgs, config, ...}:
 {
   programs.emacs = {
     enable = true;

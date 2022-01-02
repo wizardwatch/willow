@@ -1,6 +1,11 @@
+---
+title: eww.yuck
+---
+```
 (defwindow time
 	:monitor 0
 	:windowtype "dock"
+	:exclusive "true"
 	:reserve (struts :side "top" :distance "45px")
         :geometry (geometry 	:x "0px"
 	                        :y "0px"
@@ -46,3 +51,4 @@
 		(sidestuff)	
 	)
 )
+```

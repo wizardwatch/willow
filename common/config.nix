@@ -1,5 +1,5 @@
 { config, pkgs, ...}:{
-	# let me install random packages from githubs. Like the AUR, but even less secure!
+	# Enable unstable nix so that I can use flakes.
 	nix = {
 		package = pkgs.nixUnstable;
 		extraOptions = ''
@@ -7,10 +7,6 @@
 			restrict-eval = false
 		'';
 	};
-	# No more x! No more x!
-	# Enable the X11 windowing system.
-	# services.xserver.enable = true;
-	#services.xserver.displayManager.lightdm.enable = false;
 	networking.nameservers = [ "192.168.1.146" "1.1.1.1" ];
 	networking.defaultGateway = "192.168.1.1";
 	networking.wireguard.enable = true;

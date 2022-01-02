@@ -1,4 +1,8 @@
-```nix{ config, pkgs, ... }:{
+---
+title: main.nix
+---
+```nix
+{ config, pkgs, ... }:{
   home.packages = with pkgs; [
     dmenu
     flameshot

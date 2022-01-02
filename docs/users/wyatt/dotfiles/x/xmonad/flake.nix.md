@@ -1,4 +1,8 @@
-```nix{
+---
+title: flake.nix
+---
+```nix
+{
   inputs = {
     flake-utils.url = "github:numtide/flake-utils";
     xmonad = {

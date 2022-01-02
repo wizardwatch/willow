@@ -1,4 +1,8 @@
-```nix_: pkgs: rec {
+---
+title: default.nix
+---
+```nix
+_: pkgs: rec {
   haskellPackages = pkgs.haskellPackages.override (old: {
     overrides = pkgs.lib.composeExtensions (old.overrides or (_: _: { }))
       (self: super: rec {

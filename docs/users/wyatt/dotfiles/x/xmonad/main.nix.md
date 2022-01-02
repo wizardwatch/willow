@@ -1,4 +1,8 @@
-```nix{config, pkgs, inputs,  ...}:{
+---
+title: main.nix
+---
+```nix
+{config, pkgs, inputs,  ...}:{
   xsession.windowManager.xmonad = {
     enable = true;
     #enableContribAndExtras = true;

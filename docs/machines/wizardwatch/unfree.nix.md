@@ -1,4 +1,8 @@
-```nix{pkgs, config, ...}:
+---
+title: unfree.nix
+---
+```nix
+{pkgs, config, ...}:
 {
   nixpkgs.config = {
     allowUnfree = true;

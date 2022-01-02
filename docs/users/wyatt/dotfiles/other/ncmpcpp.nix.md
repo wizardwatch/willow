@@ -1,4 +1,8 @@
-```nix{pkgs, conf, ...}:
+---
+title: ncmpcpp.nix
+---
+```nix
+{pkgs, conf, ...}:
 {
   programs.ncmpcpp = {
     enable = true;

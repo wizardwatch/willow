@@ -1,4 +1,8 @@
-```nix{pkgs, ...}:{
+---
+title: main.nix
+---
+```nix
+{pkgs, ...}:{
 	fonts.fontconfig = {
 		enable = true;
               };
@@ -22,13 +26,13 @@
               };
 	gtk = {
 		enable = true;
-		font.name = "JetBrains Mono";
+		font.name = "Iosevka";
 		font.size = 14;
 		theme.package = pkgs.dracula-theme;
 		theme.name = "Dracula";
         };
         home.file = {
-          river = { 
+          river = {
             source = ./wayland/init;
             target = "./.config/river/init";
           };
@@ -51,12 +55,15 @@
 		settings = {
 			main = {
 				term = "xterm-256color";
-				font = "JetBrains Mono:size=14";
+				font = "Iosevka:size=14";
 				dpi-aware = "yes";
 			};
 			mouse = {
 				hide-when-typing = "yes";
-			};
+                        };
+                        colors = {
+                          background = "0x282a36";
+                        };
 		};
 	};
 }

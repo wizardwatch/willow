@@ -1,4 +1,8 @@
-```nix{ config, inputs, pkgs, fetchurl, eww, ... }:
+---
+title: main.nix
+---
+```nix
+{ config, inputs, pkgs, fetchurl, eww, ... }:
 let
   publicKey = "AAAAB3NzaC1yc2EAAAADAQABAAABgQDBEq4NHUglnfwIZYT9dIV5RpYE5s+eGBs1DhX8ieoMXDDZDw/kRo9aeWqKlxElpVJepzHtydQdp73PPjYQT5BhuM7Nw/OKRIH2eEYN8BDqPsTJOVgnZ3287O8OStqnmCiBD2AmVEFuaxtnz5sL2PzsdAS20bvdnyig56TzGFkm3RnDrVfS+8RPbSmOzqVA9+xW4NeN/u1CA32VTfRjE696XpHG5Zg2ByCUGot0+yBLgkEj+RBiChg6rtnwga8QOgSLncZtjVS0WFH9u0lhoGBjOtL2qtMZkTVCLcjmE6Fa6Nd8igoss9JmbDQMh7McUxS1D9d4UE4Vh3IPAHAuaVbMvGNZ9upaye90Vt2PuejOXbnQ4dGKmlxq0wAMWx20uVbWiY1VimVeYPlMLeNOcVcHglVGkVChhgMEbDvsl6HcesfgR/tivHgPhXrkF9f2j80O53VIBWltqt2iz06xUiolQNYDYhq+HiXcQI11+gWRDrdgU5Q5B7OVWPVdXonTfkk=";
 in
@@ -8,10 +12,7 @@ in
       ./hardware-configuration.nix
       ./unfree.nix
       ../../common/common_desktop.nix
-      #../../common/emacs.nix
-      #../../common/WireGuard_Server.nix
       ../../common/ruby.nix
-      #../../common/qtile.nix
       ./xserver.nix
     ];
   # Use the systemd-boot EFI boot loader. no touchy
@@ -47,7 +48,6 @@ in
   # amd gpu
   boot.initrd.kernelModules = [ "amdgpu" ];
   security.pam.services.swaylock = {};
-  
         programs.zsh.enable = true;
 	users.users.wyatt = {
 		isNormalUser = true;
@@ -59,8 +59,8 @@ in
 	# List packages installed in system profile. To search, run:
         # $ nix search wget
 	environment.systemPackages = with pkgs; [
-          #overlaystwo.eww
-          (eww.defaultPackage.x86_64-linux)
+          #(eww.defaultPackage.x86_64-linux{wayland = true;})
+          eww-wayland
           #fuzzel
           xdg-desktop-portal-wlr
           grim

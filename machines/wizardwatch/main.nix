@@ -8,10 +8,7 @@ in
       ./hardware-configuration.nix
       ./unfree.nix
       ../../common/common_desktop.nix
-      #../../common/emacs.nix
-      #../../common/WireGuard_Server.nix
       ../../common/ruby.nix
-      #../../common/qtile.nix
       ./xserver.nix
     ];
   # Use the systemd-boot EFI boot loader. no touchy
@@ -47,7 +44,6 @@ in
   # amd gpu
   boot.initrd.kernelModules = [ "amdgpu" ];
   security.pam.services.swaylock = {};
-  
         programs.zsh.enable = true;
 	users.users.wyatt = {
 		isNormalUser = true;
