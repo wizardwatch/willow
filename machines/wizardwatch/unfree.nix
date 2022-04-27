@@ -4,7 +4,7 @@
     allowUnfree = true;
   };
   environment.systemPackages = with pkgs; [
-    nixmaster.discord-canary
+    #nixmaster.discord-canary
     nixmaster.osu-lazer
   ];
     #nixpkgs.config.packageOverrides = pkgs: {

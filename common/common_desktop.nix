@@ -1,11 +1,13 @@
 { config, pkgs, ...}:
 {
-	virtualisation.virtualbox.host.enable = true;
-	users.extraGroups.vboxusers.members = [ "user-with-access-to-virtualbox" ];
+        # Was causing kernel problems
+        #virtualisation.virtualbox.host.enable = true;
+        #users.extraGroups.vboxusers.members = [ "user-with-access-to-virtualbox" ];
 	environment.systemPackages = with pkgs; [
 	  mpv
 	  gimp
-	  zathura
+          nixmaster.zathura
+          gnome.cheese
           alacritty
 	  # for rifle used with broot
           ranger
@@ -44,14 +46,16 @@
 	# pipewire #
 	#          #
 	# enabling sound.enable is said to cause conflicts with pipewire. Cidkid says it does not?
-	sound.enable = true;
+        #sound.enable = true;
 	hardware.pulseaudio.enable = false;
 	security.rtkit.enable = true;
-	services.pipewire = {
-		enable = true;
-		alsa.enable = true;
-		alsa.support32Bit = true;
-		pulse.enable = true;
-		jack.enable = false;
+        services.pipewire = {
+          media-session.enable = true;
+          wireplumber.enable = false;
+	  enable = true;
+	  alsa.enable = true;
+	  alsa.support32Bit = true;
+	  pulse.enable = true;
+	  jack.enable = false;
 	};
 }

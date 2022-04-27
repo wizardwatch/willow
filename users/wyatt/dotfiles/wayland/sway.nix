@@ -19,23 +19,24 @@ in {
       window = {
         border = 4;
         commands = [
-          { command = '' move to workspace "discord" ''; criteria = { title = ".*Discord.*"; }; }
-          { command = '' fullscreen disable '';          criteria = { title = ".*Discord.*"; }; } 
-          { command = '' move to workspace "dired" '';   criteria = { title = ".*dired.*";   }; }
+          #{ command = '' move to workspace "discord" ''; criteria = { title = ".*Discord.*"; }; }
+          #{ command = '' fullscreen disable '';          criteria = { title = ".*Discord.*"; }; }
+          #{ command = '' move to workspace "dired" '';   criteria = { title = ".*dired.*";   }; }
         ];
       };
       output = {
           HDMI-A-1 = {
             position =  "900 1440";
           };
-          DP-4 = {
+          DP-1 = {
             position = "0 0";
           };
       };
       input = {
         "1386:934:Wacom_One_Pen_Display_13_Pen" = {
-                   map_to_output = "HDMI-A-1";
-                 };
+          map_to_output = "HDMI-A-1";
+          tool_mode = "* absolute";
+        };
       };
       fonts = {
         names = [ "JetBrains Mono" ];
@@ -47,14 +48,14 @@ in {
       menu = "wofi --show run -i";
       terminal = "foot";
       startup = [
-        { command = ''  emacs --daemon'';}
-        { command = ''  emacsclient -c -e '(dired "~/.config")'   '' ;}
-        { command = ''  emacsclient -c -e '(dired "/etc/nixos/")' '' ;}
-        { command = ''  bitwarden '';}
-        { command = ''  systemctl --user import-environment ''; always = true; }
-        { command = ''  foot  -T top sh -c "htop" '';}
-        { command = ''  foot  -T top sh -c "radeontop" '';}
-        { command = ''  firefox --kiosk --new-instance -P discord discord.com/app'';}
+        #{ command = ''  emacs --daemon'';}
+        #{ command = ''  emacsclient -c -e '(dired "~/.config")'   '' ;}
+        #{ command = ''  emacsclient -c -e '(dired "/etc/nixos/")' '' ;}
+        #{ command = ''  bitwarden '';}
+        #{ command = ''  systemctl --user import-environment ''; always = true; }
+        #{ command = ''  foot  -T top sh -c "htop" '';}
+        #{ command = ''  foot  -T top sh -c "radeontop" '';}
+        #{ command = ''  firefox --kiosk --new-instance -P discord discord.com/app'';}
         { command = ''  swayidle -w \
                         timeout 300 'swaylock -f -c 000000' \
                         timeout 600 'swaymsg "output * dpms off"' resume 'swaymsg "output * dpms on"' \
@@ -77,18 +78,17 @@ in {
                                    exec grim -g "$(slurp)" - | tee /home/wyatt/Pictures/$(date +"%Y-%m-%d")/$(date +'%H-%M-%S.png')
                                 '';
       };
-      
       assigns = {
-        "top"  = [{title = "top";}];
-        "pass" = [{title = "Bitwarden";}];
+        #"top"  = [{title = "top";}];
+        #"pass" = [{title = "Bitwarden";}];
         #"discord" = [{title = "Discord.*";}];
       };
       workspaceOutputAssign = [
-        { workspace = "top";     output = "DP-3";}
-        { workspace = "pass";    output = "HDMI-A-1";}
-        { workspace = "discord"; output = "HDMI-A-1";}
-        { workspace = "dired";   output = "DP-3";}
+        #{ workspace = "top";     output = "DP-3";}
+        #{ workspace = "pass";    output = "HDMI-A-1";}
+        #{ workspace = "discord"; output = "HDMI-A-1";}
+        #{ workspace = "dired";   output = "DP-3";}
       ];
-    }; 
+    };
   };
 }

@@ -1,4 +1,4 @@
-{ config, inputs, pkgs, fetchurl, eww, ... }:
+{ config, inputs, pkgs, fetchurl, eww, self, ... }:
 let
   publicKey = "AAAAB3NzaC1yc2EAAAADAQABAAABgQDBEq4NHUglnfwIZYT9dIV5RpYE5s+eGBs1DhX8ieoMXDDZDw/kRo9aeWqKlxElpVJepzHtydQdp73PPjYQT5BhuM7Nw/OKRIH2eEYN8BDqPsTJOVgnZ3287O8OStqnmCiBD2AmVEFuaxtnz5sL2PzsdAS20bvdnyig56TzGFkm3RnDrVfS+8RPbSmOzqVA9+xW4NeN/u1CA32VTfRjE696XpHG5Zg2ByCUGot0+yBLgkEj+RBiChg6rtnwga8QOgSLncZtjVS0WFH9u0lhoGBjOtL2qtMZkTVCLcjmE6Fa6Nd8igoss9JmbDQMh7McUxS1D9d4UE4Vh3IPAHAuaVbMvGNZ9upaye90Vt2PuejOXbnQ4dGKmlxq0wAMWx20uVbWiY1VimVeYPlMLeNOcVcHglVGkVChhgMEbDvsl6HcesfgR/tivHgPhXrkF9f2j80O53VIBWltqt2iz06xUiolQNYDYhq+HiXcQI11+gWRDrdgU5Q5B7OVWPVdXonTfkk=";
 in
@@ -42,23 +42,29 @@ in
     ];
   };
   # amd gpu
-  boot.initrd.kernelModules = [ "amdgpu" ];
+  boot = {
+    initrd.kernelModules = [ "amdgpu" ];
+    kernelPackages = pkgs.linuxPackages_zen;
+  };
   security.pam.services.swaylock = {};
-        programs.zsh.enable = true;
-	users.users.wyatt = {
-		isNormalUser = true;
-		extraGroups = [ "wheel" "mpd" "audio" ]; # Enable ‘sudo’ for the user.
-		openssh.authorizedKeys.keys = [ ("${publicKey}") ];
-                #shell = pkgs.fish;
-                shell = pkgs.zsh;
-	};
-	# List packages installed in system profile. To search, run:
-        # $ nix search wget
-	environment.systemPackages = with pkgs; [
-          #(eww.defaultPackage.x86_64-linux{wayland = true;})
-          eww-wayland
-          #fuzzel
-          xdg-desktop-portal-wlr
+  programs.zsh.enable = true;
+  users.users.wyatt = {
+    isNormalUser = true;
+    extraGroups = [ "wheel" "mpd" "audio" ]; # Enable ‘sudo’ for the user.
+    openssh.authorizedKeys.keys = [ ("${publicKey}") ];
+    shell = pkgs.zsh;
+  };
+  nixpkgs.overlays = [
+    self.inputs.nix-alien.overlay
+  ];
+  environment.systemPackages = with pkgs; [
+    eww-wayland
+    nix-alien
+    nix-index
+    #nix-index-update
+    #fuzzel
+    ungoogled-chromium
+    xdg-desktop-portal-wlr
           grim
           slurp
           wl-clipboard
@@ -69,9 +75,8 @@ in
           haskellPackages.wizardwatch-xmonad
           appimage-run
           ## password entry for gui applications
-          nixmaster.polkit_gnome
 	  ## firefox
-	  firefox
+	  firefox-wayland
 	  #only tested in emacs
 	  hunspell
 	  hunspellDicts.en_US-large
@@ -80,35 +85,33 @@ in
 	  ## remote into ras-pi
 	  obs-studio
 	  ## password manager
-	  bitwarden
+          # bitwarden
 	  ## email, like snail mail, but harder to block the spam!
-	  mailspring
+          # mailspring
 	  ## make the usbs into oses!
-	  etcher
+          #etcher
 	  broot
 	  nyxt
-          ncmpcpp
+          #ncmpcpp
           helvum
-          river
+          (river.override{xwaylandSupport = true;})
           kile-wl
-          multimc
 	];
         security.polkit.enable = true; #for river maybe
         programs.dconf.enable = true;
         #
 	# XDG-desktop-screenshare
 	#
-	xdg = {
-		portal = {
-			enable = true;
-			extraPortals = with pkgs; [
-				xdg-desktop-portal-wlr
-				# xdg-desktop-portal-gtk
-		 	];
-			## fixes gtk themeing so that it uses the .config. set to true in order to use native file pickers
-			gtkUsePortal = false;
-		};
-	};
+  xdg = {
+    portal = {
+      enable = true;
+      wlr.enable = true;
+        #extraPortals = with pkgs; [ xdg-desktop-portal-wlr ];
+          #++ lib.optional (!gnome) pkgs.xdg-desktop-portal-gtk;
+	  ## fixes gtk themeing so that it uses the .config. set to true in order to use native file pickers. If set to true, gtk apps take forever to start. Finish implementing the solution here https://github.com/fufexan/dotfiles/blob/1bb2bb6ed9e196ab97b3891c68064afcbdc7144c/modules/desktop.nix to fix.
+                        #gtkUsePortal = !gnome;
+    };
+  };
 	environment.sessionVariables = {
 		### probably not needed due to firefox-wayland
 		#MOZ_ENABLE_WAYLAND = "1";
@@ -120,13 +123,14 @@ in
 		GDK_SCALE = "1.5";
 		GDK_DPI_SCALE = "1";
 	};
-  
   # Let the passwords be stored in something other than plain text. Required for at least mailspring
   services = {
+    flatpak.enable = true;
     gnome.gnome-keyring.enable = true;
     ympd = {
-      enable = true;
-    }; 
+      #enable = true;
+    };
+    fstrim.enable = true;
   };
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions

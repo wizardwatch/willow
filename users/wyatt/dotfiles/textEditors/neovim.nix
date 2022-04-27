@@ -40,10 +40,11 @@
                                 nvim-base16
 				vim-nix
                                 undotree
-                                nvim-treesitter
+                                #nvim-treesitter
                                 ale
                                 LanguageTool-nvim
                                 vim-hexokinase
+                                (pkgs.vimPlugins.nvim-treesitter.withPlugins (plugins: pkgs.tree-sitter.allGrammars))
 			];
 			extraPackages = with pkgs;  [
 				neovim-remote

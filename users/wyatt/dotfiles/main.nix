@@ -3,7 +3,7 @@
 		enable = true;
               };
               services.mpd = {
-                enable = true;
+                enable = false;
                 package = pkgs.mpd;
                 dataDir = "/home/wyatt/.config/mpd";
                 musicDirectory = "/home/wyatt/Music";

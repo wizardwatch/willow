@@ -12,9 +12,9 @@ TopTag=11
 
 
 # Launch on startup
-riverctl spawn 'foot ncmpcpp'
+#riverctl spawn 'foot ncmpcpp'
 riverctl spawn foot
-riverctl spawn firefox
+#riverctl spawn firefox
 #riverctl spawn dbus-daemon --session --address=unix:path=$XDG_RUNTIME_DIR/bus
 riverctl spawn mako
 riverctl spawn 'eww daemon'

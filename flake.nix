@@ -26,6 +26,14 @@ inputs = rec {
           inputs.nixpkgs.follows = "nixpkgs";
         };
         flake-utils.url = "github:numtide/flake-utils";
+        nix-alien = {
+          url = "github:thiagokokada/nix-alien";
+          inputs.nixpkgs.follows = "nixpkgs";
+        };
+        nix-ld = {
+          url = "github:Mic92/nix-ld/main";
+          inputs.nixpkgs.follows = "nixpkgs";
+        };
 };
 outputs = { self,
             nixpkgs,
@@ -38,10 +46,11 @@ outputs = { self,
             xtodoc,
             nixos-generators,
             flake-utils,
+            nix-alien,
 ...}@inputs:
 let
 	system = "x86_64-linux";
-	username = "wyatt";
+        username = "wyatt";
 	pkgs = import nixpkgs {
 		# imports the system variable
 		inherit system;
@@ -78,7 +87,9 @@ let
 	nixosConfigurations = {
 	  wizardwatch = lib.makeOverridable lib.nixosSystem {
 	    # imports the system variable
-	    inherit system;
+            inherit system;
+            # Taken from nix alien github
+            specialArgs = { inherit self; };
             # import the config file
             modules = [
               { _module.args = inputs; }
