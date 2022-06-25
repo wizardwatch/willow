@@ -7,21 +7,22 @@
   };
 
   outputs = { nixpkgs, flake-utils, ... }: flake-utils.lib.eachDefaultSystem (system:
-  let
-    pkgs = import nixpkgs {
-      inherit system;
-    };
-    wut = (with pkgs; stdenv.mkDerivation {
-      pname = "wut";
-      version = "0.0.2";
-      src = ./.;
-      installPhase = ''
-        mkdir -p $out/bin
-        mv ./wut.rb $out/bin/wut
-        chmod +x $out/bin/wut
-      '';
-    });
-  in rec {
+    let
+      pkgs = import nixpkgs {
+        inherit system;
+      };
+      wut = (with pkgs; stdenv.mkDerivation {
+        pname = "wut";
+        version = "0.0.2";
+        src = ./.;
+        installPhase = ''
+          mkdir -p $out/bin
+          mv ./wut.rb $out/bin/wut
+          chmod +x $out/bin/wut
+        '';
+      });
+    in
+    rec {
       defaultApp = flake-utils.lib.mkApp {
         drv = defaultPackage;
       };
@@ -31,5 +32,5 @@
           wut
         ];
       };
-  });
+    });
 }

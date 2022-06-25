@@ -20,10 +20,10 @@ in
   # replicates the default behaviour.
   networking.useDHCP = false;
   networking.hostName = "wizardwatch";
-  networking.interfaces.enp0s31f6.ipv4.addresses = [ {
+  networking.interfaces.enp0s31f6.ipv4.addresses = [{
     address = "192.168.1.169";
     prefixLength = 24;
-  } ];
+  }];
 
   # Select internationalisation properties.
   # i18n.defaultLocale = "en_US.UTF-8";
@@ -46,7 +46,7 @@ in
     initrd.kernelModules = [ "amdgpu" ];
     kernelPackages = pkgs.linuxPackages_zen;
   };
-  security.pam.services.swaylock = {};
+  security.pam.services.swaylock = { };
   programs.zsh.enable = true;
   users.users.wyatt = {
     isNormalUser = true;
@@ -65,64 +65,65 @@ in
     #fuzzel
     ungoogled-chromium
     xdg-desktop-portal-wlr
-          grim
-          slurp
-          wl-clipboard
-          seatd
-          kanshi
-          wlr-randr
-          swaylock
-          haskellPackages.wizardwatch-xmonad
-          appimage-run
-          ## password entry for gui applications
-	  ## firefox
-	  firefox-wayland
-	  #only tested in emacs
-	  hunspell
-	  hunspellDicts.en_US-large
-	  ## desktop notifications
-	  libnotify
-	  ## remote into ras-pi
-	  obs-studio
-	  ## password manager
-          # bitwarden
-	  ## email, like snail mail, but harder to block the spam!
-          # mailspring
-	  ## make the usbs into oses!
-          #etcher
-	  broot
-	  nyxt
-          #ncmpcpp
-          helvum
-          (river.override{xwaylandSupport = true;})
-          kile-wl
-	];
-        security.polkit.enable = true; #for river maybe
-        programs.dconf.enable = true;
-        #
-	# XDG-desktop-screenshare
-	#
+    grim
+    slurp
+    wl-clipboard
+    seatd
+    kanshi
+    wlr-randr
+    swaylock
+    haskellPackages.wizardwatch-xmonad
+    appimage-run
+    ## password entry for gui applications
+    ## firefox
+    firefox-wayland
+    emacs28NativeComp
+    #only tested in emacs
+    hunspell
+    hunspellDicts.en_US-large
+    ## desktop notifications
+    libnotify
+    ## remote into ras-pi
+    obs-studio
+    ## password manager
+    # bitwarden
+    ## email, like snail mail, but harder to block the spam!
+    # mailspring
+    ## make the usbs into oses!
+    #etcher
+    broot
+    nyxt
+    #ncmpcpp
+    helvum
+    (river.override { xwaylandSupport = true; })
+    kile-wl
+  ];
+  security.polkit.enable = true; #for river maybe
+  programs.dconf.enable = true;
+  #
+  # XDG-desktop-screenshare
+  #
   xdg = {
     portal = {
       enable = true;
       wlr.enable = true;
-        #extraPortals = with pkgs; [ xdg-desktop-portal-wlr ];
-          #++ lib.optional (!gnome) pkgs.xdg-desktop-portal-gtk;
-	  ## fixes gtk themeing so that it uses the .config. set to true in order to use native file pickers. If set to true, gtk apps take forever to start. Finish implementing the solution here https://github.com/fufexan/dotfiles/blob/1bb2bb6ed9e196ab97b3891c68064afcbdc7144c/modules/desktop.nix to fix.
-                        #gtkUsePortal = !gnome;
+      #extraPortals = with pkgs; [ xdg-desktop-portal-wlr ];
+      #++ lib.optional (!gnome) pkgs.xdg-desktop-portal-gtk;
+      ## fixes gtk themeing so that it uses the .config. set to true in order to use native file pickers. If set to true, gtk apps take forever to start. Finish implementing the solution here https://github.com/fufexan/dotfiles/blob/1bb2bb6ed9e196ab97b3891c68064afcbdc7144c/modules/desktop.nix to fix.
+      #gtkUsePortal = !gnome;
     };
   };
-	environment.sessionVariables = {
-		### probably not needed due to firefox-wayland
-		#MOZ_ENABLE_WAYLAND = "1";
-		### makes emacs use .config instead of the home dir. ~/.config breaks at least sway
-		XDG_CONFIG_HOME = "/home/wyatt/.config";
-		### shouldn't be needed but some software is bad
-		#XDG_CURRENT_DESKTOP = "sway";
-		### fixes some ugly. TODO: more work on the right numbers
-		GDK_SCALE = "1.5";
-		GDK_DPI_SCALE = "1";
-	};
+  environment.sessionVariables = {
+    ### probably not needed due to firefox-wayland
+    #MOZ_ENABLE_WAYLAND = "1";
+    ### makes emacs use .config instead of the home dir. ~/.config breaks at least sway
+    XDG_CONFIG_HOME = "/home/wyatt/.config";
+    ### shouldn't be needed but some software is bad
+    #XDG_CURRENT_DESKTOP = "sway";
+    ### fixes some ugly. TODO: more work on the right numbers
+    GDK_SCALE = "1.5";
+    GDK_DPI_SCALE = "1";
+  };
   # Let the passwords be stored in something other than plain text. Required for at least mailspring
   services = {
     flatpak.enable = true;

@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:{
+{ config, pkgs, ... }: {
   home.packages = with pkgs; [
     dmenu
     flameshot
@@ -7,7 +7,7 @@
     i3lock
   ];
   imports = [
-          ./qtile/main.nix
-          #./xmonad/main.nix
-        ]; 
+    ./qtile/main.nix
+    #./xmonad/main.nix
+  ];
 }

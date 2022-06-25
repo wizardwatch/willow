@@ -1,4 +1,4 @@
-{ config, pkgs, ...}:{
+{ config, pkgs, ... }: {
   # Enable unstable nix so that I can use flakes.
   nix = {
     package = pkgs.nixUnstable;
@@ -17,6 +17,5 @@
   virtualisation.docker.enable = true;
   # This was removed? services.dbus.packages = [ pkgs.gnome3.dconf ];
   # programs.dconf.packages = [ pkgs.gnome3.dconf ];
-  services = {
-  };
+  services = { };
 }

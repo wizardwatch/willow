@@ -1,4 +1,4 @@
-{pkgs, config, ...}:
+{ pkgs, config, ... }:
 {
   nixpkgs.config = {
     allowUnfree = true;
@@ -7,10 +7,10 @@
     #nixmaster.discord-canary
     nixmaster.osu-lazer
   ];
-    #nixpkgs.config.packageOverrides = pkgs: {
-   # steam = pkgs.steam.override {
-    #  nativeOnly = true;
-   # };
+  #nixpkgs.config.packageOverrides = pkgs: {
+  # steam = pkgs.steam.override {
+  #  nativeOnly = true;
+  # };
   #};
   programs.steam.enable = true;
   hardware.steam-hardware.enable = true;

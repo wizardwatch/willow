@@ -1,7 +1,7 @@
-{ config, pkgs, ... }:{
-	services = {
-                xserver = {
-			windowManager.qtile.enable = true;
-		};
-	};
+{ config, pkgs, ... }: {
+  services = {
+    xserver = {
+      windowManager.qtile.enable = true;
+    };
+  };
 }

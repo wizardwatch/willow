@@ -1,8 +1,9 @@
-{pkgs, ...}:
+{ pkgs, ... }:
 let
   menu = "wofi -f -S run -i";
   modifier = "Mod4";
-in {
+in
+{
   home.packages = with pkgs; [
     wofi
   ];
@@ -25,12 +26,16 @@ in {
         ];
       };
       output = {
-          HDMI-A-1 = {
-            position =  "900 1440";
-          };
-          DP-1 = {
-            position = "0 0";
-          };
+        HDMI-A-1 = {
+          position = "500 1440";
+        };
+        DP-1 = {
+          position = "0 0";
+        };
+        HDMI-A-2 = {
+          position = "2560 0";
+          transform = "90";
+        };
       };
       input = {
         "1386:934:Wacom_One_Pen_Display_13_Pen" = {
@@ -56,7 +61,8 @@ in {
         #{ command = ''  foot  -T top sh -c "htop" '';}
         #{ command = ''  foot  -T top sh -c "radeontop" '';}
         #{ command = ''  firefox --kiosk --new-instance -P discord discord.com/app'';}
-        { command = ''  swayidle -w \
+        {
+          command = ''  swayidle -w \
                         timeout 300 'swaylock -f -c 000000' \
                         timeout 600 'swaymsg "output * dpms off"' resume 'swaymsg "output * dpms on"' \
                         before-sleep 'swaylock -f -c 000000' '';
@@ -69,14 +75,14 @@ in {
       right = "d"; */
       modifier = "Mod4";
       keybindings = pkgs.lib.mkOptionDefault {
-        "${modifier}+x"       = '' kill '';
-        "${modifier}+n"       = '' exec ${menu} '';
+        "${modifier}+x" = '' kill '';
+        "${modifier}+n" = '' exec ${menu} '';
         "${modifier}+Shift+f" = '' exec firefox -p default '';
-        "${modifier}+c"       = '' exec grim -g "$(slurp)" - | wl-copy '';
+        "${modifier}+c" = '' exec grim -g "$(slurp)" - | wl-copy '';
         "${modifier}+Shift+c" = ''
-                                   exec mkdir -p /home/wyatt/Pictures/$(date +"%Y-%m-%d");
-                                   exec grim -g "$(slurp)" - | tee /home/wyatt/Pictures/$(date +"%Y-%m-%d")/$(date +'%H-%M-%S.png')
-                                '';
+          exec mkdir -p /home/wyatt/Pictures/$(date +"%Y-%m-%d");
+          exec grim -g "$(slurp)" - | tee /home/wyatt/Pictures/$(date +"%Y-%m-%d")/$(date +'%H-%M-%S.png')
+        '';
       };
       assigns = {
         #"top"  = [{title = "top";}];

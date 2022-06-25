@@ -1,4 +1,4 @@
-{config, pkgs, wizardwatch_utils, xtodoc, ...}:
+{ config, pkgs, wizardwatch_utils, xtodoc, ... }:
 let
   my-python-packages = python-packages: with python-packages; [
     pip
@@ -9,28 +9,32 @@ let
     click
     pycrypto
     black
+    gmpy2
     # other python packages you want
   ];
   python-with-my-packages = pkgs.python39.withPackages my-python-packages;
-  myKakoune = let
-    config = pkgs.writeTextFile (rec {
-      name = "kakrc.kak";
-      destination = "/share/kak/autoload/${name}";
-      text = ''
-        set global ui_options ncurses_assistant=cat
-      '';
-    });
-    in pkgs.kakoune.override {
+  myKakoune =
+    let
+      config = pkgs.writeTextFile (rec {
+        name = "kakrc.kak";
+        destination = "/share/kak/autoload/${name}";
+        text = ''
+          set global ui_options ncurses_assistant=cat
+        '';
+      });
+    in
+    pkgs.kakoune.override {
       plugins = with pkgs.kakounePlugins; [
-	config
-	connect-kak
+        config
+        connect-kak
         parinfer-rust
-	kakoune-rainbow
-	prelude-kak
-	pandoc-kak
+        kakoune-rainbow
+        prelude-kak
+        pandoc-kak
       ];
     };
-in {
+in
+{
   environment.systemPackages = with pkgs; [
     (xtodoc.defaultPackage.x86_64-linux)
     (wizardwatch_utils.defaultPackage.x86_64-linux)

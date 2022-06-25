@@ -1,14 +1,14 @@
-{pkgs, config, ...}:
+{ pkgs, config, ... }:
 {
   programs.emacs = {
     enable = true;
     extraPackages = epkgs: [
       (with epkgs.elpaPackages;
-        [
-          auctex
-        ]
+      [
+        auctex
+      ]
       )
-    ]; 
+    ];
   };
   home.file.emacs = {
     source = ./init.el;

@@ -44,95 +44,95 @@ in
     ];
   };
   # Define a user account. Don't forget to set a password with ‘passwd’.
-        programs.zsh.enable = true;
-	users.users.wyatt = {
-		isNormalUser = true;
-		extraGroups = [ "wheel" "mpd" "audio" ]; # Enable ‘sudo’ for the user.
-		openssh.authorizedKeys.keys = [ ("${publicKey}") ];
-                shell = pkgs.zsh;
-	};
-	environment.systemPackages = with pkgs; [
-          musescore
-          starship
-          #fuzzel
-          xdg-desktop-portal-wlr
-          grim
-          slurp
-          wl-clipboard
-          seatd
-          kanshi
-          wlr-randr
-          swaylock
-          haskellPackages.wizardwatch-xmonad
-                alacritty
-                kitty
-                ## password entry for gui applications
-                appimage-run 
-                nixmaster.polkit_gnome
-		## firefox
-		firefox
-		## is it wrong to use a pulse audio tool with pipewire
-		pavucontrol
-		## if only I could draw
-		krita
-		pulseeffects-pw
-		#only tested in emacs
-		hunspell
-		hunspellDicts.en_US-large
-		## desktop notifications
-		libnotify
-		## terminal pdf compressor
-		#ghostscript
-		## file browser
-		gnome3.nautilus
-		# doesn't work due to a lack of the overall gnome package group
-		gnome3.gnome-tweak-tool
-		## remote into ras-pi
-		obs-studio
-		## password manager
-		bitwarden
-		### email, like snail mail, but harder to block the spam!
-		mailspring
-		## font fix maybe. Allows use of gnome tweaks. I had to turn on aa.
-		gnome.gnome-settings-daemon
-		## boring work just got a little more mundane
-		libreoffice-fresh
-		## make the usbs into oses!
-		etcher
-		radeontop
-		broot
-		nyxt
-                ncmpcpp
-                helvum
-                kile-wl
-	];
-        security.polkit.enable = true; #for river maybe
-        programs.dconf.enable = true;
-        #
-	# XDG-desktop-screenshare
-	#
-	xdg = {
-		portal = {
-			enable = true;
-			extraPortals = with pkgs; [
-				xdg-desktop-portal-wlr
-				# xdg-desktop-portal-gtk
-		 	];
-			## fixes gtk themeing so that it uses the .config. set to true in order to use native file pickers
-			gtkUsePortal = false;
-		};
-	};
-	environment.sessionVariables = {
-		### probably not needed due to firefox-wayland
-		#MOZ_ENABLE_WAYLAND = "1";
-		### makes emacs use .config instead of the home dir. ~/.config breaks at least sway
-		XDG_CONFIG_HOME = "/home/wyatt/.config";
-		### shouldn't be needed but some software is bad
-		#XDG_CURRENT_DESKTOP = "sway";
-		### fixes some ugly. TODO: more work on the right numbers
-		GDK_SCALE = "1.5";
-		GDK_DPI_SCALE = "1";
-	};
+  programs.zsh.enable = true;
+  users.users.wyatt = {
+    isNormalUser = true;
+    extraGroups = [ "wheel" "mpd" "audio" ]; # Enable ‘sudo’ for the user.
+    openssh.authorizedKeys.keys = [ ("${publicKey}") ];
+    shell = pkgs.zsh;
+  };
+  environment.systemPackages = with pkgs; [
+    musescore
+    starship
+    #fuzzel
+    xdg-desktop-portal-wlr
+    grim
+    slurp
+    wl-clipboard
+    seatd
+    kanshi
+    wlr-randr
+    swaylock
+    haskellPackages.wizardwatch-xmonad
+    alacritty
+    kitty
+    ## password entry for gui applications
+    appimage-run
+    nixmaster.polkit_gnome
+    ## firefox
+    firefox
+    ## is it wrong to use a pulse audio tool with pipewire
+    pavucontrol
+    ## if only I could draw
+    krita
+    pulseeffects-pw
+    #only tested in emacs
+    hunspell
+    hunspellDicts.en_US-large
+    ## desktop notifications
+    libnotify
+    ## terminal pdf compressor
+    #ghostscript
+    ## file browser
+    gnome3.nautilus
+    # doesn't work due to a lack of the overall gnome package group
+    gnome3.gnome-tweak-tool
+    ## remote into ras-pi
+    obs-studio
+    ## password manager
+    bitwarden
+    ### email, like snail mail, but harder to block the spam!
+    mailspring
+    ## font fix maybe. Allows use of gnome tweaks. I had to turn on aa.
+    gnome.gnome-settings-daemon
+    ## boring work just got a little more mundane
+    libreoffice-fresh
+    ## make the usbs into oses!
+    etcher
+    radeontop
+    broot
+    nyxt
+    ncmpcpp
+    helvum
+    kile-wl
+  ];
+  security.polkit.enable = true; #for river maybe
+  programs.dconf.enable = true;
+  #
+  # XDG-desktop-screenshare
+  #
+  xdg = {
+    portal = {
+      enable = true;
+      extraPortals = with pkgs; [
+        xdg-desktop-portal-wlr
+        # xdg-desktop-portal-gtk
+      ];
+      ## fixes gtk themeing so that it uses the .config. set to true in order to use native file pickers
+      gtkUsePortal = false;
+    };
+  };
+  environment.sessionVariables = {
+    ### probably not needed due to firefox-wayland
+    #MOZ_ENABLE_WAYLAND = "1";
+    ### makes emacs use .config instead of the home dir. ~/.config breaks at least sway
+    XDG_CONFIG_HOME = "/home/wyatt/.config";
+    ### shouldn't be needed but some software is bad
+    #XDG_CURRENT_DESKTOP = "sway";
+    ### fixes some ugly. TODO: more work on the right numbers
+    GDK_SCALE = "1.5";
+    GDK_DPI_SCALE = "1";
+  };
   # services.flatpak.enable = true;
   # Let the passwords be stored in something other than plain text. Required for at least mailspring
   services = {
