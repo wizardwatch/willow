@@ -3,6 +3,19 @@
 # require_relative "wizardwatch_utils/version"
 require 'socket'
 
+def offline_update(input)
+  hostname = Socket.gethostname
+  if input[1] != hostname
+    puts 'THE HOSTNAME DOES NOT MATCH THE SELECTED CONFIGURATION.'
+    puts 'You entered ' + input[1] + ', the hostname is ' + hostname + '.'
+  end
+  puts 'Are you sure you want to update this computer? yes/no'
+  confirm = $stdin.gets
+  if confirm.chomp == 'yes'
+    puts `nixos-rebuild switch --use-remote-sudo --option binary-caches "" --flake \.\##{hostname}`
+  end
+end
+
 def update(input)
   hostname = Socket.gethostname
   if input[1] != hostname
@@ -45,6 +58,8 @@ input = ARGV
 case input.first
 when 'up'
   update(input)
+when 'fup'
+  offline_update(input)
 when 'user'
   apply_user(input)
 when 'unlock'

@@ -1,10 +1,18 @@
 { pkgs, config, ... }:
+let
+  OpenASAR = self: super: {
+    discord = super.discord.override { withOpenASAR = true; };
+  };
+in
 {
-  nixpkgs.config = {
-    allowUnfree = true;
+  nixpkgs = {
+    overlays = [OpenASAR];
+    config = {
+      allowUnfree = true;
+    };
   };
   environment.systemPackages = with pkgs; [
-    #nixmaster.discord-canary
+    discord
     nixmaster.osu-lazer
   ];
   #nixpkgs.config.packageOverrides = pkgs: {

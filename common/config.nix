@@ -1,7 +1,7 @@
 { config, pkgs, ... }: {
   # Enable unstable nix so that I can use flakes.
   nix = {
-    package = pkgs.nixUnstable;
+    #package = pkgs.nixUnstable;
     extraOptions = ''
       experimental-features = nix-command flakes
       restrict-eval = false
@@ -14,8 +14,16 @@
   services.openssh.enable = true;
   services.openssh.passwordAuthentication = false;
   services.nomad.enableDocker = true;
-  virtualisation.docker.enable = true;
+  virtualisation = {
+    docker.enable   = true;
+    waydroid.enable = true;
+    lxd.enable      = true;
+  };
   # This was removed? services.dbus.packages = [ pkgs.gnome3.dconf ];
   # programs.dconf.packages = [ pkgs.gnome3.dconf ];
-  services = { };
+  services = {
+    transmission = {
+      enable = true;
+    };
+  };
 }

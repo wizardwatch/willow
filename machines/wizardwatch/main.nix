@@ -9,6 +9,7 @@ in
       ./unfree.nix
       ../../common/common_desktop.nix
       ../../common/ruby.nix
+      ../../common/home-assistant.nix
       ./xserver.nix
     ];
   # Use the systemd-boot EFI boot loader. no touchy
@@ -20,10 +21,32 @@ in
   # replicates the default behaviour.
   networking.useDHCP = false;
   networking.hostName = "wizardwatch";
-  networking.interfaces.enp0s31f6.ipv4.addresses = [{
+  #networking.interfaces.enp0s31f6.ipv4.addresses = [{
+  #  address = "192.168.1.169";
+  #  prefixLength = 24;
+  #}];
+  networking.firewall.allowedTCPPorts = [25565];
+  networking.firewall.allowedUDPPorts = [25565];
+  networking.interfaces.enp6s0.ipv4.addresses = [{
     address = "192.168.1.169";
     prefixLength = 24;
   }];
+systemd = {
+    user.services.polkit-gnome-authentication-agent-1 = {
+    description = "polkit-gnome-authentication-agent-1";
+    wants = [ "graphical-session.target" ];
+    wantedBy = [ "graphical-session.target" ];
+    after = [ "graphical-session.target" ];
+    serviceConfig = {
+      Type = "simple";
+      ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
+      Restart = "on-failure";
+      RestartSec = 1;
+      TimeoutStopSec = 10;
+    };
+  };
+};
+
 
   # Select internationalisation properties.
   # i18n.defaultLocale = "en_US.UTF-8";
@@ -33,6 +56,22 @@ in
   # };
 
   # Enable CUPS to print documents.
+  systemd.services.minecraft = {
+      wantedBy = [ "default.target" ];
+      after = [ "network.target" ];
+      description = "start minecraft";
+      serviceConfig = {
+        Type = "simple";
+        User = "wyatt";
+        RestartSec = "10s";
+        Restart = "always";
+        StandardError= "journal";
+
+        # run the start script for the specified server
+        ExecStart= "/home/wyatt/projects/minecraft/start.sh";
+        WorkingDirectory="/home/wyatt/projects/minecraft";
+      };
+  };
   services.printing = {
     enable = true;
     drivers = with pkgs; [
@@ -44,13 +83,13 @@ in
   # amd gpu
   boot = {
     initrd.kernelModules = [ "amdgpu" ];
-    kernelPackages = pkgs.linuxPackages_zen;
+    #kernelPackages = pkgs.linuxPackages_zen;
   };
   security.pam.services.swaylock = { };
   programs.zsh.enable = true;
   users.users.wyatt = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "mpd" "audio" ]; # Enable ‘sudo’ for the user.
+    extraGroups = [ "wheel" "mpd" "audio" "dialout"]; # Enable ‘sudo’ for the user.
     openssh.authorizedKeys.keys = [ ("${publicKey}") ];
     shell = pkgs.zsh;
   };
@@ -58,8 +97,11 @@ in
     self.inputs.nix-alien.overlay
   ];
   environment.systemPackages = with pkgs; [
+    lutris
+    libunwind
+    minecraft-bedrock-appimage
     eww-wayland
-    nix-alien
+    #nix-alien
     nix-index
     #nix-index-update
     #fuzzel
@@ -72,7 +114,7 @@ in
     kanshi
     wlr-randr
     swaylock
-    haskellPackages.wizardwatch-xmonad
+    #haskellPackages.wizardwatch-xmonad
     appimage-run
     ## password entry for gui applications
     ## firefox
@@ -96,7 +138,7 @@ in
     #ncmpcpp
     helvum
     (river.override { xwaylandSupport = true; })
-    kile-wl
+    #kile-wl
   ];
   security.polkit.enable = true; #for river maybe
   programs.dconf.enable = true;

@@ -75,7 +75,7 @@ in
     pavucontrol
     ## if only I could draw
     krita
-    pulseeffects-pw
+    easyeffects
     #only tested in emacs
     hunspell
     hunspellDicts.en_US-large

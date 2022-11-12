@@ -17,7 +17,7 @@
     musescore
     pavucontrol
     ## pipewire equalizer
-    pulseeffects-pw
+    easyeffects
     ## if only I could draw
     krita
   ];

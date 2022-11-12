@@ -12,9 +12,13 @@
     neovim-nightly.url = "github:nix-community/neovim-nightly-overlay";
     eww.url = "github:elkowar/eww";
     nix-doom-emacs.url = "github:vlaci/nix-doom-emacs";
+    spicetify-nix = { 
+      url = "github:the-argus/spicetify-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     # custom package
     wizardwatch_utils = {
-      url = "path:./packages/wizardwatch_utils";
+      url = "path:/etc/nixos/packages/wizardwatch_utils";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     xtodoc = {
@@ -48,6 +52,7 @@
     , nixos-generators
     , flake-utils
     , nix-alien
+    , spicetify-nix
     , ...
     }@inputs:
     let
@@ -62,6 +67,11 @@
         };
       };
       overlays = {
+        /*
+        OpenDis = self: super: {
+          discord = super.discord.override { withOpenASAR = true; };
+        };
+        */
         nixmaster = final: prev: {
           nixmaster = (import nixmaster {
             inherit system;
@@ -71,20 +81,38 @@
           });
         };
       };
+      overrides = self: super: rec {
+          minecraft-bedrock-appimage = super.appimageTools.wrapType2 {
+            name = "minecraft-bedrock";
+            src = super.fetchurl {
+              url = "https://github.com/ChristopherHX/linux-packaging-scripts/releases/download/v0.3.4-688/Minecraft_Bedrock_Launcher-x86_64-v0.3.4.688.AppImage";
+              sha256 = "sha256-TP76SypSk9JIOPnSGzpYmp+g40RE4pCuBmAapL7vqzY=";
+            };
+            extraPkgs = pkgs: with super; [ libpulseaudio alsa-lib alsa-utils zlib ];
+          };
+      };
       # install helper functions
       lib = nixpkgs.lib;
     in
     {
       homeManagerConfigurations = {
         wyatt = home-manager.lib.homeManagerConfiguration {
-          inherit system pkgs username;
-          homeDirectory = ("/home/" + username + "/.config");
-          configuration = {
-            nixpkgs.overlays = [ neovim-nightly.overlay (import ./overlays) ];
-            imports = [
-              (./users + ("/" + username) + /dotfiles/main.nix)
-            ];
-          };
+          inherit pkgs;
+          modules = [
+            inputs.spicetify-nix.homeManagerModule
+            ./users/wyatt/dotfiles/home.nix
+            {
+              nixpkgs = {
+                #config.allowUnfreePredicate = (pkg: true);
+                overlays = [ neovim-nightly.overlay ];
+              };
+              home = {
+                username = "wyatt";
+                homeDirectory = "/home/wyatt/.config";
+                stateVersion = "20.09";
+              };
+            }
+          ];
         };
       };
       nixosConfigurations = {
@@ -96,7 +124,7 @@
           # import the config file
           modules = [
             { _module.args = inputs; }
-            { nixpkgs.overlays = [ overlays.nixmaster (import ./overlays) ]; }
+            { nixpkgs.overlays = [ overlays.nixmaster /*overlays.OpenDis*/ (import ./overlays) overrides]; }
             (./common/common.nix)
             (./machines/wizardwatch/main.nix)
           ];

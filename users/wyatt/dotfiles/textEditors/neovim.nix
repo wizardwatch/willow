@@ -16,10 +16,6 @@ in
   ];
   programs.neovim = {
     enable = true;
-    #package = pkgs.neovim-nightly/*.neovim-nightly*//*.neovim*/;
-    withNodeJs = true;
-    withPython3 = true;
-    withRuby = true;
     coc = {
       enable = true;
       settings = {
@@ -56,7 +52,7 @@ in
       (pkgs.vimPlugins.nvim-treesitter.withPlugins (plugins: pkgs.tree-sitter.allGrammars))
     ];
     extraPackages = with pkgs;  [
-      neovim-remote
+      #neovim-remote
     ];
     extraConfig = ''
                                       lua <<EOF
