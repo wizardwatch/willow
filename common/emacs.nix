@@ -5,7 +5,7 @@
     # for emacs pdfs
     poppler
     # for emacs latex
-    texlive.combined.scheme-full
+    #texlive.combined.scheme-full
     # for emacs github/magit forge
     gnupg
     # for decrypting .authinfo

@@ -3,11 +3,17 @@
   inputs = rec {
     # set the channel
     nixpkgs.url = "nixpkgs/nixos-unstable";
+    trix = {
+      url = "github:wizardwatch/trix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    sops-nix.url = "github:Mic92/sops-nix";
     # enable home-manager
     home-manager.url = "github:nix-community/home-manager/master";
     # tell home manager to use the nixpkgs channel set above.
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     # master channel
+    nixstaging.url = "github:NixOS/nixpkgs/staging";
     nixmaster.url = "github:NixOS/nixpkgs";
     neovim-nightly.url = "github:nix-community/neovim-nightly-overlay";
     eww.url = "github:elkowar/eww";
@@ -30,6 +36,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     flake-utils.url = "github:numtide/flake-utils";
+    hyprland = {
+      url = "github:hyprwm/Hyprland";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nix-alien = {
       url = "github:thiagokokada/nix-alien";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -42,14 +52,18 @@
   outputs =
     { self
     , nixpkgs
+    , trix
+    , sops-nix
     , home-manager
     , neovim-nightly
     , nixmaster
+    , nixstaging
     , eww
     , nix-doom-emacs
     , wizardwatch_utils
     , xtodoc
     , nixos-generators
+    , hyprland
     , flake-utils
     , nix-alien
     , spicetify-nix
@@ -66,6 +80,9 @@
           allowUnfree = true;
         };
       };
+      nixosModules = {
+        minecraft_modded = trix.nixosModules.minecraft;
+      };
       overlays = {
         /*
         OpenDis = self: super: {
@@ -79,6 +96,14 @@
               allowUnfree = true;
             };
           });
+        };
+        nixstaging = final: prev: {
+            nixstaging= (import nixstaging {
+              inherit system;
+              config = {
+                allowUnfree = true;
+              };
+            });
         };
       };
       overrides = self: super: rec {
@@ -120,11 +145,15 @@
           # imports the system variable
           inherit system;
           # Taken from nix alien github
-          specialArgs = { inherit self; };
+          specialArgs = { inherit self;};
           # import the config file
           modules = [
             { _module.args = inputs; }
-            { nixpkgs.overlays = [ overlays.nixmaster /*overlays.OpenDis*/ (import ./overlays) overrides]; }
+            trix.nixosModules.default
+            sops-nix.nixosModules.sops
+            hyprland.nixosModules.default
+            #{trix.services.minecraft.enable = true;}
+            { nixpkgs.overlays = [ overlays.nixmaster overlays.nixstaging /*overlays.OpenDis*/ (import ./overlays) overrides]; }
             (./common/common.nix)
             (./machines/wizardwatch/main.nix)
           ];

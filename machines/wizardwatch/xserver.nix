@@ -46,7 +46,7 @@
       ];
       libinput.enable = true;
       displayManager.startx.enable = true;
-      videoDrivers = [ "amdgpu" "intel" ];
+      videoDrivers = [ "amdgpu" ];
     };
   };
   environment.systemPackages = with pkgs; [

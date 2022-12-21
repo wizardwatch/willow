@@ -1,4 +1,4 @@
-{ config, inputs, pkgs, fetchurl, eww, self, ... }:
+{ config, inputs, trix, pkgs, fetchurl, eww, self, ... }:
 let
   publicKey = "AAAAB3NzaC1yc2EAAAADAQABAAABgQDBEq4NHUglnfwIZYT9dIV5RpYE5s+eGBs1DhX8ieoMXDDZDw/kRo9aeWqKlxElpVJepzHtydQdp73PPjYQT5BhuM7Nw/OKRIH2eEYN8BDqPsTJOVgnZ3287O8OStqnmCiBD2AmVEFuaxtnz5sL2PzsdAS20bvdnyig56TzGFkm3RnDrVfS+8RPbSmOzqVA9+xW4NeN/u1CA32VTfRjE696XpHG5Zg2ByCUGot0+yBLgkEj+RBiChg6rtnwga8QOgSLncZtjVS0WFH9u0lhoGBjOtL2qtMZkTVCLcjmE6Fa6Nd8igoss9JmbDQMh7McUxS1D9d4UE4Vh3IPAHAuaVbMvGNZ9upaye90Vt2PuejOXbnQ4dGKmlxq0wAMWx20uVbWiY1VimVeYPlMLeNOcVcHglVGkVChhgMEbDvsl6HcesfgR/tivHgPhXrkF9f2j80O53VIBWltqt2iz06xUiolQNYDYhq+HiXcQI11+gWRDrdgU5Q5B7OVWPVdXonTfkk=";
 in
@@ -9,7 +9,7 @@ in
       ./unfree.nix
       ../../common/common_desktop.nix
       ../../common/ruby.nix
-      ../../common/home-assistant.nix
+      #../../common/home-assistant.nix
       ./xserver.nix
     ];
   # Use the systemd-boot EFI boot loader. no touchy
@@ -19,7 +19,7 @@ in
   # The global useDHCP flag is deprecated, therefore explicitly set to false here.
   # Per-interface useDHCP will be mandatory in the future, so this generated config
   # replicates the default behaviour.
-  networking.useDHCP = false;
+  #networking.useDHCP = false;
   networking.hostName = "wizardwatch";
   #networking.interfaces.enp0s31f6.ipv4.addresses = [{
   #  address = "192.168.1.169";
@@ -27,10 +27,17 @@ in
   #}];
   networking.firewall.allowedTCPPorts = [25565];
   networking.firewall.allowedUDPPorts = [25565];
-  networking.interfaces.enp6s0.ipv4.addresses = [{
-    address = "192.168.1.169";
-    prefixLength = 24;
-  }];
+  networking = {
+    interfaces.enp6s0.ipv4.addresses = [{
+      address = "192.168.1.169";
+      prefixLength = 24;
+    }];
+    nat = {
+      enable = true;
+      internalInterfaces = ["ve-*"];
+      externalInterface = "enp6s0";
+    };
+  };
 systemd = {
     user.services.polkit-gnome-authentication-agent-1 = {
     description = "polkit-gnome-authentication-agent-1";
@@ -56,6 +63,7 @@ systemd = {
   # };
 
   # Enable CUPS to print documents.
+  /*
   systemd.services.minecraft = {
       wantedBy = [ "default.target" ];
       after = [ "network.target" ];
@@ -71,7 +79,7 @@ systemd = {
         ExecStart= "/home/wyatt/projects/minecraft/start.sh";
         WorkingDirectory="/home/wyatt/projects/minecraft";
       };
-  };
+  }; */
   services.printing = {
     enable = true;
     drivers = with pkgs; [
@@ -83,10 +91,18 @@ systemd = {
   # amd gpu
   boot = {
     initrd.kernelModules = [ "amdgpu" ];
-    #kernelPackages = pkgs.linuxPackages_zen;
+    kernelPackages = pkgs.linuxPackages_5_10;
+  };
+  hardware.opengl = {
+    enable = true;
+    driSupport = true;
+    driSupport32Bit = true;
+    extraPackages = [ pkgs.mesa.drivers ];
   };
   security.pam.services.swaylock = { };
   programs.zsh.enable = true;
+  programs.hyprland.enable = true;
+  programs.sway.enable = true;
   users.users.wyatt = {
     isNormalUser = true;
     extraGroups = [ "wheel" "mpd" "audio" "dialout"]; # Enable ‘sudo’ for the user.
@@ -97,6 +113,12 @@ systemd = {
     self.inputs.nix-alien.overlay
   ];
   environment.systemPackages = with pkgs; [
+    aria
+    age
+    ssh-to-age
+    sops
+    lyrebird
+    inxi
     lutris
     libunwind
     minecraft-bedrock-appimage
@@ -167,6 +189,32 @@ systemd = {
     GDK_DPI_SCALE = "1";
   };
   # Let the passwords be stored in something other than plain text. Required for at least mailspring
+      #trix.nixosModules.minecraft = true;
+      /*
+      users.users.minecraft = {
+        description     = "Minecraft server service user";
+        isSystemUser    = true;
+        group           = "minecraft";
+      };
+      users.groups.minecraft = {};
+      systemd.services.minecraft = {
+        wantedBy = [ "default.target" ];
+        after = [ "network.target" ];
+        description = "start minecraft";
+        serviceConfig = {
+        Type = "simple";
+        User = "wyatt";
+        RestartSec = "10s";
+        Restart = "always";
+        StandardError= "journal";
+
+        # run the start script for the specified server
+        ExecStart = ''
+        /usr/bin/env bash $(wget https://raw.githubusercontent.com/wizardwatch/winter-wonderland-pack/main/start.sh) 
+        '';
+        WorkingDirectory = /etc/minecraft;
+      };
+    };*/
   services = {
     flatpak.enable = true;
     gnome.gnome-keyring.enable = true;
@@ -181,5 +229,7 @@ systemd = {
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "20.09"; # Did you read the comment?
+  #system.stateVersion = "20.09"; # Did you read the comment?
+
+  system.stateVersion = "23.05"; # Did you read the comment?
 }

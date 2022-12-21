@@ -27,15 +27,24 @@ in
       };
       output = {
         HDMI-A-1 = {
-          position = "500 1440";
+          position = "2420 1440";
         };
         DP-1 = {
+          position = "4480 0";
+        };
+        DP-2 = {
+          position = "1920 0";
+          #transform = "270";
+        };
+        DP-3 = {
           position = "0 0";
         };
-        HDMI-A-2 = {
-          position = "2560 0";
-          transform = "90";
+        /*
+        DP-4 = {
+          position = "580 0";
+          #transform = "270";
         };
+        */
       };
       input = {
         "1386:934:Wacom_One_Pen_Display_13_Pen" = {

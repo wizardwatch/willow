@@ -36,6 +36,9 @@ let
 in
 {
   environment.systemPackages = with pkgs; [
+    mesa
+    vulkan-tools
+    pciutils
     (xtodoc.defaultPackage.x86_64-linux)
     (wizardwatch_utils.defaultPackage.x86_64-linux)
     tree
@@ -69,7 +72,7 @@ in
     # myKakoune
     tldr
     pandoc
-    texlive.combined.scheme-full
+    #texlive.combined.scheme-full
     starship
     breeze-icons
     tokei

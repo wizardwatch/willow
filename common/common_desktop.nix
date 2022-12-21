@@ -13,7 +13,7 @@
     # for rifle used with broot
     ranger
     inkscape
-    openscad
+    #nixstaging.openscad
     musescore
     pavucontrol
     ## pipewire equalizer

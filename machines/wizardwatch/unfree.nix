@@ -12,6 +12,7 @@ in
     };
   };
   environment.systemPackages = with pkgs; [
+    vscode
     discord
     nixmaster.osu-lazer
   ];
