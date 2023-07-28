@@ -12,7 +12,7 @@ let
     gmpy2
     # other python packages you want
   ];
-  python-with-my-packages = pkgs.python39.withPackages my-python-packages;
+  python-with-my-packages = pkgs.python310.withPackages my-python-packages;
   myKakoune =
     let
       config = pkgs.writeTextFile (rec {
@@ -36,6 +36,8 @@ let
 in
 {
   environment.systemPackages = with pkgs; [
+    lapce
+    nil
     mesa
     vulkan-tools
     pciutils

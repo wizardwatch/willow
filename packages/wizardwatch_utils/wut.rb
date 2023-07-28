@@ -25,7 +25,7 @@ def update(input)
   puts 'Are you sure you want to update this computer? yes/no'
   confirm = $stdin.gets
   if confirm.chomp == 'yes'
-    puts `nixos-rebuild switch --use-remote-sudo --show-trace --flake \.\##{hostname}`
+    puts `nixos-rebuild switch --use-remote-sudo --show-trace --flake \.\##{input[1]}`
   end
 end
 

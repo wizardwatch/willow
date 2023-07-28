@@ -3,11 +3,11 @@
   inputs = rec {
     # set the channel
     nixpkgs.url = "nixpkgs/nixos-unstable";
-    trix = {
-      url = "github:wizardwatch/trix";
+    trunk = {
+      url = "github:wizardwatch/trunk";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    sops-nix.url = "github:Mic92/sops-nix";
+    sops-nix.url = "github:Mic92/sops-nix/feat/home-manager";
     # enable home-manager
     home-manager.url = "github:nix-community/home-manager/master";
     # tell home manager to use the nixpkgs channel set above.
@@ -24,7 +24,7 @@
     };
     # custom package
     wizardwatch_utils = {
-      url = "path:/etc/nixos/packages/wizardwatch_utils";
+      url = "path:./packages/wizardwatch_utils";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     xtodoc = {
@@ -52,7 +52,7 @@
   outputs =
     { self
     , nixpkgs
-    , trix
+    , trunk
     , sops-nix
     , home-manager
     , neovim-nightly
@@ -79,9 +79,6 @@
         config = {
           allowUnfree = true;
         };
-      };
-      nixosModules = {
-        minecraft_modded = trix.nixosModules.minecraft;
       };
       overlays = {
         /*
@@ -120,28 +117,8 @@
       lib = nixpkgs.lib;
     in
     {
-      homeManagerConfigurations = {
-        wyatt = home-manager.lib.homeManagerConfiguration {
-          inherit pkgs;
-          modules = [
-            inputs.spicetify-nix.homeManagerModule
-            ./users/wyatt/dotfiles/home.nix
-            {
-              nixpkgs = {
-                #config.allowUnfreePredicate = (pkg: true);
-                overlays = [ neovim-nightly.overlay ];
-              };
-              home = {
-                username = "wyatt";
-                homeDirectory = "/home/wyatt/.config";
-                stateVersion = "20.09";
-              };
-            }
-          ];
-        };
-      };
       nixosConfigurations = {
-        wizardwatch = lib.makeOverridable lib.nixosSystem {
+        willow = lib.makeOverridable lib.nixosSystem {
           # imports the system variable
           inherit system;
           # Taken from nix alien github
@@ -149,13 +126,24 @@
           # import the config file
           modules = [
             { _module.args = inputs; }
-            trix.nixosModules.default
+            { systems.dev.enable = true; } # Pass the parameter here
+            trunk.nixosModules.common
             sops-nix.nixosModules.sops
+            #sops-nix.homeManagerModules.sops 
             hyprland.nixosModules.default
+	    home-manager.nixosModules.home-manager 
+	    {
+              #imports = [ inputs.spicetify-nix.homeManagerModule] ;
+	      home-manager = {
+		#useGlobalPkgs = true;
+		useUserPackages = true;
+		users.wyatt = import ./users/wyatt/dotfiles/home.nix;
+	      };
+	    }
             #{trix.services.minecraft.enable = true;}
-            { nixpkgs.overlays = [ overlays.nixmaster overlays.nixstaging /*overlays.OpenDis*/ (import ./overlays) overrides]; }
+            { nixpkgs.overlays = [ overlays.nixmaster overlays.nixstaging  (import ./overlays) overrides]; }
             (./common/common.nix)
-            (./machines/wizardwatch/main.nix)
+            (./machines/willow/main.nix)
           ];
         };
         pc1 = lib.makeOverridable lib.nixosSystem {

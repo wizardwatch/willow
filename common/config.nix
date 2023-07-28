@@ -6,9 +6,15 @@
   sops.age.keyFile = "/var/lib/sops-nix/key.txt";
   sops.age.generateKey = true;
   #sops.secrets.example-key = {};
-  sops.secrets.nixAccessTokens = {
-    mode = "0440";
-    group = config.users.groups.keys.name;
+  sops = {
+    secrets.nixAccessTokens = {
+      mode = "0440";
+      group = config.users.groups.keys.name;
+    };
+    secrets.spotifyPassword = { 
+      mode = "0440";
+      group = config.users.groups.keys.name;
+    };
   };
   nix = {
     #package = pkgs.nixUnstable;
@@ -34,7 +40,7 @@
   # programs.dconf.packages = [ pkgs.gnome3.dconf ];
   services = {
     transmission = {
-      enable = false;
+      enable = true;
     };
   };
 }

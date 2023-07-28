@@ -27,7 +27,7 @@
     zap
     #ruby
     perl
-    python2Full
+    #python2Full
     thc-hydra
     gobuster
     rsync

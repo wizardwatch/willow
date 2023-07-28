@@ -2,10 +2,13 @@
 {
   programs.waybar = {
     enable = true;
-    settings = [{
-      modules = { };
-      modules-center = [ "clock" ];
-      modules-left = [ "sway/workspaces" ];
-    }];
+    settings = {
+      mainbar = {
+        layer = "top";
+        position = "top";
+        height = 30;
+        modules-left = [ "sway/workspaces" "sway/mode" "wlr/taskbar" ];
+      };
+    };
   };
 }

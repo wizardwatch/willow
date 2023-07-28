@@ -1,6 +1,11 @@
-{ pkgs, unstable, spicetify-nix, lib, ... }: {
+{ pkgs, unstable, /*spicetify-nix,*/ lib, config, ... }: {
   fonts.fontconfig = {
     enable = true;
+  };
+  home = {
+    username = "wyatt";
+    stateVersion = "23.05";
+    #homeDirectory = "/home/wyatt/.config";
   };
   /*
   services.mpd = {
@@ -21,7 +26,6 @@
       }
     '';
   };
-  */
   gtk = {
     enable = true;
     font.name = "Iosevka";
@@ -29,6 +33,7 @@
     theme.package = pkgs.dracula-theme;
     theme.name = "Dracula";
   };
+  */
   /*
   home.file = {
     river = {
@@ -44,18 +49,26 @@
   */
   imports = [
     ./textEditors/neovim.nix
-    #./textEditors/emacs/main.nix
+    ./textEditors/emacs/main.nix
     ./wayland/main.nix
     #./x/main.nix
     #./other/ncmpcpp.nix
     #./other/starship.nix
     #./spotify_plus.nix
   ];
-
+  services.spotifyd = {
+    enable = true;
+    settings = {
+      username = "wyatt.osterling@hotmail.com";
+      password_cmd = "echo $SPOTIFY";
+      device_name = "willow";
+    };
+  };
   # import the flake's module for your system
 
   # configure spicetify :)
     programs = {
+    /*
       spicetify = 
       let
         officialThemesPINNED = pkgs.fetchgit {
@@ -97,7 +110,7 @@
           notification-error = "eb6f92";
           misc = "6e6a86";
         };
-      };
+      };*/
       foot = {
         enable = true;
         settings = {
