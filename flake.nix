@@ -10,7 +10,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixpkgs.url = "nixpkgs/nixos-unstable";
-    sops-nix.url = "github:Mic92/sops-nix/feat/home-manager";
+    sops-nix.url = "github:Mic92/sops-nix";
     nix-alien = {
       url = "github:thiagokokada/nix-alien";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -70,7 +70,7 @@
           home-manager.nixosModules.home-manager
           (trunk.nixosModules.common)
           (import ./main.nix)
-          (import ./hardware.nix)
+          (import ./unixStuff/hardware.nix)
           ({ pkgs, lib, ... }: {
             home-manager = {
               extraSpecialArgs = {

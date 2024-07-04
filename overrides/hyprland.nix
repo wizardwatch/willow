@@ -6,7 +6,7 @@
       "nm-applet"      
     ];
     bind = [
-      "$mod, Return, exec, wezterm"
+      "$mod, Return, exec, alacritty"
       "$mod + SHIFT, c, killactive "
       "$mod, n, exec, anyrun"
       "$mod + SHIFT, p, exec, hyprland-relative-workspace b"
@@ -24,12 +24,13 @@
     ];
     decoration = {
         rounding = 5;
-        multisample_edges = true;
-        blur = true;
-        blur_size = 6;
-        blur_passes = 3;
-        blur_new_optimizations = true;
-        blur_ignore_opacity = true;
+        blur = {
+          enabled = true;
+          size = 6;
+          passes = 3;
+          new_optimizations = true;
+          ignore_opacity = true;
+        };
         drop_shadow = true;
         shadow_ignore_window = true;
         shadow_offset = "0 5";

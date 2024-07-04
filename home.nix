@@ -5,22 +5,22 @@
     username = "willow";
     homeDirectory = lib.mkForce "/home/willow/";
   };
-      imports = [
-    ./helix_theme.nix
-    ];
+  imports = [
+    ./programs/helix_theme.nix
+  ];
   programs = {
 
     waybar = {
       enable = true;
       systemd.enable = true;
-      package = inputs.hyprland.packages.${system}.waybar-hyprland;
+      #package = inputs.hyprland.packages.${system}.waybar-hyprland;
       settings = {
         mainBar = {
           position = "top";
           height = 30;
           layer = "top";
           modules-left = [
-            "wlr/workspaces"
+            "hyprland/workspaces"
             "tray"
           ];
           modules-right = [
@@ -32,7 +32,7 @@
             "custom/date"
             "clock"
           ];
-          "wlr/workspaces" = {
+          "hyprland/workspaces" = {
             on-click = "activate";
           };
         };
