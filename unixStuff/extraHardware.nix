@@ -1,13 +1,15 @@
-{ config, pkgs, lib, trunk, home-manager, self, inputs, ... }:
+{ pkgs, ... }:
 {
   hardware = {
     graphics = {
       enable = true;
       extraPackages = [ 
         pkgs.intel-compute-runtime
-        pkgs.mesa.drivers
+        pkgs.mesa
       ];
     };
+  };
+  services = {
     pulseaudio.enable = false;
   };
 }

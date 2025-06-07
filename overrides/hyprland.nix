@@ -5,23 +5,30 @@
       "mpvpaper -o 'keep-open=yes' '*' ~/bigBackground.png"
       "nm-applet"      
     ];
-    bind = [
-      "$mod, Return, exec, alacritty"
-      "$mod + SHIFT, c, killactive "
-      "$mod, n, exec, anyrun"
-      "$mod + SHIFT, p, exec, hyprland-relative-workspace b"
-      "$mod + SHIFT, n, exec, hyprland-relative-workspace f"
-      "$mod, 1, workspace, 1"
-      "$mod, 2, workspace, 2"
-      "$mod, 3, workspace, 3"
-      "$mod, 4, workspace, 4"
-      "$mod, 5, workspace, 5"
-      "$mod, 6, workspace, 6"
-      "$mod, 7, workspace, 7"
-      "$mod, 8, workspace, 8"
-      "$mod, 9, workspace, 9"
-      "$mod, 0, workspace, 10"
-    ];
+    bind = 
+      let
+        workspaces = ["1" "2" "3" "4" "5" "6" "7" "8" "9" "10"];
+        # Generate workspace switching keybinds
+        workspaceBinds = builtins.concatMap (n: 
+          let key = if n == "10" then "0" else n;
+          in ["$mod, ${key}, workspace, ${n}"]
+        ) workspaces;
+        # Generate window moving keybinds
+        moveBinds = builtins.concatMap (n: 
+          let key = if n == "10" then "0" else n;
+          in ["$mod + SHIFT, ${key}, movetoworkspace, ${n}"]
+        ) workspaces;
+        # Standard keybinds
+        standardBinds = [
+          "$mod, Return, exec, alacritty"
+          "$mod + SHIFT, c, killactive "
+          "$mod, n, exec, anyrun"
+          "$mod + SHIFT, p, exec, hyprland-relative-workspace b"
+          "$mod + SHIFT, n, exec, hyprland-relative-workspace f"
+          # Screenshot with grimblast
+          "$mod + SHIFT, s, exec, grimblast copy area"
+        ];
+      in standardBinds ++ workspaceBinds ++ moveBinds;
     decoration = {
         rounding = 5;
         blur = {
@@ -31,12 +38,12 @@
           new_optimizations = true;
           ignore_opacity = true;
         };
-        drop_shadow = true;
-        shadow_ignore_window = true;
-        shadow_offset = "0 5";
-        shadow_range = 50;
-        shadow_render_power = 3;
-        "col.shadow" = "rgba(00000099)";
+        shadow = {
+         offset = "0 5";
+          range = 50;
+          render_power = 3; 
+        };   
+        #"col.shadow" = "rgba(00000099)";
         blurls = ["gtk-layer-shell" "waybar" "lockscreen" "ironbar"];
     };
   };

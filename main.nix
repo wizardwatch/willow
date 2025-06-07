@@ -1,9 +1,14 @@
-{ config, pkgs, lib, trunk, home-manager, self, inputs, ... }:
+{ config, pkgs, lib, self, inputs, ... }:
 {
   nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
-     "steam"
-     "steam-original"
-     "steam-run"
+    "steam"
+    "steam-original"
+    "steam-run"
+    "steam-unwrapped"
+    "zerotierone"
+    "obsidian"
+    "zoom"
+    "corefonts"
    ];
   imports = [
     ### Basic Settings and Config
@@ -30,10 +35,8 @@
   environment.systemPackages = with pkgs; [
     inputs.ags.packages.x86_64-linux.default
     sshfs
-    nodejs_18
     alsa-utils
     tree
-    hugo
     gcc
     jq
     pandoc

@@ -1,4 +1,4 @@
-{ config, pkgs, lib, home-manager, inputs, system, ... }:
+{ pkgs, lib, inputs, ... }:
 {
   home = {
     stateVersion = "23.11";
@@ -58,8 +58,8 @@
         maxEntries = null;
       };
     };
-    wezterm = { 
-      enable = true; 
+    wezterm = {
+      enable = true;
       extraConfig = ''
         return {
           window_background_opacity = .65
@@ -240,7 +240,7 @@
 
           #focused {
               color: white;
-          }          
+          }
 button {
   all: unset;
   margin: 0 0em;
@@ -248,7 +248,7 @@ button {
   transition: all .5s ease-out;
   opacity: 1;
   color: white;
-}    
+}
 '';
 
 
@@ -257,6 +257,15 @@ button {
 #}
        #package = inputs.ironbar;
       #features = ["feature" "another_feature"];
+    };
+    ssh = {
+      enable = true;
+      matchBlocks = {
+        "redoak" = {
+          hostname = "172.28.0.156";
+          user = "willow";
+        };
+      };
     };
     helix = {
       enable = true;

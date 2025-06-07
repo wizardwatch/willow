@@ -1,4 +1,4 @@
-{ config, pkgs, lib, trunk, home-manager, self, inputs, ... }:
+{ pkgs, ... }:
 {
   users.groups.dockerAccess = {
 

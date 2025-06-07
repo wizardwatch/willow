@@ -1,4 +1,4 @@
-{ config, pkgs, lib, trunk, home-manager, self, inputs, ... }:
+{ config, ... }:
 {  
   sops.defaultSopsFile = ./github.yaml;
   sops.age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];

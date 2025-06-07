@@ -28,12 +28,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     anyrun = {
-      url = "github:Kirottu/anyrun";
+      url = "github:anyrun-org/anyrun";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     ags.url = "github:Aylur/ags";
   };
-  outputs = 
+  outputs =
     { self
     , nixpkgs
     , trunk
@@ -41,12 +41,12 @@
     , sops-nix
     , nix-alien
     , ags
-    , ironbar
     , anyrun
+    , ironbar
     , hyprland-contrib
     , hyprland
     , ...
-    }@inputs: 
+    }@inputs:
     let
       system = "x86_64-linux";
       pkgs = import nixpkgs {
@@ -60,7 +60,7 @@
     in{
     nixosConfigurations.willow = nixpkgs.lib.nixosSystem{
       system = "x86_64-linux";
-      specialArgs = { 
+      specialArgs = {
         inherit self;
         inherit inputs;
       };
@@ -69,9 +69,10 @@
           sops-nix.nixosModules.sops
           home-manager.nixosModules.home-manager
           (trunk.nixosModules.common)
+          (trunk.nixosModules.desktop)
           (import ./main.nix)
           (import ./unixStuff/hardware.nix)
-          ({ pkgs, lib, ... }: {
+          ({ pkgs,... }: {
             home-manager = {
               extraSpecialArgs = {
                 inherit self;
@@ -84,8 +85,7 @@
                 (trunk.nixosModules.userZshStarship)
                 (trunk.nixosModules.userHyprland (import ./overrides/hyprland.nix))
                 inputs.ironbar.homeManagerModules.default
-                inputs.anyrun.homeManagerModules.default
-                (import ./home.nix)
+               (import ./home.nix)
               ];
             };
           })

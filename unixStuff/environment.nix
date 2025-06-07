@@ -1,4 +1,4 @@
-{ config, pkgs, lib, trunk, home-manager, self, inputs, ... }:
+{ pkgs, ... }:
 {
   programs = {
     zsh.enable = true;
@@ -7,6 +7,9 @@
   # fonts #
   #       #
   fonts = {
+    packages = with pkgs; [
+      corefonts
+    ];
     fontconfig = {
       enable = true;
       defaultFonts = {

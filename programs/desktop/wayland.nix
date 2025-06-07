@@ -1,7 +1,7 @@
-{ config, pkgs, lib, trunk, home-manager, self, inputs, ... }:
+{ pkgs, ... }:
 {
   environment.systemPackages = with pkgs; [
-    alacritty
+    grimblast
     mpv
     gimp
     xdg-desktop-portal-hyprland

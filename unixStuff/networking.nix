@@ -1,5 +1,9 @@
-{ config, pkgs, lib, trunk, home-manager, self, inputs, ... }:
+{ pkgs, lib, ... }:
 {
+    nixpkgs.config.allowUnfreePredicate = pkg:
+      builtins.elem (lib.getName pkg) [
+        "zerotierone"
+      ];
   environment.systemPackages = with pkgs; [
     networkmanagerapplet
   ];
@@ -26,5 +30,8 @@
       10.129.229.198 board.htb crm.board.htb test.board.htb
       10.129.222.148 boardlight.htb
     '';
+  };
+  services.zerotierone = {
+    enable = true;
   };
 }
