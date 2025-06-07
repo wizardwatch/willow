@@ -32,6 +32,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     ags.url = "github:Aylur/ags";
+    
+    # For future deployment capabilities
+    deploy-rs = {
+      url = "github:serokell/deploy-rs";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
   outputs =
     { self
@@ -45,6 +51,7 @@
     , ironbar
     , hyprland-contrib
     , hyprland
+    , deploy-rs
     , ...
     }@inputs:
     let
@@ -57,39 +64,48 @@
           allowUnfree = true;
         };
       };
-    in{
-    nixosConfigurations.willow = nixpkgs.lib.nixosSystem{
-      system = "x86_64-linux";
-      specialArgs = {
-        inherit self;
-        inherit inputs;
-      };
-      modules =
-        [
-          sops-nix.nixosModules.sops
-          home-manager.nixosModules.home-manager
-          (trunk.nixosModules.common)
-          (trunk.nixosModules.desktop)
-          (import ./main.nix)
-          (import ./unixStuff/hardware.nix)
-          ({ pkgs,... }: {
-            home-manager = {
-              extraSpecialArgs = {
-                inherit self;
-                inherit inputs;
-                inherit system;
-                inherit hyprland;
+      
+      # Import the mkHost function
+      mkHost = import ./lib/mkHost.nix { inherit inputs system; };
+      
+      # Host definitions
+      hosts = {
+        # Current system: willow
+        willow = mkHost {
+          name = "willow";
+          nixosModules = [
+            ./hosts/willow/default.nix
+            (trunk.nixosModules.common)
+            (trunk.nixosModules.desktop)
+            
+            # Pass trunk modules to home-manager
+            ({ pkgs, ... }: {
+              home-manager.users.willow = { ... }: {
+                imports = [
+                  (trunk.nixosModules.userZshStarship)
+                  (trunk.nixosModules.userHyprland (import ./overrides/hyprland.nix))
+                  inputs.ironbar.homeManagerModules.default
+                ];
               };
-              useUserPackages = true;
-              users.willow = pkgs.lib.mkMerge [
-                (trunk.nixosModules.userZshStarship)
-                (trunk.nixosModules.userHyprland (import ./overrides/hyprland.nix))
-                inputs.ironbar.homeManagerModules.default
-               (import ./home.nix)
-              ];
-            };
-          })
-        ];
+            })
+          ];
+          extraSpecialArgs = {
+            inherit self;
+          };
+          homeSpecialArgs = {
+            inherit self hyprland;
+          };
+        };
+      };
+      
+    in {
+      # NixOS configurations
+      nixosConfigurations = builtins.mapAttrs (name: host: host.nixosConfig) hosts;
+      
+      # Deploy-rs nodes (for future use)
+      deploy.nodes = builtins.mapAttrs (name: host: host.deployConfig) hosts;
+      
+      # Checks for deploy-rs
+      checks = builtins.mapAttrs (system: deployLib: deployLib.deployChecks self.deploy) deploy-rs.lib;
     };
-  };
 }
