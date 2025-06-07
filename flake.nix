@@ -56,18 +56,8 @@
     }@inputs:
     let
       system = "x86_64-linux";
-      pkgs = import nixpkgs {
-        # imports the system variable
-        inherit system;
-        # enable non free packages
-        config = {
-          allowUnfree = true;
-        };
-      };
-
       # Import the mkHost function
       mkHost = import ./lib/mkHost.nix { inherit inputs system; };
-
       # Host definitions
       hosts = {
         # Current system: willow
@@ -75,12 +65,8 @@
           name = "willow";
           username = "willow"; # Explicitly specify the username
           nixosModules = [
-            ./hosts/willow/default.nix
-            ./modules/base.nix       # Common base configuration
-            ./modules/desktop.nix    # Desktop environment configuration
-
             # Pass trunk modules to home-manager
-            ({ pkgs, ... }: {
+            ({ ... }: {
               home-manager.users.willow = { ... }: {
                 imports = [
                   (trunk.nixosModules.userZshStarship)
@@ -94,7 +80,7 @@
             inherit self;
           };
           homeSpecialArgs = {
-            inherit self hyprland;
+            inherit self hyprland anyrun ags ironbar;
           };
         };
 
@@ -103,9 +89,7 @@
         iso = mkHost {
           name = "iso";
           username = null; # Explicitly disable home-manager for ISO
-          nixosModules = [
-            ./hosts/iso/default.nix
-          ];
+          nixosModules = [];
           extraSpecialArgs = {
             inherit self;
           };

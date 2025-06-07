@@ -4,8 +4,6 @@ let
   json = pkgs.formats.json {};
 in
 {
-  # Sound configuration using PipeWire
-  sound.enable = false; # Disable ALSA/PulseAudio direct sound support to avoid conflicts
 
   # Main PipeWire configuration
   services.pipewire = {

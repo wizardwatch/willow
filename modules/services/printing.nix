@@ -4,28 +4,21 @@
   # Printing services
   services.printing = {
     enable = true;
-    
+
     # CUPS browsing and sharing
     browsing = true;
     listenAddresses = [ "*:631" ]; # Listen on all interfaces
     allowFrom = [ "all" ]; # Allow from all hosts
     defaultShared = true;
-    
+
     # Common printer drivers
     drivers = with pkgs; [
       gutenprint
       gutenprintBin
       brlaser
-      hplipWithPlugin
-      epson-escpr
-      canon-cups-ufr2
-      splix
     ];
   };
-  
-  # Enable CUPS web interface
-  services.cups-pk-helper.enable = true;
-  
+
   # Enable Avahi for printer discovery
   services.avahi = {
     enable = true;
@@ -38,19 +31,19 @@
       domain = true;
     };
   };
-  
+
   # Add scanning support
   hardware.sane = {
     enable = true;
     extraBackends = [ pkgs.sane-airscan ];
   };
-  
+
   # Add printing related utilities
   environment.systemPackages = with pkgs; [
     system-config-printer
     simple-scan
   ];
-  
+
   # Open firewall for printer discovery and access
   networking.firewall.allowedTCPPorts = [ 631 ];
   networking.firewall.allowedUDPPorts = [ 631 ];
