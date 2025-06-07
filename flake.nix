@@ -75,8 +75,8 @@
           name = "willow";
           nixosModules = [
             ./hosts/willow/default.nix
-            (trunk.nixosModules.common)
-            (trunk.nixosModules.desktop)
+            ./modules/base.nix       # Common base configuration
+            ./modules/desktop.nix    # Desktop environment configuration
             
             # Pass trunk modules to home-manager
             ({ pkgs, ... }: {
@@ -96,6 +96,29 @@
             inherit self hyprland;
           };
         };
+        
+        # ISO for deployments
+        iso = mkHost {
+          name = "iso";
+          nixosModules = [
+            ./hosts/iso/default.nix
+          ];
+          extraSpecialArgs = {
+            inherit self;
+          };
+        };
+      };
+        
+        # ISO for deployments
+        iso = mkHost {
+          name = "iso";
+          nixosModules = [
+            ./hosts/iso/default.nix
+          ];
+          extraSpecialArgs = {
+            inherit self;
+          };
+        };
       };
       
     in {
@@ -107,5 +130,8 @@
       
       # Checks for deploy-rs
       checks = builtins.mapAttrs (system: deployLib: deployLib.deployChecks self.deploy) deploy-rs.lib;
+      
+      # ISO image for deployments
+      iso = self.nixosConfigurations.iso.config.system.build.isoImage;
     };
 }

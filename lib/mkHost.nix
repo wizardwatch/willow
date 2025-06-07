@@ -5,13 +5,15 @@
 { 
   # Required parameters
   name,                   # Hostname
-  username ? "willow",    # Primary user 
+  
+  # Optional user configuration
+  username ? null,        # Primary user (null means no home-manager)
   
   # Optional NixOS configuration overrides
   nixosModules ? [],      # Additional NixOS modules to include
   extraSpecialArgs ? {},  # Additional specialArgs to pass to NixOS
   
-  # Optional home-manager configuration overrides
+  # Optional home-manager configuration overrides (only used when username is set)
   homeModules ? [],       # Additional home-manager modules to include
   homeSpecialArgs ? {},   # Additional specialArgs to pass to home-manager
 }:
@@ -23,14 +25,19 @@ let
     config.allowUnfree = true;
   };
   
+  # Access to nixpkgs lib
+  lib = inputs.nixpkgs.lib;
+  
   # Common modules for all machines
   baseNixosModules = [
-    inputs.home-manager.nixosModules.home-manager
+    # Only include home-manager if a username is provided
+    (lib.optional (username != null) inputs.home-manager.nixosModules.home-manager)
     inputs.sops-nix.nixosModules.sops
     {
       networking.hostName = name;
-      
-      # Home Manager configuration
+    }
+    # Home-manager configuration (only when a username is provided)
+    (lib.optionalAttrs (username != null) {
       home-manager = {
         useGlobalPkgs = true;
         useUserPackages = true;
@@ -44,11 +51,12 @@ let
           home.stateVersion = "23.11";
         };
       };
-    }
+    })
   ];
   
   # Combine base modules with machine-specific modules
-  allModules = baseNixosModules ++ nixosModules;
+  # Flatten the list to remove any nested lists from optionals
+  allModules = lib.flatten (baseNixosModules ++ nixosModules);
   
   # Machine-specific special arguments
   allSpecialArgs = {

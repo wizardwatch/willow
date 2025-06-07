@@ -38,7 +38,10 @@ fi
 
 echo "To deploy using this ISO:"
 echo "1. Boot from the ISO"
-echo "2. Connect to a network (use 'nmtui' or 'nmcli')"
+echo "2. Connect to a network (use 'nmtui')"
 echo "3. Use 'ip a' to find the IP address"
 echo "4. Deploy from your machine with: deploy .#your-host --target-host root@<IP_ADDRESS>"
 echo "   (The default root password is 'nixos')"
+echo ""
+echo "Additional ISO information is available on the boot screen"
+echo "and in /root/INSTALL_INSTRUCTIONS.txt after booting."
