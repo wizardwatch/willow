@@ -32,7 +32,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     ags.url = "github:Aylur/ags";
-    
+
     # For future deployment capabilities
     deploy-rs = {
       url = "github:serokell/deploy-rs";
@@ -64,20 +64,21 @@
           allowUnfree = true;
         };
       };
-      
+
       # Import the mkHost function
       mkHost = import ./lib/mkHost.nix { inherit inputs system; };
-      
+
       # Host definitions
       hosts = {
         # Current system: willow
         willow = mkHost {
           name = "willow";
+          username = "willow"; # Explicitly specify the username
           nixosModules = [
             ./hosts/willow/default.nix
             ./modules/base.nix       # Common base configuration
             ./modules/desktop.nix    # Desktop environment configuration
-            
+
             # Pass trunk modules to home-manager
             ({ pkgs, ... }: {
               home-manager.users.willow = { ... }: {
@@ -96,10 +97,12 @@
             inherit self hyprland;
           };
         };
-        
+
+
         # ISO for deployments
         iso = mkHost {
           name = "iso";
+          username = null; # Explicitly disable home-manager for ISO
           nixosModules = [
             ./hosts/iso/default.nix
           ];
@@ -108,30 +111,18 @@
           };
         };
       };
-        
-        # ISO for deployments
-        iso = mkHost {
-          name = "iso";
-          nixosModules = [
-            ./hosts/iso/default.nix
-          ];
-          extraSpecialArgs = {
-            inherit self;
-          };
-        };
-      };
-      
+
     in {
       # NixOS configurations
       nixosConfigurations = builtins.mapAttrs (name: host: host.nixosConfig) hosts;
-      
+
       # Deploy-rs nodes (for future use)
       deploy.nodes = builtins.mapAttrs (name: host: host.deployConfig) hosts;
-      
+
       # Checks for deploy-rs
       checks = builtins.mapAttrs (system: deployLib: deployLib.deployChecks self.deploy) deploy-rs.lib;
-      
+
       # ISO image for deployments
-      iso = self.nixosConfigurations.iso.config.system.build.isoImage;
+      packages.${system}.iso = self.nixosConfigurations.iso.config.system.build.isoImage;
     };
 }

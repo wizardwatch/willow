@@ -4,8 +4,8 @@ set -e
 echo "Building minimal NixOS deployment ISO..."
 cd "$(dirname "$0")"
 
-# Build the ISO
-nix build .#iso -o result-iso
+# Build the ISO using flake
+nix build .#packages.x86_64-linux.iso -o result-iso
 
 ISO_PATH=$(readlink -f result-iso)/iso/nixos-*.iso
 echo "ISO created at: $ISO_PATH"
@@ -42,6 +42,9 @@ echo "2. Connect to a network (use 'nmtui')"
 echo "3. Use 'ip a' to find the IP address"
 echo "4. Deploy from your machine with: deploy .#your-host --target-host root@<IP_ADDRESS>"
 echo "   (The default root password is 'nixos')"
+echo ""
+echo "Additional installation instructions can be found on the boot screen"
+echo "and in /root/INSTALL_INSTRUCTIONS.txt after booting."
 echo ""
 echo "Additional ISO information is available on the boot screen"
 echo "and in /root/INSTALL_INSTRUCTIONS.txt after booting."

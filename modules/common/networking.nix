@@ -56,13 +56,4 @@
     enable = true;
     joinNetworks = [];  # Add network IDs here to auto-join
   };
-  
-  # OpenSSH server (disabled by default)
-  services.openssh = {
-    enable = false;  # Enable per-host as needed
-    settings = {
-      PasswordAuthentication = false;
-      PermitRootLogin = "no";
-    };
-  };
 }

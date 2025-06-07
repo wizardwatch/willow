@@ -2,7 +2,11 @@
 
 {
   # Define user groups
-  users.groups.dockerAccess = {};
+  users.groups = {
+    willow = {};
+    wyatt = {};
+    dockerAccess = {};
+  };
 
   # Main user accounts
   users.users = {
@@ -13,6 +17,7 @@
       # Use password file in production
       initialPassword = "nixos";
       shell = pkgs.zsh;
+      group = "willow";
     };
     
     # Secondary user
@@ -21,6 +26,7 @@
       extraGroups = [ "wheel" "mpd" "audio" "dialout" ];
       shell = pkgs.zsh;
       initialPassword = "nixos";
+      group = "wyatt";
       # For production use SOPS:
       # passwordFile = config.sops.secrets.wyattPassword.path;
     };
