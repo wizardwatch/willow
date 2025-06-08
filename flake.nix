@@ -53,7 +53,7 @@
       system = "x86_64-linux";
       # Import the mkHost function
       mkHost = import ./lib/mkHost.nix { inherit inputs system; };
-      
+
       # Host definitions
       hosts = {
         # Current system: willow
@@ -61,15 +61,6 @@
           name = "willow";
           username = "willow"; # Explicitly specify the username
           nixosModules = [
-            # Use local modules for home-manager
-            # Import ironbar module for home-manager
-            ({ ... }: {
-              home-manager.users.willow = { ... }: {
-                imports = [
-                  inputs.ironbar.homeManagerModules.default
-                ];
-              };
-            })
           ];
           extraSpecialArgs = {
             inherit self;
