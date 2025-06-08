@@ -7,7 +7,6 @@
   imports = [
     # Common system configuration
     ./common/nix.nix
-    ./common/users.nix
     ./common/environment.nix
     ./common/fonts.nix
     ./common/hardware.nix

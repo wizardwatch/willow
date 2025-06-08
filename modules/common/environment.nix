@@ -27,11 +27,11 @@
       git
       tree
       jq
-
+      ripgrep
       # Terminal utilities
       tmux
       htop
-
+      broot
       # Editors
       vim
 

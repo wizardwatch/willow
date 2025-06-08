@@ -5,7 +5,7 @@
   # This manages secrets using age encryption
 
   # Use the project's default secrets file
-  sops.defaultSopsFile = ../../secrets/github.yaml;
+  sops.defaultSopsFile = ./secrets/github.yaml;
 
   # Use SSH host key for age decryption
   sops.age = {
@@ -21,13 +21,13 @@
       mode = "0440";
       group = config.users.groups.keys.name;
     };
-    
+
     # Spotify credentials
     spotifyPassword = {
       mode = "0440";
       group = config.users.groups.keys.name;
     };
-    
+
     # User password for wyatt
     wyattPassword = {
       neededForUsers = true;

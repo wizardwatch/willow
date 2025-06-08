@@ -16,6 +16,8 @@
 
     # Productivity
     pdfarranger
+    firefox
+    xfce.thunar
 
     # Media
     mpv
@@ -25,6 +27,7 @@
 
     # Development
     zed-editor
+    popsicle
 
     # 3D/CAD
     freecad-wayland
