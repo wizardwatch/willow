@@ -1,10 +1,5 @@
 # User configuration for willow
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}: {
+{pkgs, ...}: {
   # User account
   users.users.willow = {
     isNormalUser = true;

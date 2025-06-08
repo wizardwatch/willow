@@ -1,4 +1,4 @@
-{lib, ...}: {
+{...}: {
   # This file exposes all modules in a structured way
   # It allows importing the entire modules directory with:
   # imports = [ ./modules ];

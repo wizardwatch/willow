@@ -1,8 +1,4 @@
-{
-  config,
-  pkgs,
-  ...
-}: {
+{pkgs, ...}: {
   # Fonts configuration
   fonts = {
     packages = with pkgs; [

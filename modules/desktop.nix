@@ -1,9 +1,4 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}: {
+{...}: {
   # Desktop configuration for NixOS systems
   # This module imports all desktop-related modules
 

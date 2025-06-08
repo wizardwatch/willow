@@ -1,8 +1,4 @@
-{
-  config,
-  pkgs,
-  ...
-}: {
+{...}: {
   # OpenSSH server configuration
   services.openssh = {
     enable = true;

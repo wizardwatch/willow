@@ -1,8 +1,4 @@
-{
-  config,
-  pkgs,
-  ...
-}: {
+{pkgs, ...}: {
   # Security-focused tools and configurations for desktop systems
 
   environment.systemPackages = with pkgs; [

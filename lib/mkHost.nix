@@ -17,25 +17,6 @@
   homeModules ? [], # Additional home-manager modules to include
   homeSpecialArgs ? {}, # Additional specialArgs to pass to home-manager
 }: let
-  # System settings
-  pkgs = import inputs.nixpkgs {
-    inherit system;
-    config = {
-      allowUnfree = true;
-      allowUnfreePredicate = pkg:
-        builtins.elem (lib.getName pkg) [
-          "steam"
-          "steam-original"
-          "steam-run"
-          "steam-unwrapped"
-          "zerotierone"
-          "obsidian"
-          "zoom"
-          "corefonts"
-        ];
-    };
-  };
-
   # Access to nixpkgs lib
   lib = inputs.nixpkgs.lib;
 

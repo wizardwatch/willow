@@ -1,6 +1,5 @@
 # Central Users Configuration
 {
-  config,
   lib,
   pkgs,
   ...

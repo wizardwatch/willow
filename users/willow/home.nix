@@ -1,8 +1,6 @@
 # Willow's home configuration
 {
-  config,
   pkgs,
-  lib,
   inputs,
   ...
 }: {

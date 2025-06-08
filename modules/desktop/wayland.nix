@@ -1,9 +1,4 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}: {
+{pkgs, ...}: {
   # Wayland-specific configuration for desktop environments
 
   # Required packages for Wayland usage

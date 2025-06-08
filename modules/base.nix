@@ -1,9 +1,4 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}: {
+{lib, ...}: {
   # Base configuration for all NixOS systems
   # This module imports all the common modules that should be present on all systems
 

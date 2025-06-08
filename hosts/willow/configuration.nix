@@ -1,7 +1,6 @@
 # Willow-specific NixOS configuration
 {
   config,
-  lib,
   pkgs,
   ...
 }: {

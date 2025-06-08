@@ -1,8 +1,4 @@
-{
-  config,
-  pkgs,
-  ...
-}: let
+{pkgs, ...}: let
   json = pkgs.formats.json {};
 in {
   # Main PipeWire configuration
