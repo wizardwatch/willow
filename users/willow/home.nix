@@ -3,6 +3,12 @@
 
 {
   imports = [
+    # Import Zsh and Starship configuration
+    ./modules/other/starshipZsh.nix
+    # Import Hyprland configuration with overrides
+    (import ./modules/wayland/hyprland.nix (import ./overrides/hyprland.nix))
+    # Import ironbar module
+    inputs.ironbar.homeManagerModules.default
     # Import the helix theme configuration from programs directory
     #../../programs/helix_theme.nix
   ];

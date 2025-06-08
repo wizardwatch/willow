@@ -19,10 +19,6 @@
       url = "github:JakeStanger/ironbar";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    trunk = {
-      url = "github:wizardwatch/trunk";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     home-manager = {
       url = "github:nix-community/home-manager/master";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -42,7 +38,6 @@
   outputs =
     { self
     , nixpkgs
-    , trunk
     , home-manager
     , sops-nix
     , nix-alien
@@ -58,6 +53,7 @@
       system = "x86_64-linux";
       # Import the mkHost function
       mkHost = import ./lib/mkHost.nix { inherit inputs system; };
+      
       # Host definitions
       hosts = {
         # Current system: willow
@@ -65,12 +61,11 @@
           name = "willow";
           username = "willow"; # Explicitly specify the username
           nixosModules = [
-            # Pass trunk modules to home-manager
+            # Use local modules for home-manager
+            # Import ironbar module for home-manager
             ({ ... }: {
               home-manager.users.willow = { ... }: {
                 imports = [
-                  (trunk.nixosModules.userZshStarship)
-                  (trunk.nixosModules.userHyprland (import ./overrides/hyprland.nix))
                   inputs.ironbar.homeManagerModules.default
                 ];
               };
@@ -97,6 +92,7 @@
       };
 
     in {
+
       # NixOS configurations
       nixosConfigurations = builtins.mapAttrs (name: host: host.nixosConfig) hosts;
 

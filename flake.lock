@@ -243,28 +243,6 @@
         "type": "github"
       }
     },
-    "home-manager_2": {
-      "inputs": {
-        "nixpkgs": [
-          "trunk",
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1720045378,
-        "narHash": "sha256-lmE7B+QXw7lWdBu5GQlUABSpzPk3YBb9VbV+IYK5djk=",
-        "owner": "nix-community",
-        "repo": "home-manager",
-        "rev": "0a30138c694ab3b048ac300794c2eb599dc40266",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-community",
-        "ref": "master",
-        "repo": "home-manager",
-        "type": "github"
-      }
-    },
     "hyprcursor": {
       "inputs": {
         "hyprlang": [
@@ -742,8 +720,7 @@
         "ironbar": "ironbar",
         "nix-alien": "nix-alien",
         "nixpkgs": "nixpkgs_3",
-        "sops-nix": "sops-nix",
-        "trunk": "trunk"
+        "sops-nix": "sops-nix"
       }
     },
     "sops-nix": {
@@ -806,27 +783,6 @@
       "original": {
         "owner": "nix-systems",
         "repo": "default-linux",
-        "type": "github"
-      }
-    },
-    "trunk": {
-      "inputs": {
-        "home-manager": "home-manager_2",
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1722381226,
-        "narHash": "sha256-IkYOVLrI1hhwcAPMfOi/lSy2r8QC8xW+klS2jla9m10=",
-        "owner": "wizardwatch",
-        "repo": "trunk",
-        "rev": "915ae6047db2206ba9ac7e9500c38d115830a631",
-        "type": "github"
-      },
-      "original": {
-        "owner": "wizardwatch",
-        "repo": "trunk",
         "type": "github"
       }
     },
