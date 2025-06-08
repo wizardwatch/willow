@@ -1,7 +1,10 @@
 # Willow-specific NixOS configuration
-{ config, lib, pkgs, ... }:
-
 {
+  config,
+  lib,
+  pkgs,
+  ...
+}: {
   # System identification
   networking.hostName = "willow";
   time.timeZone = "America/New_York";
@@ -58,7 +61,7 @@
     loader.systemd-boot.enable = true;
     loader.efi.canTouchEfiVariables = true;
 
-    initrd.kernelModules = [ "amdgpu" ];
+    initrd.kernelModules = ["amdgpu"];
     extraModulePackages = with config.boot.kernelPackages; [
       v4l2loopback
     ];
@@ -69,8 +72,8 @@
 
   # Firewall configuration
   networking.firewall = {
-    allowedTCPPorts = [ 27036 27037 49737 6969 ];
-    allowedUDPPorts = [ 27031 27036 6969 122 ];
+    allowedTCPPorts = [27036 27037 49737 6969];
+    allowedUDPPorts = [27031 27036 6969 122];
   };
 
   # State version

@@ -1,10 +1,11 @@
-{ config, pkgs, lib, ... }:
-
 {
+  config,
+  pkgs,
+  lib,
+  ...
+}: {
   # Basic hardware configuration common to all systems
   hardware = {
-
-
     # Enable Bluetooth
     bluetooth = {
       enable = true;
@@ -38,7 +39,7 @@
     '';
 
     # Enable trim for SSDs
-    kernelParams = [ "quiet" ];
+    kernelParams = ["quiet"];
   };
 
   # Enable periodic TRIM

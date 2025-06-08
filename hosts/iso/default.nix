@@ -1,6 +1,10 @@
-{ config, lib, pkgs, modulesPath, ... }:
-
 {
+  config,
+  lib,
+  pkgs,
+  modulesPath,
+  ...
+}: {
   imports = [
     # Use the minimal installer as a base
     "${modulesPath}/installer/cd-dvd/installation-cd-minimal.nix"
@@ -42,7 +46,7 @@
   nixpkgs.config.allowUnfree = true;
 
   # Create persistent Nix store
-  boot.supportedFilesystems = [ "btrfs" ];
+  boot.supportedFilesystems = ["btrfs"];
 
   # ISO-specific settings
   isoImage = {

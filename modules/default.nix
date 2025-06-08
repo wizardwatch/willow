@@ -1,6 +1,4 @@
-{ lib, ... }:
-
-{
+{lib, ...}: {
   # This file exposes all modules in a structured way
   # It allows importing the entire modules directory with:
   # imports = [ ./modules ];
@@ -18,7 +16,6 @@
     ./common/fonts.nix
     ./common/hardware.nix
     ./common/networking.nix
-
 
     # Service modules
     ./services/pipewire.nix

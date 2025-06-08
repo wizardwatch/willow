@@ -1,7 +1,10 @@
 # Central Users Configuration
-{ config, lib, pkgs, ... }:
-
 {
+  config,
+  lib,
+  pkgs,
+  ...
+}: {
   imports = [
     # User configurations
     ./willow

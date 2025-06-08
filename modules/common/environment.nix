@@ -1,6 +1,9 @@
-{ config, pkgs, lib, ... }:
-
 {
+  config,
+  pkgs,
+  lib,
+  ...
+}: {
   # Basic environment configuration
   environment = {
     # Session variables
@@ -32,12 +35,16 @@
       tmux
       htop
       broot
+      tldr
       # Editors
       vim
 
       # Nix tools
       # nix-alien
       nix-index
+      nil
+      alejandra
+      nixd
 
       # Security
       age

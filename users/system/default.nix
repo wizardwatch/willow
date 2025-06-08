@@ -1,7 +1,10 @@
 # System users configuration
-{ config, lib, pkgs, ... }:
-
 {
+  config,
+  lib,
+  pkgs,
+  ...
+}: {
   # System users
   users.users = {
     # Docker folder user
@@ -11,7 +14,7 @@
       group = "dockerAccess";
       description = "User for Docker storage";
     };
-    
+
     # Add other system users here as needed
   };
 
@@ -19,7 +22,7 @@
   users.groups = {
     # Docker access group
     dockerAccess = {};
-    
+
     # Other system groups
   };
 }

@@ -1,49 +1,52 @@
-{ config, pkgs, lib, ... }:
-
 {
+  config,
+  pkgs,
+  lib,
+  ...
+}: {
   # Wayland-specific configuration for desktop environments
 
   # Required packages for Wayland usage
   environment.systemPackages = with pkgs; [
     # Screenshot and screen recording
-    grimblast      # Screenshot utility for Hyprland
-    grim           # Screenshot utility
-    slurp          # Region selector
-    wf-recorder    # Screen recorder
-    
+    grimblast # Screenshot utility for Hyprland
+    grim # Screenshot utility
+    slurp # Region selector
+    wf-recorder # Screen recorder
+
     # Clipboard and utilities
-    wl-clipboard   # Command-line clipboard utilities
-    cliphist       # Clipboard history
-    
+    wl-clipboard # Command-line clipboard utilities
+    cliphist # Clipboard history
+
     # Display configuration
-    wlr-randr      # Similar to xrandr
-    
+    wlr-randr # Similar to xrandr
+
     # Desktop environment utilities
-    seatd          # Seat management
-    swaylock       # Screen locker
-    swayidle       # Idle management
-    waybar         # Status bar
-    
+    seatd # Seat management
+    swaylock # Screen locker
+    swayidle # Idle management
+    waybar # Status bar
+
     # Notifications
-    libnotify      # Desktop notifications library
-    mako           # Notification daemon
-    
+    libnotify # Desktop notifications library
+    mako # Notification daemon
+
     # File management
-    xdg-utils      # For opening files with correct app
-    
+    xdg-utils # For opening files with correct app
+
     # Application launcher
-    wofi           # Application launcher
-    fuzzel         # Alternative launcher
+    wofi # Application launcher
+    fuzzel # Alternative launcher
 
     # Media
-    mpv            # Media player
+    mpv # Media player
   ];
-  
+
   # Security settings
   security = {
     # Enable polkit for privilege escalation dialogs
     polkit.enable = true;
-    
+
     # Authentication agent
     polkit.extraConfig = ''
       polkit.addRule(function(action, subject) {
@@ -52,26 +55,26 @@
         }
       });
     '';
-    
+
     # Allow swaylock to authenticate
     pam.services.swaylock = {};
   };
-  
+
   # Program settings
   programs = {
     # Password store and keyring
     seahorse.enable = true;
-    
+
     # GNOME settings storage
     dconf.enable = true;
-    
+
     # Hyprland
     hyprland = {
       enable = true;
       xwayland.enable = true;
     };
   };
-  
+
   # XDG portal settings (for screen sharing, etc)
   xdg = {
     portal = {
@@ -91,9 +94,9 @@
     # Set up Polkit authentication agent
     polkit-gnome-authentication-agent-1 = {
       description = "polkit-gnome-authentication-agent-1";
-      wantedBy = [ "graphical-session.target" ];
-      wants = [ "graphical-session.target" ];
-      after = [ "graphical-session.target" ];
+      wantedBy = ["graphical-session.target"];
+      wants = ["graphical-session.target"];
+      after = ["graphical-session.target"];
       serviceConfig = {
         Type = "simple";
         ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";

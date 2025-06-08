@@ -1,21 +1,24 @@
 # User configuration for willow
-{ config, lib, pkgs, ... }:
-
 {
+  config,
+  lib,
+  pkgs,
+  ...
+}: {
   # User account
   users.users.willow = {
     isNormalUser = true;
     description = "Willow";
     extraGroups = [
-      "wheel"        # Administrator privileges
+      "wheel" # Administrator privileges
       "networkmanager"
       "video"
       "audio"
       "docker"
-      "dialout"      # Serial port access
-      "input"        # Input devices
+      "dialout" # Serial port access
+      "input" # Input devices
     ];
-    initialPassword = "mount";  # Change in production
+    initialPassword = "mount"; # Change in production
     shell = pkgs.zsh;
     group = "willow";
   };
@@ -30,5 +33,4 @@
       ./home.nix
     ];
   };
-
 }

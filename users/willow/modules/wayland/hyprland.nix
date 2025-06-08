@@ -1,6 +1,10 @@
-{ config, pkgs, lib, hyprland, ... }:
-
 {
+  config,
+  pkgs,
+  lib,
+  hyprland,
+  ...
+}: {
   wayland.windowManager.hyprland = {
     enable = true;
     # Use Hyprland from flake if available
@@ -13,10 +17,10 @@
 
       # Autostart applications
       exec-once = [
-        "waybar"          # Top bar
-        "ironbar"         # Additional bar
-        "hyprpaper"       # Wallpaper
-        "mako"            # Notifications
+        "waybar" # Top bar
+        "ironbar" # Additional bar
+        "hyprpaper" # Wallpaper
+        "mako" # Notifications
         "wl-paste --type text --watch cliphist store" # Clipboard history for text
         "wl-paste --type image --watch cliphist store" # Clipboard history for images
       ];
@@ -25,7 +29,7 @@
       input = {
         kb_layout = "us";
         follow_mouse = 1;
-        sensitivity = 0;  # -1.0 to 1.0, 0 means no modification
+        sensitivity = 0; # -1.0 to 1.0, 0 means no modification
         touchpad = {
           natural_scroll = true;
           disable_while_typing = true;
@@ -51,7 +55,6 @@
       # Decoration settings
       decoration = {
         rounding = 8;
-
 
         shadow = {
           # The shadow's range in pixels. Positive means away from the window, negative means inside the window.
@@ -107,8 +110,6 @@
         workspace_swipe_cancel_ratio = 0.5;
         workspace_swipe_min_speed_to_force = 30;
       };
-
-
 
       # Layer rules
       layerrule = [
@@ -193,11 +194,11 @@
 
   # Ensure Hyprland prerequisites are installed
   home.packages = with pkgs; [
-    hyprpaper  # Wallpaper utility for Hyprland
-    grimblast  # Screenshot utility for Hyprland
-    cliphist   # Clipboard history utility
+    hyprpaper # Wallpaper utility for Hyprland
+    grimblast # Screenshot utility for Hyprland
+    cliphist # Clipboard history utility
     brightnessctl # Brightness control
-    libnotify  # Notifications
+    libnotify # Notifications
     wl-clipboard # Clipboard utilities
   ];
 }

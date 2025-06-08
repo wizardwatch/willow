@@ -1,39 +1,38 @@
-{ inputs, system, ... }:
-
+{
+  inputs,
+  system,
+  ...
+}:
 # This function creates a NixOS configuration with standardized structure
 # It combines NixOS configuration and home-manager in a consistent way
 {
   # Required parameters
-  name,                   # Hostname
-
+  name, # Hostname
   # Optional user configuration
-  username ? null,        # Primary user (null means no home-manager)
-
+  username ? null, # Primary user (null means no home-manager)
   # Optional NixOS configuration overrides
-  nixosModules ? [],      # Additional NixOS modules to include (automatically includes hosts/name/default.nix)
-  extraSpecialArgs ? {},  # Additional specialArgs to pass to NixOS
-
+  nixosModules ? [], # Additional NixOS modules to include (automatically includes hosts/name/default.nix)
+  extraSpecialArgs ? {}, # Additional specialArgs to pass to NixOS
   # Optional home-manager configuration overrides (only used when username is set)
-  homeModules ? [],       # Additional home-manager modules to include
-  homeSpecialArgs ? {},   # Additional specialArgs to pass to home-manager
-}:
-
-let
+  homeModules ? [], # Additional home-manager modules to include
+  homeSpecialArgs ? {}, # Additional specialArgs to pass to home-manager
+}: let
   # System settings
   pkgs = import inputs.nixpkgs {
     inherit system;
     config = {
       allowUnfree = true;
-      allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
-        "steam"
-        "steam-original"
-        "steam-run"
-        "steam-unwrapped"
-        "zerotierone"
-        "obsidian"
-        "zoom"
-        "corefonts"
-      ];
+      allowUnfreePredicate = pkg:
+        builtins.elem (lib.getName pkg) [
+          "steam"
+          "steam-original"
+          "steam-run"
+          "steam-unwrapped"
+          "zerotierone"
+          "obsidian"
+          "zoom"
+          "corefonts"
+        ];
     };
   };
 
@@ -53,11 +52,13 @@ let
       home-manager = {
         useGlobalPkgs = true;
         useUserPackages = true;
-        extraSpecialArgs = {
-          inherit inputs system;
-        } // homeSpecialArgs;
+        extraSpecialArgs =
+          {
+            inherit inputs system;
+          }
+          // homeSpecialArgs;
 
-        users.${username} = { ... }: {
+        users.${username} = {...}: {
           imports = homeModules;
           # Set a reasonable default
           home.stateVersion = "23.11";
@@ -67,20 +68,22 @@ let
   ];
 
   # Automatically include the host's default.nix file
-  hostDefaultModule = if builtins.pathExists ../hosts/${name}/default.nix
-                      then [ ../hosts/${name}/default.nix ]
-                      else [];
+  hostDefaultModule =
+    if builtins.pathExists ../hosts/${name}/default.nix
+    then [../hosts/${name}/default.nix]
+    else [];
 
   # Combine base modules with machine-specific modules and host default module
   # Flatten the list to remove any nested lists from optionals
   allModules = lib.flatten (baseNixosModules ++ hostDefaultModule ++ nixosModules);
 
   # Machine-specific special arguments
-  allSpecialArgs = {
-    inherit inputs system;
-    host = { inherit name; };
-  } // extraSpecialArgs;
-
+  allSpecialArgs =
+    {
+      inherit inputs system;
+      host = {inherit name;};
+    }
+    // extraSpecialArgs;
 in {
   # NixOS configuration
   nixosConfig = inputs.nixpkgs.lib.nixosSystem {

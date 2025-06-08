@@ -1,10 +1,10 @@
-{ config, pkgs, ... }:
-
-let
-  json = pkgs.formats.json {};
-in
 {
-
+  config,
+  pkgs,
+  ...
+}: let
+  json = pkgs.formats.json {};
+in {
   # Main PipeWire configuration
   services.pipewire = {
     enable = true;
@@ -21,21 +21,21 @@ in
       {
         factory = "adapter";
         args = {
-          "factory.name"     = "support.null-audio-sink";
-          "node.name"        = "Game_Audio";
+          "factory.name" = "support.null-audio-sink";
+          "node.name" = "Game_Audio";
           "node.description" = "Game Output";
-          "media.class"      = "Audio/Sink";
-          "audio.position"   = "FL,FR";
+          "media.class" = "Audio/Sink";
+          "audio.position" = "FL,FR";
         };
       }
       {
         factory = "adapter";
         args = {
-          "factory.name"     = "support.null-audio-sink";
-          "node.name"        = "Game-Mic-Proxy";
+          "factory.name" = "support.null-audio-sink";
+          "node.name" = "Game-Mic-Proxy";
           "node.description" = "Game Mic";
-          "media.class"      = "Audio/Source/Virtual";
-          "audio.position"   = "FL,FR";
+          "media.class" = "Audio/Source/Virtual";
+          "audio.position" = "FL,FR";
         };
       }
     ];
@@ -46,7 +46,7 @@ in
     alsa-utils
     pulsemixer
     pavucontrol
-    qpwgraph    # PipeWire graph
+    qpwgraph # PipeWire graph
     easyeffects # Audio effects
   ];
 

@@ -1,18 +1,22 @@
-{ config, pkgs, lib, ... }:
-
 {
-  nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
-    "steam"
-    "steam-original"
-    "steam-run"
-    "steam-unwrapped"
-  ];
+  config,
+  pkgs,
+  lib,
+  ...
+}: {
+  nixpkgs.config.allowUnfreePredicate = pkg:
+    builtins.elem (lib.getName pkg) [
+      "steam"
+      "steam-original"
+      "steam-run"
+      "steam-unwrapped"
+    ];
   # Common desktop applications for all systems
 
   environment.systemPackages = with pkgs; [
     # Communication
     signal-desktop
-    vesktop         # Better Discord client
+    vesktop # Better Discord client
 
     # Productivity
     pdfarranger
@@ -21,11 +25,12 @@
 
     # Media
     mpv
-    mpvpaper        # Wallpaper engine using mpv
+    mpvpaper # Wallpaper engine using mpv
     gimp
-    krita           # Digital painting
+    krita # Digital painting
 
     # Development
+    package-version-server # Used for zed-editor
     zed-editor
     popsicle
 
@@ -35,12 +40,12 @@
     prusa-slicer
 
     # Gaming
-    prismlauncher   # Minecraft launcher
+    prismlauncher # Minecraft launcher
 
     # System
-    pavucontrol     # Audio control
-    appimage-run    # Run AppImages
-    eww             # Widget toolkit
+    pavucontrol # Audio control
+    appimage-run # Run AppImages
+    eww # Widget toolkit
 
     # Screen recording/streaming
     (wrapOBS {
@@ -75,7 +80,8 @@
       ];
     }
     ;
-    };*/
+    };
+  */
   # GNOME keyring for credentials
   services.gnome.gnome-keyring.enable = true;
 

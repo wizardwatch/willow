@@ -1,6 +1,9 @@
-{ config, lib, pkgs, ... }:
-
 {
+  config,
+  lib,
+  pkgs,
+  ...
+}: {
   # Desktop configuration for NixOS systems
   # This module imports all desktop-related modules
 
@@ -24,11 +27,8 @@
   # Enable fonts
   fonts.fontDir.enable = true;
 
-
-
   # Enable common desktop services
   services = {
-
     # Hardware support
     acpid.enable = true;
     thermald.enable = true;
@@ -36,5 +36,4 @@
     # Bluetooth
     blueman.enable = true;
   };
-
 }

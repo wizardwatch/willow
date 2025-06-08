@@ -1,6 +1,9 @@
-{ config, lib, pkgs, ... }:
-
 {
+  config,
+  lib,
+  pkgs,
+  ...
+}: {
   # Base configuration for all NixOS systems
   # This module imports all the common modules that should be present on all systems
 
@@ -25,7 +28,7 @@
   # Set a fallback locale
   i18n = {
     defaultLocale = lib.mkDefault "en_US.UTF-8";
-    supportedLocales = lib.mkDefault [ "en_US.UTF-8/UTF-8" ];
+    supportedLocales = lib.mkDefault ["en_US.UTF-8/UTF-8"];
   };
 
   # Set basic time settings

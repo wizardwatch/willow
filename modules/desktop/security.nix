@@ -1,10 +1,11 @@
-{ config, pkgs, ... }:
-
 {
+  config,
+  pkgs,
+  ...
+}: {
   # Security-focused tools and configurations for desktop systems
 
   environment.systemPackages = with pkgs; [
-
     # Encryption
     gnupg
     age
@@ -12,7 +13,7 @@
     # Network security
     nmap
 
-   # System monitoring and forensics
+    # System monitoring and forensics
     lsof
     htop
     btop
@@ -21,7 +22,6 @@
     openvpn
     wireguard-tools
     openconnect
-
   ];
 
   # Enable Wireshark
@@ -39,8 +39,7 @@
   # Add wireshark capabilities to users who need it
   users.users = {
     willow = {
-      extraGroups = [ "wireshark" ];
+      extraGroups = ["wireshark"];
     };
   };
-
 }

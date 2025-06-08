@@ -1,11 +1,12 @@
-{ config, pkgs, ... }:
-
 {
+  config,
+  pkgs,
+  ...
+}: {
   # Fonts configuration
   fonts = {
     packages = with pkgs; [
-
-     # Additional font families
+      # Additional font families
       iosevka
     ];
 
@@ -14,9 +15,9 @@
 
       # Default font settings
       defaultFonts = {
-        monospace = [ "Iosevka Nerd Font" ];
-        serif = [ "Iosevka Etoile" ];
-        sansSerif = [ "Iosevka Aile" ];
+        monospace = ["Iosevka Nerd Font"];
+        serif = ["Iosevka Etoile"];
+        sansSerif = ["Iosevka Aile"];
       };
 
       # Uncomment to fix GTK application issues if needed

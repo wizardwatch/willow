@@ -35,65 +35,61 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
-  outputs =
-    { self
-    , nixpkgs
-    , home-manager
-    , sops-nix
-    , nix-alien
-    , ags
-    , anyrun
-    , ironbar
-    , hyprland-contrib
-    , hyprland
-    , deploy-rs
-    , ...
-    }@inputs:
-    let
-      system = "x86_64-linux";
-      # Import the mkHost function
-      mkHost = import ./lib/mkHost.nix { inherit inputs system; };
+  outputs = {
+    self,
+    nixpkgs,
+    home-manager,
+    sops-nix,
+    nix-alien,
+    ags,
+    anyrun,
+    ironbar,
+    hyprland-contrib,
+    hyprland,
+    deploy-rs,
+    ...
+  } @ inputs: let
+    system = "x86_64-linux";
+    # Import the mkHost function
+    mkHost = import ./lib/mkHost.nix {inherit inputs system;};
 
-      # Host definitions
-      hosts = {
-        # Current system: willow
-        willow = mkHost {
-          name = "willow";
-          username = "willow"; # Explicitly specify the username
-          nixosModules = [
-          ];
-          extraSpecialArgs = {
-            inherit self;
-          };
-          homeSpecialArgs = {
-            inherit self hyprland anyrun ags ironbar;
-          };
+    # Host definitions
+    hosts = {
+      # Current system: willow
+      willow = mkHost {
+        name = "willow";
+        username = "willow"; # Explicitly specify the username
+        nixosModules = [
+        ];
+        extraSpecialArgs = {
+          inherit self;
         };
-
-
-        # ISO for deployments
-        iso = mkHost {
-          name = "iso";
-          username = null; # Explicitly disable home-manager for ISO
-          nixosModules = [];
-          extraSpecialArgs = {
-            inherit self;
-          };
+        homeSpecialArgs = {
+          inherit self hyprland anyrun ags ironbar;
         };
       };
 
-    in {
-
-      # NixOS configurations
-      nixosConfigurations = builtins.mapAttrs (name: host: host.nixosConfig) hosts;
-
-      # Deploy-rs nodes (for future use)
-      deploy.nodes = builtins.mapAttrs (name: host: host.deployConfig) hosts;
-
-      # Checks for deploy-rs
-      checks = builtins.mapAttrs (system: deployLib: deployLib.deployChecks self.deploy) deploy-rs.lib;
-
-      # ISO image for deployments
-      packages.${system}.iso = self.nixosConfigurations.iso.config.system.build.isoImage;
+      # ISO for deployments
+      iso = mkHost {
+        name = "iso";
+        username = null; # Explicitly disable home-manager for ISO
+        nixosModules = [];
+        extraSpecialArgs = {
+          inherit self;
+        };
+      };
     };
+  in {
+    # NixOS configurations
+    nixosConfigurations = builtins.mapAttrs (name: host: host.nixosConfig) hosts;
+
+    # Deploy-rs nodes (for future use)
+    deploy.nodes = builtins.mapAttrs (name: host: host.deployConfig) hosts;
+
+    # Checks for deploy-rs
+    checks = builtins.mapAttrs (system: deployLib: deployLib.deployChecks self.deploy) deploy-rs.lib;
+
+    # ISO image for deployments
+    packages.${system}.iso = self.nixosConfigurations.iso.config.system.build.isoImage;
+  };
 }

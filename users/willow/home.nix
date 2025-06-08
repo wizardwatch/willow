@@ -1,7 +1,11 @@
 # Willow's home configuration
-{ config, pkgs, lib, inputs, ... }:
-
 {
+  config,
+  pkgs,
+  lib,
+  inputs,
+  ...
+}: {
   imports = [
     # Import Zsh and Starship configuration
     ./modules/other/starshipZsh.nix
@@ -142,7 +146,7 @@
           # Use anyrun applications plugin
           inputs.anyrun.packages.${pkgs.system}.applications
         ];
-        width = { fraction = 0.3; };
+        width = {fraction = 0.3;};
         hideIcons = false;
         ignoreExclusiveZones = false;
         layer = "overlay";
@@ -166,7 +170,7 @@
     mimeApps = {
       enable = true;
       defaultApplications = {
-        "text/plain" = [ "helix.desktop" ];
+        "text/plain" = ["helix.desktop"];
       };
     };
   };
