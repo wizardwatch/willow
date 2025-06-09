@@ -1,8 +1,13 @@
 {
   pkgs,
+  lib,
   hyprland,
   ...
-}: {
+}: let
+  # Import the clipse keybindings
+  clipseKeybindings = import ./clipse/keybindings.nix {inherit pkgs;};
+  clipseConfig = clipseKeybindings.getClipseKeybindings;
+in {
   wayland.windowManager.hyprland = {
     enable = true;
     # Use Hyprland from flake if available
@@ -15,12 +20,9 @@
 
       # Autostart applications
       exec-once = [
-        "waybar" # Top bar
         "ironbar" # Additional bar
         "hyprpaper" # Wallpaper
         "mako" # Notifications
-        "wl-paste --type text --watch cliphist store" # Clipboard history for text
-        "wl-paste --type image --watch cliphist store" # Clipboard history for images
       ];
 
       # Input configuration
@@ -37,11 +39,11 @@
 
       # General configuration
       general = {
-        gaps_in = 5;
-        gaps_out = 10;
-        border_size = 2;
-        "col.active_border" = "rgba(33ccffee) rgba(00ff99ee) 45deg";
-        "col.inactive_border" = "rgba(595959aa)";
+        gaps_in = 1;
+        gaps_out = 1;
+        border_size = 6;
+        "col.active_border" = "rgba(5B7BB8FF) rgba(b54c8dFF) 45deg";
+        "col.inactive_border" = "rgba(595959CC)";
         layout = "dwindle";
 
         # New Hyprland 0.30+ settings
@@ -54,26 +56,9 @@
       decoration = {
         rounding = 8;
 
-        shadow = {
-          # The shadow's range in pixels. Positive means away from the window, negative means inside the window.
-          offset = ["0, 5"]; # [x, y]
-          # How many pixels the shadow should fade out to full transparency
-          range = 4;
-          # Whether to render shadows behind a window that has transparency
-          ignore_window = true;
-          # Shadow color. Alpha affects the transparency of the shadow, but not the shadow gradients.
-          color = "rgba(00000099)";
-        };
-
-        # New blur settings for Hyprland 0.30+
-        blur = {
-          enabled = true;
-          size = 3;
-          passes = 2;
-          new_optimizations = true;
-          xray = false;
-          ignore_opacity = false;
-        };
+        # Window transparency (0.0 - 1.0)
+        active_opacity = 0.93;
+        inactive_opacity = 0.85;
       };
 
       # Animation settings
@@ -118,52 +103,56 @@
       ];
 
       # Key bindings
-      bind = [
-        # Applications
-        "$mod, Return, exec, wezterm"
-        "$mod, N, exec, anyrun"
+      bind =
+        [
+          # Applications
+          "$mod, Return, exec, wezterm"
+          "$mod, N, exec, anyrun"
 
-        # Window management
-        "$mod SHIFT, C, killactive,"
-        "$mod, F, fullscreen,"
-        "$mod, Space, togglefloating,"
-        "$mod, P, pseudo," # pseudotiled state
-        "$mod, J, togglesplit," # toggle split direction
+          # Window management
+          "$mod SHIFT, C, killactive,"
+          "$mod, F, fullscreen,"
+          "$mod, Space, togglefloating,"
+          "$mod, P, pseudo," # pseudotiled state
+          "$mod, J, togglesplit," # toggle split direction
 
-        # Workspaces
-        "$mod, 1, workspace, 1"
-        "$mod, 2, workspace, 2"
-        "$mod, 3, workspace, 3"
-        "$mod, 4, workspace, 4"
-        "$mod, 5, workspace, 5"
-        "$mod, 6, workspace, 6"
-        "$mod, 7, workspace, 7"
-        "$mod, 8, workspace, 8"
-        "$mod, 9, workspace, 9"
+          # Workspaces
+          "$mod, 1, workspace, 1"
+          "$mod, 2, workspace, 2"
+          "$mod, 3, workspace, 3"
+          "$mod, 4, workspace, 4"
+          "$mod, 5, workspace, 5"
+          "$mod, 6, workspace, 6"
+          "$mod, 7, workspace, 7"
+          "$mod, 8, workspace, 8"
+          "$mod, 9, workspace, 9"
 
-        # Move windows to workspaces
-        "$mod SHIFT, 1, movetoworkspacesilent, 1"
-        "$mod SHIFT, 2, movetoworkspacesilent, 2"
-        "$mod SHIFT, 3, movetoworkspacesilent, 3"
-        "$mod SHIFT, 4, movetoworkspacesilent, 4"
-        "$mod SHIFT, 5, movetoworkspacesilent, 5"
-        "$mod SHIFT, 6, movetoworkspacesilent, 6"
-        "$mod SHIFT, 7, movetoworkspacesilent, 7"
-        "$mod SHIFT, 8, movetoworkspacesilent, 8"
-        "$mod SHIFT, 9, movetoworkspacesilent, 9"
+          # Move windows to workspaces
+          "$mod SHIFT, 1, movetoworkspacesilent, 1"
+          "$mod SHIFT, 2, movetoworkspacesilent, 2"
+          "$mod SHIFT, 3, movetoworkspacesilent, 3"
+          "$mod SHIFT, 4, movetoworkspacesilent, 4"
+          "$mod SHIFT, 5, movetoworkspacesilent, 5"
+          "$mod SHIFT, 6, movetoworkspacesilent, 6"
+          "$mod SHIFT, 7, movetoworkspacesilent, 7"
+          "$mod SHIFT, 8, movetoworkspacesilent, 8"
+          "$mod SHIFT, 9, movetoworkspacesilent, 9"
 
-        # Media and volume controls
-        ", XF86AudioRaiseVolume, exec, wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+"
-        ", XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
-        ", XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+          # Media and volume controls
+          ", XF86AudioRaiseVolume, exec, wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+"
+          ", XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
+          ", XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
 
-        # Brightness controls
-        ", XF86MonBrightnessUp, exec, brightnessctl set +5%"
-        ", XF86MonBrightnessDown, exec, brightnessctl set 5%-"
+          # Brightness controls
+          ", XF86MonBrightnessUp, exec, brightnessctl set +5%"
+          ", XF86MonBrightnessDown, exec, brightnessctl set 5%-"
+          # Toggle window opacity with Super+O
+          "$mod, O, exec, hyprctl dispatch toggleopaque"
 
-        # Screenshot
-        "$mod, C, exec, grimblast copy area"
-      ];
+          # Screenshot
+          "$mod, C, exec, grimblast copy area"
+        ]
+        ++ (clipseConfig.keybinds);
 
       # Mouse bindings for window management
       bindm = [
@@ -187,16 +176,29 @@
 
       # Disable direct scanout to fix some glitches
       env = WLR_DRM_NO_ATOMIC,1
+      ${clipseConfig.windowRules}
+      ${clipseConfig.autostart}
     '';
   };
 
   # Ensure Hyprland prerequisites are installed
-  home.packages = with pkgs; [
-    hyprpaper # Wallpaper utility for Hyprland
-    grimblast # Screenshot utility for Hyprland
-    cliphist # Clipboard history utility
-    brightnessctl # Brightness control
-    libnotify # Notifications
-    wl-clipboard # Clipboard utilities
-  ];
+  home.packages = with pkgs;
+    [
+      hyprpaper # Wallpaper utility for Hyprland
+      grimblast # Screenshot utility for Hyprland
+      brightnessctl # Brightness control
+      libnotify # Notifications
+      wl-clipboard # Clipboard utilities
+    ]
+    ++ clipseConfig.packages;
+
+  # Hyprpaper configuration
+  xdg.configFile = {
+    "hypr/hyprpaper.conf".text = ''
+      preload = ~/.config/hypr/celeste.png
+      wallpaper = ,~/.config/hypr/celeste.png
+      splash = false
+      ipc = on
+    '';
+  };
 }
