@@ -7,6 +7,7 @@
   # Import SSH keys from the willow user
   imports = [
     ../../users/willow/keys/ssh.nix
+    ./services.nix
   ];
   nix.settings = {
     trusted-users = ["root" "willow" "nixremote"];
@@ -34,8 +35,8 @@
     firewall = {
       enable = true;
       # SSH is already enabled by the ssh.nix module
-      allowedTCPPorts = [];
-      allowedUDPPorts = [];
+      allowedTCPPorts = [80 8080 8888]; # HTTP, Traefik dashboard, test service
+      allowedUDPPorts = [5353]; # mDNS for Avahi
     };
   };
 
@@ -55,6 +56,7 @@
     lsof
     ncdu
     rsync
+    python3Full
   ];
 
   # Server-specific boot options

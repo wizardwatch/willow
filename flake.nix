@@ -29,6 +29,12 @@
     };
     ags.url = "github:Aylur/ags";
 
+    # Authentik NixOS module
+    authentik-nix = {
+      url = "github:nix-community/authentik-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # For future deployment capabilities
     deploy-rs = {
       url = "github:serokell/deploy-rs";
@@ -46,6 +52,7 @@
     ironbar,
     hyprland-contrib,
     hyprland,
+    authentik-nix,
     deploy-rs,
     ...
   } @ inputs: let
