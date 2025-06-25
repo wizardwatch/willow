@@ -16,6 +16,8 @@
   # Optional home-manager configuration overrides (only used when username is set)
   homeModules ? [], # Additional home-manager modules to include
   homeSpecialArgs ? {}, # Additional specialArgs to pass to home-manager
+  # System type for specialized configuration
+  isDesktop ? false, # Whether this is a desktop system (with GUI) or server
 }: let
   # Access to nixpkgs lib
   lib = inputs.nixpkgs.lib;
@@ -36,8 +38,10 @@
         extraSpecialArgs =
           {
             inherit inputs system;
-          }
-          // homeSpecialArgs;
+            # Only include GUI-related inputs for desktop systems
+            inherit (homeSpecialArgs) self;
+          } 
+          // (if isDesktop then homeSpecialArgs else {});
 
         users.${username} = {...}: {
           imports = homeModules;
@@ -62,7 +66,9 @@
   allSpecialArgs =
     {
       inherit inputs system;
-      host = {inherit name;};
+      host = {
+        inherit name isDesktop;
+      };
     }
     // extraSpecialArgs;
 in {
@@ -75,9 +81,9 @@ in {
 
   # Deploy-rs configuration (for future use)
   deployConfig = {
-    hostname = "${name}.local"; # Default to .local domain, override if needed
+    hostname = "${name}.local"; # Default hostname (override with --hostname)
     profiles.system = {
-      user = "root";
+      user = "root"; # Default user (override with --ssh-user)
       path = inputs.deploy-rs.lib.${system}.activate.nixos inputs.self.nixosConfigurations.${name};
     };
   };

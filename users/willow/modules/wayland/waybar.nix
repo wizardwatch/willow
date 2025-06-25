@@ -1,8 +1,13 @@
 {
   pkgs,
-  inputs,
+  inputs ? {},
+  lib,
+  host ? { isDesktop = false; },
   ...
-}: {
+}: let
+  # Only use this module if we're on a desktop system
+  isDesktop = host.isDesktop or false;
+in lib.mkIf isDesktop {
   programs.waybar = {
     enable = true;
     systemd.enable = true;

@@ -53,6 +53,16 @@
     # Import the mkHost function
     mkHost = import ./lib/mkHost.nix {inherit inputs system;};
 
+    # Function to create deployment overrides for a host
+    mkDeployment = host: host; # Keep the host unchanged - hostname is passed via command line
+
+    # System types
+    systemTypes = {
+      desktop = {isDesktop = true;};
+      server = {isDesktop = false;};
+      minimal = {isDesktop = false;};
+    };
+
     # Host definitions
     hosts = {
       # Current system: willow
@@ -63,10 +73,29 @@
         ];
         extraSpecialArgs = {
           inherit self;
+          host = systemTypes.desktop;
         };
         homeSpecialArgs = {
           inherit self hyprland anyrun ags ironbar;
+          host = systemTypes.desktop;
         };
+        isDesktop = true; # Mark as a desktop system
+      };
+
+      # Server: ivy
+      ivy = mkHost {
+        name = "ivy";
+        username = "willow"; # Using willow user for consistency
+        nixosModules = [];
+        extraSpecialArgs = {
+          inherit self;
+          host = systemTypes.server;
+        };
+        homeSpecialArgs = {
+          inherit self;
+          host = systemTypes.server;
+        };
+        isDesktop = false; # Mark as a server system
       };
 
       # ISO for deployments
@@ -76,20 +105,31 @@
         nixosModules = [];
         extraSpecialArgs = {
           inherit self;
+          host = systemTypes.minimal;
         };
+        isDesktop = false; # ISO doesn't need desktop features
       };
     };
   in {
     # NixOS configurations
     nixosConfigurations = builtins.mapAttrs (name: host: host.nixosConfig) hosts;
 
-    # Deploy-rs nodes (for future use)
-    deploy.nodes = builtins.mapAttrs (name: host: host.deployConfig) hosts;
+    # Deploy-rs nodes
+    deploy.nodes =
+      builtins.mapAttrs (name: host: host.deployConfig) hosts
+      // {
+        # Add ivy with a custom deploy config that can be accessed via .#ivy-custom
+        # Example: deploy .#ivy-custom --hostname 192.168.1.20 --ssh-user willow
+        "ivy-custom" = (mkDeployment hosts.ivy).deployConfig;
+      };
 
     # Checks for deploy-rs
     checks = builtins.mapAttrs (system: deployLib: deployLib.deployChecks self.deploy) deploy-rs.lib;
 
-    # ISO image for deployments
-    packages.${system}.iso = self.nixosConfigurations.iso.config.system.build.isoImage;
+    # Packages
+    packages.${system} = {
+      # ISO image for deployments
+      iso = self.nixosConfigurations.iso.config.system.build.isoImage;
+    };
   };
 }

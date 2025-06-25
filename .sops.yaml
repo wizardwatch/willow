@@ -1,15 +1,17 @@
 keys:
   - &admin_wizardwatch age1w889kalkz7ve28lvj3mc44x47h7nmqh6fe57whg39gq7pepukpeskxrygj
   - &server_wizardwatch age1qfw4lr0ddra75p6x63w4ccg27544tglzm6l8r95ajqt8d7yl2ucsfaxk3v
+  - &server_ivy age13xngsjdfjfhnp75ed2x7tg5tda9h8mdk6yx6lm02c483w3hclsls6xcr9p
 creation_rules:
-  - path_regex: secrets/[^/]+\.yaml$
+  - path_regex: modules/services/secrets/[^/]+\.yaml$
     key_groups:
       - age:
-        - *admin_wizardwatch
-        - *server_wizardwatch
+          - *admin_wizardwatch
+          - *server_wizardwatch
+          - *server_ivy
   - path_regex: secrets/wizardwatch/[^/]+\.yaml$
     key_groups:
       - age:
-        - *admin_wizardwatch
-        - *server_wizardwatch
-
+          - *admin_wizardwatch
+          - *server_wizardwatch
+          - *server_ivy

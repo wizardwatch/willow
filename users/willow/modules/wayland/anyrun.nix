@@ -1,7 +1,16 @@
-{ config, pkgs, lib, inputs, ... }:
+{ config, pkgs, lib, inputs ? {}, host ? { isDesktop = false; }, ... }:
 
-{
-  # Enable anyrun
+let
+  # Only use this module if we're on a desktop system
+  isDesktop = host.isDesktop or false;
+  
+  # Check if anyrun input is available
+  anyrun = inputs.anyrun or null;
+  anyrunAvailable = isDesktop && anyrun != null && anyrun ? packages;
+in
+
+lib.mkIf anyrunAvailable {
+  # Enable anyrun only on desktop systems with the anyrun input
   programs.anyrun = {
     enable = true;
     
@@ -9,9 +18,9 @@
     config = {
       plugins = [
         # Applications plugin
-        inputs.anyrun.packages.${pkgs.system}.applications
+        anyrun.packages.${pkgs.system}.applications
         # Shell plugin for command execution
-        inputs.anyrun.packages.${pkgs.system}.shell
+        anyrun.packages.${pkgs.system}.shell
       ];
       width = { fraction = 0.3; };
       hideIcons = false;

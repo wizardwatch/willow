@@ -1,5 +1,15 @@
 # User configuration for willow
-{pkgs, ...}: {
+{
+  pkgs,
+  config,
+  host,
+  ...
+}: {
+  # Import SSH keys configuration
+  imports = [
+    ./keys/ssh.nix
+  ];
+
   # User account
   users.users.willow = {
     isNormalUser = true;
@@ -16,16 +26,20 @@
     initialPassword = "mount"; # Change in production
     shell = pkgs.zsh;
     group = "willow";
+    openssh.authorizedKeys.keys = config._module.args.sshKeys.all;
   };
 
   # Create user group
   users.groups.willow = {};
 
-  # This is where we would add any additional configurations
-  # specific to this user, such as SSH keys, global user settings, etc.
+  # Load different home-manager configurations based on host type
   home-manager.users.willow = {
-    imports = [
-      ./home.nix
+    imports = if host.isDesktop then [
+      # Full desktop configuration with all GUI components
+      ./profiles/desktop.nix
+    ] else [
+      # Basic server configuration with just the essentials
+      ./profiles/base.nix
     ];
   };
 }

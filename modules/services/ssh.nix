@@ -1,4 +1,4 @@
-{...}: {
+{lib, ...}: {
   # OpenSSH server configuration
   services.openssh = {
     enable = true;
@@ -6,10 +6,10 @@
     # Security settings
     settings = {
       # Disable password authentication
-      PasswordAuthentication = false;
+      PasswordAuthentication = lib.mkDefault false;
 
       # Don't allow root login
-      PermitRootLogin = "no";
+      PermitRootLogin = "prohibit-password";
 
       # Use modern crypto only
       KexAlgorithms = [

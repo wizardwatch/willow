@@ -2,8 +2,12 @@
   config,
   pkgs,
   lib,
+  host ? { isDesktop = false; },
   ...
 }: let
+  # Only use this module if we're on a desktop system
+  isDesktop = host.isDesktop or false;
+
   # Import the keybindings module
   keybindingsModule = import ./keybindings.nix {inherit pkgs;};
 
@@ -16,7 +20,7 @@ in {
     };
   };
 
-  config = lib.mkIf config.wayland.clipse.enable {
+  config = lib.mkIf (isDesktop && config.wayland.clipse.enable) {
     # Enable clipse daemon service
 
     # Add the packages to the user environment

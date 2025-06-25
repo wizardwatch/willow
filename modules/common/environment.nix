@@ -1,4 +1,7 @@
-{pkgs, ...}: {
+{pkgs, ...}: let
+  # Local deployment CLI tool
+  deploy-cli = pkgs.callPackage ../../tools {};
+in {
   # Basic environment configuration
   environment = {
     # Session variables
@@ -15,6 +18,8 @@
       "ssh/ssh_host_rsa_key.pub".source = "/nix/persist/etc/ssh/ssh_host_rsa_key.pub";
       "ssh/ssh_host_ed25519_key".source = "/nix/persist/etc/ssh/ssh_host_ed25519_key";
       "ssh/ssh_host_ed25519_key.pub".source = "/nix/persist/etc/ssh/ssh_host_ed25519_key.pub";
+      "ssh/ssh_host_ed25519_key_willow".source = "/nix/persist/etc/ssh/ssh_host_ed25519_key_willow";
+      "ssh/ssh_host_ed25519_key_willow.pub".source = "/nix/persist/etc/ssh/ssh_host_ed25519_key_willow.pub";
     };
 
     # System packages available to all hosts
@@ -26,11 +31,16 @@
       tree
       jq
       ripgrep
+      inxi
+      deploy-rs
+
       # Terminal utilities
       tmux
       htop
       broot
       tldr
+      sshfs
+
       # Editors
       vim
 
@@ -45,6 +55,9 @@
       age
       ssh-to-age
       sops
+
+      # Deployment tools
+      deploy-cli
     ];
   };
 
