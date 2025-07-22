@@ -49,6 +49,7 @@
   users.users."willow".openssh.authorizedKeys = {
     keys = [config.sops.secrets.ssh_key.path];
   };
+
   /*
     # SSH configuration for deploy-rs
   programs.ssh = {

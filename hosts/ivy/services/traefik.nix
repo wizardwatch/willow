@@ -33,13 +33,7 @@
             entryPoints = ["web"];
             priority = 100;
           };
-          # Test service route
-          test-service = {
-            rule = "Host(`ivy.local`) && PathPrefix(`/test`)";
-            service = "test";
-            entryPoints = ["web"];
-            priority = 200;
-          };
+
           # Authentik service
           authentik = {
             rule = "Host(`ivy.local`) && PathPrefix(`/auth`)";
@@ -47,40 +41,13 @@
             entryPoints = ["web"];
             middlewares = ["auth-stripprefix"];
           };
-          # Matrix service
-          matrix = {
-            rule = "Host(`ivy.local`) && PathPrefix(`/matrix`)";
-            service = "matrix";
-            entryPoints = ["web"];
-            middlewares = ["matrix-stripprefix"];
-          };
-          # Matrix federation
-          matrix-federation = {
-            rule = "Host(`ivy.local`) && PathPrefix(`/_matrix/`)";
-            service = "matrix";
-            entryPoints = ["web"];
-          };
         };
 
         services = {
-          test = {
-            loadBalancer = {
-              servers = [
-                {url = "http://127.0.0.1:8888";}
-              ];
-            };
-          };
           authentik = {
             loadBalancer = {
               servers = [
                 {url = "http://127.0.0.1:9000";}
-              ];
-            };
-          };
-          matrix = {
-            loadBalancer = {
-              servers = [
-                {url = "http://127.0.0.1:8008";}
               ];
             };
           };
@@ -90,11 +57,6 @@
           auth-stripprefix = {
             stripPrefix = {
               prefixes = ["/auth"];
-            };
-          };
-          matrix-stripprefix = {
-            stripPrefix = {
-              prefixes = ["/matrix"];
             };
           };
         };

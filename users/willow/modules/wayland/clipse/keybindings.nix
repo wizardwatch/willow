@@ -30,7 +30,7 @@
     # Autostart commands for Clipse
     autostart = ''
       # Start clipse daemon
-      exec-once = ${pkgs.clipse}/bin/clipse -listen
+      # exec-once = ${pkgs.clipse}/bin/clipse -listen
     '';
   };
 }

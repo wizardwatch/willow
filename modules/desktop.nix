@@ -1,4 +1,4 @@
-{...}: {
+{pkgs, ...}: {
   # Desktop configuration for NixOS systems
   # This module imports all desktop-related modules
 
@@ -16,7 +16,6 @@
     ./services/pipewire.nix
     ./services/printing.nix
   ];
-
   # Additional desktop-specific settings
 
   # Enable fonts

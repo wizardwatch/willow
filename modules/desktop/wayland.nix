@@ -53,6 +53,7 @@
 
     # Allow swaylock to authenticate
     pam.services.swaylock = {};
+    pam.services.hyprlock = {};
   };
 
   # Program settings

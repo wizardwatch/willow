@@ -8,23 +8,6 @@
   # Enable log rotation
   services.logrotate.enable = true;
 
-  # Simple test service for debugging Traefik routing
-  systemd.services.test-service = {
-    description = "Simple test service for debugging";
-    after = ["network.target"];
-    wantedBy = ["multi-user.target"];
-    serviceConfig = {
-      Type = "simple";
-      Restart = "always";
-      RestartSec = "5";
-      ExecStart = "${pkgs.writeShellScript "test-service" ''
-        cd /tmp
-        echo "<h1>Test Service Working!</h1><p>If you can see this, Traefik routing is working.</p><p>Go to <a href=\"http://ivy.local\">http://ivy.local</a> for the main dashboard.</p>" > index.html
-        ${pkgs.python3}/bin/python3 -m http.server 8888
-      ''}";
-    };
-  };
-
   # Manual debugging service to check connectivity
   systemd.services.ivy-debug = {
     description = "Check ivy.local connectivity and services";
@@ -49,7 +32,7 @@
         echo "5. Testing local connections:"
         ${pkgs.curl}/bin/curl -I http://localhost:80 2>&1 | head -5 || echo "Cannot connect to port 80"
         ${pkgs.curl}/bin/curl -I http://localhost:8080 2>&1 | head -5 || echo "Cannot connect to port 8080"
-        ${pkgs.curl}/bin/curl -I http://localhost:8888 2>&1 | head -5 || echo "Cannot connect to port 8888"
+
 
         echo "Debug report complete. Check journalctl -u ivy-debug for full output."
       ''}";
@@ -68,6 +51,17 @@
       hinfo = true;
       userServices = true;
       workstation = true;
+    };
+  };
+  sops.secrets = {
+    secrets = {
+      authentik = {
+        sopsFile = ./secrets/authentik.yaml;
+        mode = "600";
+        path = "/var/lib/matrix/authentik.env";
+        owner = "matrix";
+        group = "matrix";
+      };
     };
   };
 }

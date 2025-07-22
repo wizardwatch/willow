@@ -2,12 +2,20 @@
   inputs,
   pkgs,
   ...
-}: {
-  # Import modular service configurations
+}: let
+  authentikDir = "/var/lib/matrix/authentik";
+in {
+  # Import modular service configurations # matrix user
+  users.users."matrix" = {
+    isSystemUser = true;
+    home = "/var/lib/matrix";
+    group = "matrix";
+  };
+  # set the Authernik directory inside the matrix user's home
   imports = [
     ./services/traefik.nix
     ./services/authentik.nix
-    ./services/matrix.nix
+    # ./services/matrix.nix  # Disabled to focus on Authentik
     ./services/system.nix
   ];
 
