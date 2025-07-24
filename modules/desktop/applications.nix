@@ -31,7 +31,7 @@
     mpvpaper # Wallpaper engine using mpv
     gimp
     krita # Digital painting
-    darktable
+    # darktable # build broken
 
     # Development
     package-version-server # Used for zed-editor
@@ -44,6 +44,7 @@
     code-cursor
     config.boot.kernelPackages.perf
     valgrind
+    deno
 
     # 3D/CAD
     freecad-wayland
