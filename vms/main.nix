@@ -110,7 +110,7 @@ in {
 
   # Attach the vm tap interfaces to the bridge
   systemd.network.networks."11-microvm" = {
-    matchConfig.Name = "tap*";
+    matchConfig.Name = "vm-*";
     networkConfig.Bridge = "microvm";
   };
 
