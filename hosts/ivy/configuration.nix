@@ -7,8 +7,10 @@
   # Import SSH keys from the willow user
   imports = [
     ../../users/willow/keys/ssh.nix
-    ./services.nix
+    ../../vms/main.nix
   ];
+
+  networking.bridges.br0.interfaces = [];
   nix.settings = {
     trusted-users = ["root" "willow" "nixremote"];
 

@@ -27,6 +27,7 @@
     # Only include home-manager if a username is provided
     (lib.optional (username != null) inputs.home-manager.nixosModules.home-manager)
     inputs.sops-nix.nixosModules.sops
+    inputs.microvm.nixosModules.host
     {
       networking.hostName = name;
     }
@@ -40,8 +41,12 @@
             inherit inputs system;
             # Only include GUI-related inputs for desktop systems
             inherit (homeSpecialArgs) self;
-          } 
-          // (if isDesktop then homeSpecialArgs else {});
+          }
+          // (
+            if isDesktop
+            then homeSpecialArgs
+            else {}
+          );
 
         users.${username} = {...}: {
           imports = homeModules;

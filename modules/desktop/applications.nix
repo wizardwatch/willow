@@ -45,6 +45,7 @@
     config.boot.kernelPackages.perf
     valgrind
     deno
+    gemini-cli
 
     # 3D/CAD
     freecad-wayland
@@ -58,6 +59,8 @@
     pavucontrol # Audio control
     appimage-run # Run AppImages
     eww # Widget toolkit
+    iwd
+    iwgtk
 
     # Screen recording/streaming
     (wrapOBS {
@@ -114,4 +117,7 @@
 
   # Enable Xwayland for X11 app compatibility
   programs.xwayland.enable = true;
+
+  # Enable iwd for wifi support
+  networking.wireless.iwd.enable = true;
 }

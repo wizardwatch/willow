@@ -40,9 +40,14 @@
       url = "github:serokell/deploy-rs";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    microvm = {
+      url = "github:microvm-nix/microvm.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
   outputs = {
     self,
+    microvm,
     nixpkgs,
     home-manager,
     sops-nix,
@@ -76,8 +81,7 @@
       willow = mkHost {
         name = "willow";
         username = "willow"; # Explicitly specify the username
-        nixosModules = [
-        ];
+
         extraSpecialArgs = {
           inherit self;
           host = systemTypes.desktop;
@@ -93,13 +97,9 @@
       ivy = mkHost {
         name = "ivy";
         username = "willow"; # Using willow user for consistency
-        nixosModules = [];
+
         extraSpecialArgs = {
-          inherit self;
-          host = systemTypes.server;
-        };
-        homeSpecialArgs = {
-          inherit self;
+          inherit self microvm;
           host = systemTypes.server;
         };
         isDesktop = false; # Mark as a server system
@@ -109,10 +109,10 @@
       iso = mkHost {
         name = "iso";
         username = null; # Explicitly disable home-manager for ISO
-        nixosModules = [];
+
         extraSpecialArgs = {
           inherit self;
-          host = systemTypes.minimal;
+          host = systemTypes.server;
         };
         isDesktop = false; # ISO doesn't need desktop features
       };

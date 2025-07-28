@@ -22,14 +22,12 @@
   ];
 
   # Willow-specific services
+  imports = [
+    ../../vms/main.nix
+  ];
+
   services = {
     # Add any machine-specific service configurations here
-    zerotierone = {
-      enable = true;
-      joinNetworks = [
-        # Add network IDs to auto-join
-      ];
-    };
 
     # Enable Bluetooth for this machine
     blueman.enable = true;
@@ -77,4 +75,16 @@
 
   # State version
   system.stateVersion = "23.05";
+
+  # Configure wlo1 for DHCP using systemd-networkd
+  systemd.network.networks."10-wlo1-dhcp.network" = {
+    name = "wlo1";
+    networkConfig.DHCP = "ipv4";
+  };
+
+  # Configure enp6s0 for DHCP using systemd-networkd
+  systemd.network.networks."10-enp6s0-dhcp.network" = {
+    name = "enp6s0";
+    networkConfig.DHCP = "ipv4";
+  };
 }

@@ -18,13 +18,13 @@
       # Willow's personal key
       willowPublicKey
     ];
-    
+
     # Deployment keys (for deploy-rs)
     deployment = [
       # Example format:
       # "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAI... deploy-key-comment"
     ];
-    
+
     # Combined list of all keys for convenience
     all = lib.mkMerge [
       config._module.args.sshKeys.personal

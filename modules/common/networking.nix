@@ -23,11 +23,11 @@
 
     # Enable NetworkManager
     networkmanager = {
-      enable = true;
+      enable = false;
     };
+    useNetworkd = true;
 
-    # Enable DHCP by default
-    useDHCP = lib.mkDefault true;
+    
 
     # Example firewall configuration - adjust per host as needed
     firewall = {
