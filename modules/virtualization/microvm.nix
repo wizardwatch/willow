@@ -37,6 +37,7 @@
           type = "tap";
           id = "vm-tap0";
           mac = "02:00:00:00:00:00";
+          network = "microvm"; # Connect to the bridge created by microvm-manage.sh
         }
       ];
 
@@ -74,6 +75,12 @@
         enable = lib.mkDefault true;
         internalInterfaces = ["virbr+"];
       };
+    };
+
+    # Enable qemu-bridge-helper for microvm bridge
+    virtualisation.qemu.qemuBridgeHelper = {
+      enable = true;
+      allowBridgedInterfaces = [ "microvm" ];
     };
   };
 }

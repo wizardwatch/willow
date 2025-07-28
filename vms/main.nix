@@ -1,4 +1,3 @@
-
 {
   config,
   lib,
@@ -36,13 +35,6 @@ in {
   # Enable microvm support on the host
   microvm.host.enable = true;
 
-  # DNS server for accessing VMs locally
-  services.dnsmasq = {
-    enable = true;
-    settings = {
-      address = "/ivy.local/10.0.0.20"; # Resolve ivy.local to Traefik VM
-    };
-  };
   # Make the host use the local DNS server
   networking.nameservers = ["127.0.0.1"];
 
@@ -55,17 +47,29 @@ in {
         networking = {
           hostName = "matrix";
           interfaces.eth0.ipv4.addresses = [
-            { address = "10.0.0.10"; prefixLength = 24; }
+            {
+              address = "10.0.0.10";
+              prefixLength = 24;
+            }
           ];
         };
         microvm = {
           interfaces = [
-            { type = "bridge"; bridge = "br0"; id = "vm-matrix"; mac = "02:00:00:00:00:01"; }
+            {
+              type = "bridge";
+              bridge = "microvm";
+              id = "vm-matrix";
+              mac = "02:00:00:00:00:01";
+            }
           ];
           vcpu = 2;
           mem = 3072;
           volumes = [
-            { image = "/var/lib/microvms/matrix/rootfs.img"; mountPoint = "/"; size = 8192; }
+            {
+              image = "/var/lib/microvms/matrix/rootfs.img";
+              mountPoint = "/";
+              size = 8192;
+            }
           ];
         };
       };
@@ -78,34 +82,68 @@ in {
         networking = {
           hostName = "traefik";
           interfaces.eth0.ipv4.addresses = [
-            { address = "10.0.0.20"; prefixLength = 24; }
+            {
+              address = "10.0.0.20";
+              prefixLength = 24;
+            }
           ];
         };
         microvm = {
           interfaces = [
-            { type = "bridge"; bridge = "br0"; id = "vm-traefik"; mac = "02:00:00:00:00:02"; }
+            {
+              type = "bridge";
+              bridge = "microvm";
+              id = "vm-traefik";
+              mac = "02:00:00:00:00:02";
+            }
           ];
           vcpu = 1;
           mem = 1024;
           volumes = [
-            { image = "/var/lib/microvms/traefik/rootfs.img"; mountPoint = "/"; size = 4096; }
+            {
+              image = "/var/lib/microvms/traefik/rootfs.img";
+              mountPoint = "/";
+              size = 4096;
+            }
           ];
         };
       };
     };
   };
 
-  # Host network configuration for the internal bridge
-  networking.bridges.br0.interfaces = []; # No physical interfaces directly on bridge
-  networking.interfaces.br0.ipv4.addresses = [
-    { address = "10.0.0.1"; prefixLength = 24; }
-  ];
+  systemd.network.netdevs."10-microvm".netdevConfig = {
+    Kind = "bridge";
+    Name = "microvm";
+  };
+  systemd.network.networks."10-microvm" = {
+    matchConfig.Name = "microvm";
+    networkConfig = {
+      DHCPServer = true;
+      IPv6SendRA = true;
+    };
+    addresses = [
+      {
+        addressConfig.Address = "10.0.0.1/24";
+      }
+      {
+        addressConfig.Address = "fd12:3456:789a::1/64";
+      }
+    ];
+    ipv6Prefixes = [
+      {
+        ipv6PrefixConfig.Prefix = "fd12:3456:789a::/64";
+      }
+    ];
+  };
+
+  # Allow inbound traffic for the DHCP server
+  networking.firewall.allowedUDPPorts = [67];
 
   # Add systemd dependency to ensure br0 exists before VMs start
-  systemd.services."microvm@traefik".unitConfig.BindsTo = [ "sys-subsystem-net-devices-br0.device" ];
-  systemd.services."microvm@traefik".unitConfig.After = [ "sys-subsystem-net-devices-br0.device" ];
-  systemd.services."microvm@matrix".unitConfig.BindsTo = [ "sys-subsystem-net-devices-br0.device" ];
-  systemd.services."microvm@matrix".unitConfig.After = [ "sys-subsystem-net-devices-br0.device" ];
+  systemd.services."microvm@traefik".unitConfig.BindsTo = ["sys-subsystem-net-devices-microvm.device"];
+  systemd.services."microvm@traefik".unitConfig.After = ["sys-subsystem-net-devices-microvm.device"];
+  systemd.services."microvm@matrix".unitConfig.BindsTo = ["sys-subsystem-net-devices-microvm.device"];
+  systemd.services."microvm@matrix".unitConfig.After = ["sys-subsystem-net-devices-microvm.device"];
 
   # Enable IP forwarding on the host
   boot.kernel.sysctl = {
@@ -116,7 +154,7 @@ in {
   # Firewall configuration for NAT on the host
   networking.firewall = {
     enable = true;
-    trustedInterfaces = ["br0"]; # Trust the internal bridge
+    trustedInterfaces = ["microvm"]; # Trust the internal bridge
     # Add the NAT rule for the internal network to access external network via wlo1
     extraCommands = ''
       iptables -t nat -A POSTROUTING -s 10.0.0.0/24 -o wlo1 -j MASQUERADE
@@ -124,9 +162,7 @@ in {
   };
 
   # Allow qemu-bridge-helper to use br0 (for non-root QEMU)
-  environment.etc."qemu/bridge.conf".text = ''
-    allow br0
-  '';
+  environment.etc."qemu/bridge.conf".text = "allow microvm";
 
   # Create microvm storage directories
   systemd.tmpfiles.rules = [
