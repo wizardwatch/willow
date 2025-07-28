@@ -34,6 +34,7 @@
   security.sudo.wheelNeedsPassword = false;
 
   # Firewall configuration
+  # Firewall configuration
   /*
     networking.firewall = {
     enable = true;

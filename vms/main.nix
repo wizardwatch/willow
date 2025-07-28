@@ -10,15 +10,7 @@
     system.stateVersion = "23.11";
 
     # Common network settings for VMs
-    networking = {
-      useDHCP = false; # VMs will have static IPs
-      defaultGateway = {
-        address = "10.0.0.1"; # Host's bridge IP
-        interface = "eth0";
-      };
-      nameservers = ["10.0.0.1"]; # Use the host as DNS forwarder
-      firewall.enable = false; # VMs don't need their own firewall if host handles NAT
-    };
+    networking.useDHCP = true;
 
     # Shared directories
     microvm.shares = [
@@ -40,20 +32,11 @@ in {
     matrix = {
       config = lib.recursiveUpdate commonConfig {
         imports = [./matrix/default.nix];
-        networking = {
-          hostName = "matrix";
-          interfaces.eth0.ipv4.addresses = [
-            {
-              address = "10.0.0.10";
-              prefixLength = 24;
-            }
-          ];
-        };
+        networking.hostName = "matrix";
         microvm = {
           interfaces = [
             {
-              type = "bridge";
-              bridge = "microvm";
+              type = "tap";
               id = "vm-matrix";
               mac = "02:00:00:00:00:01";
             }
@@ -75,20 +58,11 @@ in {
     traefik = {
       config = lib.recursiveUpdate commonConfig {
         imports = [./traefik/default.nix];
-        networking = {
-          hostName = "traefik";
-          interfaces.eth0.ipv4.addresses = [
-            {
-              address = "10.0.0.20";
-              prefixLength = 24;
-            }
-          ];
-        };
+        networking.hostName = "traefik";
         microvm = {
           interfaces = [
             {
-              type = "bridge";
-              bridge = "microvm";
+              type = "tap";
               id = "vm-traefik";
               mac = "02:00:00:00:00:02";
             }
@@ -116,6 +90,7 @@ in {
   systemd.network.networks."10-microvm" = {
     matchConfig.Name = "microvm";
     networkConfig = {
+      DHCPServer = true;
       IPv6SendRA = true;
     };
     addresses = [
@@ -138,15 +113,6 @@ in {
     matchConfig.Name = "tap*";
     networkConfig.Bridge = "microvm";
   };
-
-  # Allow inbound traffic for the DHCP server
-  networking.firewall.allowedUDPPorts = [67];
-
-  # Add systemd dependency to ensure br0 exists before VMs start
-  systemd.services."microvm@traefik".unitConfig.BindsTo = ["sys-subsystem-net-devices-microvm.device"];
-  systemd.services."microvm@traefik".unitConfig.After = ["sys-subsystem-net-devices-microvm.device"];
-  systemd.services."microvm@matrix".unitConfig.BindsTo = ["sys-subsystem-net-devices-microvm.device"];
-  systemd.services."microvm@matrix".unitConfig.After = ["sys-subsystem-net-devices-microvm.device"];
 
   # Enable IP forwarding on the host
   boot.kernel.sysctl = {
