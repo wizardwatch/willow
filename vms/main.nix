@@ -1,8 +1,7 @@
 {
   config,
   lib,
-  pkgs,
-  microvm,
+  inputs,
   ...
 }: let
   # Common configuration for all VMs
@@ -34,9 +33,6 @@
 in {
   # Enable microvm support on the host
   microvm.host.enable = true;
-
-  # Make the host use the local DNS server
-  networking.nameservers = ["127.0.0.1"];
 
   # Configure microvm storage and network interfaces
   microvm.vms = {
@@ -111,14 +107,15 @@ in {
     };
   };
 
+  # Create a bridge for the microvms
   systemd.network.netdevs."10-microvm".netdevConfig = {
     Kind = "bridge";
     Name = "microvm";
   };
+  # Configure the bridge and enable DHCP
   systemd.network.networks."10-microvm" = {
     matchConfig.Name = "microvm";
     networkConfig = {
-      DHCPServer = true;
       IPv6SendRA = true;
     };
     addresses = [
@@ -136,6 +133,12 @@ in {
     ];
   };
 
+  # Attach the vm tap interfaces to the bridge
+  systemd.network.networks."11-microvm" = {
+    matchConfig.Name = "tap*";
+    networkConfig.Bridge = "microvm";
+  };
+
   # Allow inbound traffic for the DHCP server
   networking.firewall.allowedUDPPorts = [67];
 
@@ -151,18 +154,27 @@ in {
     "net.ipv6.conf.all.forwarding" = 1;
   };
 
+  # Provide Internet Access with NAT
+  networking.nat = {
+    enable = true;
+    enableIPv6 = true;
+    externalInterface = "wlo1";
+    internalInterfaces = ["microvm"];
+  };
+
   # Firewall configuration for NAT on the host
   networking.firewall = {
     enable = true;
     trustedInterfaces = ["microvm"]; # Trust the internal bridge
-    # Add the NAT rule for the internal network to access external network via wlo1
-    extraCommands = ''
-      iptables -t nat -A POSTROUTING -s 10.0.0.0/24 -o wlo1 -j MASQUERADE
-    '';
   };
 
-  # Allow qemu-bridge-helper to use br0 (for non-root QEMU)
-  environment.etc."qemu/bridge.conf".text = "allow microvm";
+  # Ensure necessary kernel modules are available
+  boot.kernelModules = [
+    "kvm-intel"
+    "kvm-amd"
+    "vhost_net"
+    "vhost_vsock"
+  ];
 
   # Create microvm storage directories
   systemd.tmpfiles.rules = [
