@@ -10,7 +10,7 @@
     system.stateVersion = "23.11";
 
     # Common network settings for VMs
-    networking.useDHCP = true;
+    networking.useDHCP = lib.mkDefault true;
 
     # Shared directories
     microvm.shares = [
@@ -25,6 +25,8 @@
 in {
   # Enable microvm support on the host
   microvm.host.enable = true;
+  # Autostart MicroVMs on boot
+  microvm.autostart = ["matrix"];
 
   # Configure microvm storage and network interfaces
   microvm.vms = {
@@ -48,32 +50,6 @@ in {
               image = "/var/lib/microvms/matrix/rootfs.img";
               mountPoint = "/";
               size = 8192;
-            }
-          ];
-        };
-      };
-    };
-
-    # Traefik reverse proxy VM
-    traefik = {
-      config = lib.recursiveUpdate commonConfig {
-        imports = [./traefik/default.nix];
-        networking.hostName = "traefik";
-        microvm = {
-          interfaces = [
-            {
-              type = "tap";
-              id = "vm-traefik";
-              mac = "02:00:00:00:00:02";
-            }
-          ];
-          vcpu = 1;
-          mem = 1024;
-          volumes = [
-            {
-              image = "/var/lib/microvms/traefik/rootfs.img";
-              mountPoint = "/";
-              size = 4096;
             }
           ];
         };
@@ -146,6 +122,5 @@ in {
   systemd.tmpfiles.rules = [
     "d /var/lib/microvms 0755 root root -"
     "d /var/lib/microvms/matrix 0755 root root -"
-    "d /var/lib/microvms/traefik 0755 root root -"
   ];
 }

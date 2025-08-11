@@ -11,6 +11,22 @@
   # Basic system configuration
   boot.kernelParams = ["console=ttyS0"];
 
+  # Use static addressing on the microvm network
+  networking.useDHCP = false;
+  systemd.network.enable = true;
+  systemd.network.networks."10-microvm-eth" = {
+    matchConfig = {
+      # Match the MicroVM NIC by MAC set in vms/main.nix
+      MACAddress = "02:00:00:00:00:01";
+    };
+    networkConfig = {
+      DHCP = "no";
+      Address = [ "10.0.0.10/24" ];
+      Gateway = "10.0.0.1";
+      DNS = [ "1.1.1.1" "9.9.9.9" ];
+    };
+  };
+
   # Enable SSH for management
   services.openssh = {
     enable = true;

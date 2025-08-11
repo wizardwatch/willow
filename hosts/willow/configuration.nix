@@ -24,6 +24,9 @@
   # Willow-specific services
   imports = [
     ../../vms/main.nix
+    # Reuse Traefik configuration on host instead of a VM
+    ../../vms/traefik/traefik.nix
+    ../../vms/traefik/matrix-route.nix
   ];
 
   services = {
@@ -69,12 +72,15 @@
 
   # Firewall configuration
   networking.firewall = {
-    allowedTCPPorts = [27036 27037 49737 6969];
+    allowedTCPPorts = [27036 27037 49737 6969 80 443];
     allowedUDPPorts = [27031 27036 6969 122];
   };
 
   # State version
   system.stateVersion = "23.05";
+
+  # Ensure systemd-networkd manages interfaces (needed for microvm bridge/DHCP)
+  systemd.network.enable = true;
 
   # Configure wlo1 for DHCP using systemd-networkd
   systemd.network.networks."10-wlo1-dhcp.network" = {
