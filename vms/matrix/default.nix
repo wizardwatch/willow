@@ -21,9 +21,9 @@
     };
     networkConfig = {
       DHCP = "no";
-      Address = [ "10.0.0.10/24" ];
+      Address = ["10.0.0.10/24"];
       Gateway = "10.0.0.1";
-      DNS = [ "1.1.1.1" "9.9.9.9" ];
+      DNS = ["1.1.1.1" "9.9.9.9"];
     };
   };
 
@@ -31,9 +31,15 @@
   services.openssh = {
     enable = true;
     settings = {
-      PasswordAuthentication = false;
+      PasswordAuthentication = true;
       PermitRootLogin = "no";
     };
+  };
+
+  # Allow inbound access to Matrix and SSH
+  networking.firewall = {
+    enable = true;
+    allowedTCPPorts = [22 8008];
   };
 
   # Create matrix-synapse user if not already created
@@ -49,8 +55,10 @@
   users.users.admin = {
     isNormalUser = true;
     extraGroups = ["wheel"];
+    password = "gex";
     openssh.authorizedKeys.keys = [
-      # Add your SSH key here
+      # Willow's public key
+      (builtins.readFile ../../users/willow/keys/willow_ssh.pub)
     ];
   };
 
