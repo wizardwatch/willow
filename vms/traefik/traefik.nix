@@ -60,28 +60,22 @@
       http = {
         # Routers
         routers = {
-          # Traefik dashboard
+          # Local-only dashboard via path, gated by LAN IPs
           traefik-dashboard = {
-            rule = "Host(`ivy.local`) && PathPrefix(`/dashboard`)";
+            rule = "PathPrefix(`/dashboard`)";
             service = "api@internal";
             entryPoints = ["web"];
-            priority = 100;
+            middlewares = ["dashboard-redirect" "allow-lan" "security-headers"];
+            priority = 200;
           };
 
-          # API access
+          # Local-only API access via path
           traefik-api = {
-            rule = "Host(`ivy.local`) && PathPrefix(`/api`)";
+            rule = "PathPrefix(`/api`)";
             service = "api@internal";
             entryPoints = ["web"];
-            priority = 100;
-          };
-
-          # Default router for root
-          traefik-root = {
-            rule = "Host(`ivy.local`)";
-            service = "api@internal";
-            entryPoints = ["web"];
-            priority = 50;
+            middlewares = ["allow-lan"];
+            priority = 200;
           };
         };
 
@@ -121,24 +115,17 @@
               average = 50;
             };
           };
+
+          # Allow LAN-only access by IP range
+          allow-lan = {
+            ipWhiteList = {
+              sourceRange = ["192.168.0.0/24" "127.0.0.1/32"];
+            };
+          };
         };
       };
     };
   };
-
-  # Create dynamic configuration for Traefik dashboard access
-  environment.etc."traefik/dynamic/dashboard.yml".text = lib.generators.toYAML {} {
-    http = {
-      routers = {
-        dashboard = {
-          rule = "Host(`traefik.ivy.local`) || Host(`10.0.0.20`)";
-          service = "api@internal";
-          entryPoints = ["web"];
-        };
-      };
-    };
-  };
-
   # Health check service for Traefik
   systemd.services.traefik-health-check = {
     description = "Traefik Health Check";

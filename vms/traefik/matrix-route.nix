@@ -7,28 +7,31 @@
   matrixConfig = {
     http = {
       routers = {
-        # Matrix client API
-        matrix-client = {
-          rule = "Host(`matrix.ivy.local`)";
+        # Local-only Matrix (no Host), allow LAN by IP
+        matrix-local = {
+          rule = "PathPrefix(`/_matrix`)";
           service = "matrix-service";
           entryPoints = ["web"];
-          middlewares = ["matrix-headers"];
+          middlewares = ["matrix-headers" "allow-lan"];
+          priority = 200;
         };
 
-        # Matrix federation API
-        matrix-federation = {
-          rule = "Host(`ivy.local`) && PathPrefix(`/_matrix`)";
+        # External Matrix via public subdomain
+        matrix-external = {
+          rule = "Host(`matrix.holymike.com`) && PathPrefix(`/_matrix`)";
           service = "matrix-service";
           entryPoints = ["web"];
           middlewares = ["matrix-headers"];
+          priority = 100;
         };
 
-        # Matrix well-known endpoints
-        matrix-wellknown = {
-          rule = "Host(`ivy.local`) && PathPrefix(`/.well-known/matrix`)";
-          service = "matrix-service";
+        # Local-only well-known endpoints (no Host)
+        matrix-wellknown-local = {
+          rule = "PathPrefix(`/.well-known/matrix`)";
+          service = "matrix-wellknown-service";
           entryPoints = ["web"];
-          middlewares = ["matrix-headers"];
+          middlewares = ["allow-lan"];
+          priority = 200;
         };
       };
 
@@ -45,6 +48,14 @@
             };
           };
         };
+
+        matrix-wellknown-service = {
+          loadBalancer = {
+            servers = [
+              {url = "http://127.0.0.1:8081";}
+            ];
+          };
+        };
       };
 
       middlewares = {
@@ -52,14 +63,21 @@
           headers = {
             customRequestHeaders = {
               X-Forwarded-Proto = "http";
-              X-Forwarded-Host = "matrix.ivy.local";
+              X-Forwarded-Host = "matrix.holymike.com";
             };
             customResponseHeaders = {
-              X-Matrix-Server = "ivy.local";
+              X-Matrix-Server = "matrix.holymike.com";
               Access-Control-Allow-Origin = "*";
               Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS";
               Access-Control-Allow-Headers = "Origin, X-Requested-With, Content-Type, Accept, Authorization";
             };
+          };
+        };
+
+        # Redefine allow-lan here so this dynamic file is self-contained
+        allow-lan = {
+          ipWhiteList = {
+            sourceRange = ["192.168.0.0/24" "127.0.0.1/32"];
           };
         };
       };
@@ -69,19 +87,21 @@ in {
   # Create dynamic configuration file for Matrix routing
   environment.etc."traefik/dynamic/matrix.yml".text = lib.generators.toYAML {} matrixConfig;
 
-  # Create well-known matrix configuration for server discovery
+  # Create well-known matrix configuration for server discovery (served by local service above)
   environment.etc."traefik/dynamic/matrix-wellknown.yml".text = lib.generators.toYAML {} {
     http = {
       routers = {
         wellknown-server = {
-          rule = "Host(`ivy.local`) && Path(`/.well-known/matrix/server`)";
+          rule = "Path(`/.well-known/matrix/server`)";
           service = "wellknown-server-service";
           entryPoints = ["web"];
+          middlewares = ["allow-lan"];
         };
         wellknown-client = {
-          rule = "Host(`ivy.local`) && Path(`/.well-known/matrix/client`)";
+          rule = "Path(`/.well-known/matrix/client`)";
           service = "wellknown-client-service";
           entryPoints = ["web"];
+          middlewares = ["allow-lan"];
         };
       };
 
@@ -141,7 +161,7 @@ in {
   environment.etc."matrix-wellknown/server.json" = {
     target = "/var/lib/matrix-wellknown/.well-known/matrix/server";
     text = builtins.toJSON {
-      "m.server" = "ivy.local:443";
+      "m.server" = "matrix.holymike.com:443";
     };
     mode = "0644";
     user = "matrix-wellknown";
@@ -153,7 +173,7 @@ in {
     target = "/var/lib/matrix-wellknown/.well-known/matrix/client";
     text = builtins.toJSON {
       "m.homeserver" = {
-        "base_url" = "https://matrix.ivy.local";
+        "base_url" = "https://matrix.holymike.com";
       };
       "m.identity_server" = {
         "base_url" = "https://vector.im";
