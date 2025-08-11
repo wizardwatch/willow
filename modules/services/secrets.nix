@@ -44,6 +44,11 @@
       owner = "willow"; # Ensure willow owns the key
       group = "willow"; # Ensure willow's group has access
     };
+
+    reg_token = {
+      sopsFile = ./secrets/matrix_reg.yaml;
+      path = "/var/lib/vms/matrix/reg";
+    };
   };
 
   users.users."willow".openssh.authorizedKeys = {

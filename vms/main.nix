@@ -36,6 +36,15 @@ in {
         imports = [./matrix/default.nix];
         networking.hostName = "matrix";
         microvm = {
+          # Mount host secret directory into the VM for registration_shared_secret
+          shares = (commonConfig.microvm.shares or []) ++ [
+            {
+              source = "/var/lib/matrix";
+              mountPoint = "/run/host-secrets/matrix";
+              tag = "host-secrets-matrix";
+              proto = "virtiofs";
+            }
+          ];
           interfaces = [
             {
               type = "tap";

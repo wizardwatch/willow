@@ -9,6 +9,11 @@
     ./wellknown-caddy.nix
   ];
 
+  # Directly include the host-rendered registration secret YAML from the mounted path
+  services.matrix-synapse.settings.include = [
+    "/run/host-secrets/matrix/registration.yaml"
+  ];
+
   # Basic system configuration
   #boot.kernelParams = ["console=ttyS0"];
 

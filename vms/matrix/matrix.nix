@@ -9,11 +9,9 @@
       server_name = "matrix.holymike.com";
       public_baseurl = "https://matrix.holymike.com";
       suppress_key_server_warning = true;
-      macaroon_secret_key = "changeme-dev-macaroon-secret";
-      # Registration policy: require admin-issued tokens (invite-only)
       enable_registration = true;
       registration_requires_token = true;
-
+      registration_shared_secret = "";
       listeners = [
         {
           port = 8008;
@@ -21,7 +19,12 @@
           type = "http";
           tls = false;
           x_forwarded = true;
-          resources = [{ names = ["client" "federation"]; compress = true; }];
+          resources = [
+            {
+              names = ["client" "federation"];
+              compress = true;
+            }
+          ];
         }
       ];
 
