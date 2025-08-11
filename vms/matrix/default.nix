@@ -9,7 +9,7 @@
   ];
 
   # Basic system configuration
-  boot.kernelParams = ["console=ttyS0"];
+  #boot.kernelParams = ["console=ttyS0"];
 
   # Use static addressing on the microvm network
   networking.useDHCP = false;
@@ -38,7 +38,7 @@
 
   # Allow inbound access to Matrix and SSH
   networking.firewall = {
-    enable = true;
+    enable = false;
     allowedTCPPorts = [22 8008];
   };
 
@@ -52,10 +52,10 @@
   users.groups.matrix-synapse = {};
 
   # Create admin user for VM management
-  users.users.admin = {
+  users.users.willow = {
     isNormalUser = true;
     extraGroups = ["wheel"];
-    password = "gex";
+    initialPassword = "gex";
     openssh.authorizedKeys.keys = [
       # Willow's public key
       (builtins.readFile ../../users/willow/keys/willow_ssh.pub)
