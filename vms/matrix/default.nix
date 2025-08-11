@@ -69,6 +69,9 @@
   services.postgresql = {
     enable = true;
     package = pkgs.postgresql_15;
+    # Re-initialize cluster with C locale for Synapse compatibility
+    dataDir = "/var/lib/postgresql/15-c";
+    initdbArgs = ["--locale=C" "--encoding=UTF8"];
 
     ensureDatabases = ["synapse"];
     ensureUsers = [
@@ -81,6 +84,7 @@
     authentication = pkgs.lib.mkOverride 10 ''
       local all all trust
       host synapse synapse 127.0.0.1/32 trust
+      host synapse synapse ::1/128 trust
     '';
 
     settings = {

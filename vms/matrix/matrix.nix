@@ -7,8 +7,8 @@
   services.matrix-synapse = {
     enable = true;
     settings = {
-      server_name = "ivy.local";
-      public_baseurl = "https://matrix.ivy.local";
+      server_name = "matrix.holymike.com";
+      public_baseurl = "https://matrix.holymike.com";
 
       listeners = [
         {
@@ -29,11 +29,12 @@
       database = {
         name = "psycopg2";
         args = {
-          host = "localhost";
+          # Prefer the local Unix socket to avoid IPv4/IPv6 pg_hba issues
+          host = "/run/postgresql";
           port = 5432;
           database = "synapse";
           user = "synapse";
-          # Use trust authentication for simplicity in microvm
+          # Using local trust auth; no password needed
           password = "";
           cp_min = 5;
           cp_max = 10;
@@ -66,6 +67,10 @@
       caches = {
         global_factor = 0.3; # Reduced for microvm memory constraints
       };
+
+      # Security and compatibility
+      suppress_key_server_warning = true;
+      macaroon_secret_key = "changeme-dev-macaroon-secret";
 
       # Logging configuration
       log_config = pkgs.writeText "matrix-log-config.yaml" ''
