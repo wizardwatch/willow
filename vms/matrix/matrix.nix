@@ -10,6 +10,9 @@
       public_baseurl = "https://matrix.holymike.com";
       suppress_key_server_warning = true;
       macaroon_secret_key = "changeme-dev-macaroon-secret";
+      # Registration policy: require admin-issued tokens (invite-only)
+      enable_registration = true;
+      registration_requires_token = true;
 
       listeners = [
         {

@@ -134,3 +134,26 @@ deploy-cli workflow 192.168.1.100
 
 **Options:**
 - `--flake-path TEXT`: Path to Nix flake (default: '.')
+
+## Matrix Helpers
+
+### Synapse registration tokens
+
+Use this helper to manage invite-only registration tokens when `registration_requires_token = true`.
+
+```bash
+# List tokens
+bash tools/synapse_tokens.sh --host http://10.0.0.10:8008 --token <ADMIN_ACCESS_TOKEN> list
+
+# Create a one-time token, 16 chars, valid 7 days
+bash tools/synapse_tokens.sh --host http://10.0.0.10:8008 --token <ADMIN_ACCESS_TOKEN> \
+  create --uses 1 --length 16 --valid-days 7
+
+# Inspect/delete a token
+bash tools/synapse_tokens.sh --host http://10.0.0.10:8008 --token <ADMIN_ACCESS_TOKEN> get <TOKEN>
+bash tools/synapse_tokens.sh --host http://10.0.0.10:8008 --token <ADMIN_ACCESS_TOKEN> delete <TOKEN>
+```
+
+Notes:
+- You need an admin access token. Log in as an admin user and copy the token from the client, or obtain it via the client login API.
+- Pretty printing requires `jq`; otherwise raw JSON is printed.

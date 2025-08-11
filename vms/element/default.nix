@@ -11,7 +11,7 @@
         conf = {
           default_server_config = {
             "m.homeserver" = {
-              base_url = "https://matrix.holymike.com";
+              base_url = "http://10.0.0.10:8008";
             };
             "m.identity_server" = {
               base_url = "https://vector.im";
