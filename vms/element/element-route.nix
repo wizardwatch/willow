@@ -10,16 +10,18 @@
         element-external = {
           rule = "Host(`element.holymike.com`)";
           service = "element-service";
-          entryPoints = ["web"];
-          middlewares = ["security-headers"];
+          entryPoints = ["web" "websecure"];
+          middlewares = ["security-headers@file"];
+          tls = {};
           priority = 100;
         };
         # Optional local path-based access for LAN without DNS
         element-local = {
           rule = "PathPrefix(`/element`)";
           service = "element-service";
-          entryPoints = ["web"];
-          middlewares = ["strip-element-prefix" "allow-lan" "security-headers"];
+          entryPoints = ["web" "websecure"];
+          middlewares = ["strip-element-prefix" "allow-lan" "security-headers@file"];
+          tls = {};
           priority = 50;
         };
       };
@@ -50,16 +52,6 @@
         strip-element-prefix = {
           stripPrefix = {
             prefixes = ["/element"];
-          };
-        };
-        # Basic headers (reuse same name as in traefik.nix if desired)
-        security-headers = {
-          headers = {
-            customResponseHeaders = {
-              X-Frame-Options = "DENY";
-              X-Content-Type-Options = "nosniff";
-              X-XSS-Protection = "1; mode=block";
-            };
           };
         };
       };

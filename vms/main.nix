@@ -16,7 +16,7 @@
     microvm.shares = [
       {
         source = "/nix/store";
-        mountPoint = "/nix/.ro-store";
+        mountPoint = "/nix/store";
         tag = "ro-store";
         proto = "virtiofs";
       }

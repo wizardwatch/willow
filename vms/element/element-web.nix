@@ -16,7 +16,7 @@
         }
 
         # Serve the static Element Web assets from the Nix store
-        root * ${pkgs.element-web}/share/element-web
+        root * ${pkgs.element-web}
         encode zstd gzip
         file_server
       '';
