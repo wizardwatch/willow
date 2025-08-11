@@ -10,6 +10,8 @@ Host (ivy)
 ├── Matrix VM (10.0.0.10)
 │   ├── Matrix Synapse homeserver
 │   └── PostgreSQL database
+├── Element VM (10.0.0.11)
+│   └── Element Web (served by Caddy)
 └── Traefik (runs on host)
     ├── Traefik reverse proxy
     ├── Matrix routing (dynamic files)
@@ -27,6 +29,14 @@ Host (ivy)
   - SSH (port 22)
 - **Configuration**: `matrix/`
 
+### Element VM (10.0.0.11)
+- **Purpose**: Serve Element Web static client
+- **Resources**: 1 vCPU, 1.5GB RAM, 4GB storage
+- **Services**:
+  - Caddy (port 8082) serving Element Web
+  - SSH (port 22)
+- **Configuration**: `element/`
+
 ### Traefik (host)
 - **Purpose**: Reverse proxy and load balancer running on the host
 - **Services**:
@@ -42,6 +52,7 @@ Host (ivy)
   - `matrix.nix` - Matrix Synapse configuration
 - `traefik.nix` - Traefik proxy configuration (host)
 - `matrix/matrix-route.nix` - Matrix routing rules + well-known service (host)
+- `element/element-route.nix` - Element Web routing rules (host)
 
 ## Management
 
@@ -111,6 +122,7 @@ Traffic flow:
 ```
 Internet → host:80/443 → Traefik (host)
 Traefik (host) → matrix route → Matrix VM (10.0.0.10:8008)
+Traefik (host) → element route → Element VM (10.0.0.11:8082)
 ```
 
 ## Storage
