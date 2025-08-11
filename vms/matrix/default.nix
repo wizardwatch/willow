@@ -6,6 +6,7 @@
 }: {
   imports = [
     ./matrix.nix
+    ./wellknown-caddy.nix
   ];
 
   # Basic system configuration
@@ -39,7 +40,7 @@
   # Allow inbound access to Matrix and SSH
   networking.firewall = {
     enable = false;
-    allowedTCPPorts = [22 8008];
+    allowedTCPPorts = [22 8008 8081];
   };
 
   # Create matrix-synapse user if not already created

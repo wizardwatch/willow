@@ -23,6 +23,11 @@
     ];
   };
 in {
+  # Always include Traefik and routing needed to serve VMs
+  imports = [
+    ./traefik.nix
+    ./matrix/matrix-route.nix
+  ];
   # Enable microvm support on the host
   microvm.host.enable = true;
   # Autostart MicroVMs on boot

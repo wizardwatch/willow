@@ -52,7 +52,7 @@
         matrix-wellknown-service = {
           loadBalancer = {
             servers = [
-              {url = "http://127.0.0.1:8081";}
+              {url = "http://10.0.0.10:8081";}
             ];
           };
         };
@@ -87,7 +87,7 @@ in {
   # Create dynamic configuration file for Matrix routing
   environment.etc."traefik/dynamic/matrix.yml".text = lib.generators.toYAML {} matrixConfig;
 
-  # Create well-known matrix configuration for server discovery (served by local service above)
+  # Create well-known matrix configuration for server discovery (served by Caddy in Matrix VM)
   environment.etc."traefik/dynamic/matrix-wellknown.yml".text = lib.generators.toYAML {} {
     http = {
       routers = {
@@ -109,78 +109,18 @@ in {
         wellknown-server-service = {
           loadBalancer = {
             servers = [
-              {url = "http://127.0.0.1:8081";}
+              {url = "http://10.0.0.10:8081";}
             ];
           };
         };
         wellknown-client-service = {
           loadBalancer = {
             servers = [
-              {url = "http://127.0.0.1:8081";}
+              {url = "http://10.0.0.10:8081";}
             ];
           };
         };
       };
     };
-  };
-
-  # Simple HTTP server for well-known endpoints
-  systemd.services.matrix-wellknown = {
-    description = "Matrix Well-Known Server";
-    wantedBy = ["multi-user.target"];
-    after = ["network.target"];
-
-    serviceConfig = {
-      Type = "simple";
-      Restart = "always";
-      RestartSec = "5";
-      ExecStart = "${pkgs.python3}/bin/python3 -m http.server 8081 --directory /var/lib/matrix-wellknown";
-      WorkingDirectory = "/var/lib/matrix-wellknown";
-      User = "matrix-wellknown";
-      Group = "matrix-wellknown";
-    };
-  };
-
-  # Create well-known user
-  users.users.matrix-wellknown = {
-    isSystemUser = true;
-    group = "matrix-wellknown";
-    home = "/var/lib/matrix-wellknown";
-    createHome = true;
-  };
-  users.groups.matrix-wellknown = {};
-
-  # Create well-known files
-  systemd.tmpfiles.rules = [
-    "d /var/lib/matrix-wellknown 0755 matrix-wellknown matrix-wellknown -"
-    "d /var/lib/matrix-wellknown/.well-known 0755 matrix-wellknown matrix-wellknown -"
-    "d /var/lib/matrix-wellknown/.well-known/matrix 0755 matrix-wellknown matrix-wellknown -"
-  ];
-
-  # Create well-known server file
-  environment.etc."matrix-wellknown/server.json" = {
-    target = "/var/lib/matrix-wellknown/.well-known/matrix/server";
-    text = builtins.toJSON {
-      "m.server" = "matrix.holymike.com:443";
-    };
-    mode = "0644";
-    user = "matrix-wellknown";
-    group = "matrix-wellknown";
-  };
-
-  # Create well-known client file
-  environment.etc."matrix-wellknown/client.json" = {
-    target = "/var/lib/matrix-wellknown/.well-known/matrix/client";
-    text = builtins.toJSON {
-      "m.homeserver" = {
-        "base_url" = "https://matrix.holymike.com";
-      };
-      "m.identity_server" = {
-        "base_url" = "https://vector.im";
-      };
-    };
-    mode = "0644";
-    user = "matrix-wellknown";
-    group = "matrix-wellknown";
   };
 }

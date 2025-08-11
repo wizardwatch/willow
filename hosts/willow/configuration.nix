@@ -24,9 +24,6 @@
   # Willow-specific services
   imports = [
     ../../vms/main.nix
-    # Reuse Traefik configuration on host instead of a VM
-    ../../vms/traefik/traefik.nix
-    ../../vms/traefik/matrix-route.nix
   ];
 
   services = {

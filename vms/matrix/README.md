@@ -1,6 +1,6 @@
 # Plan: VM-Based Services with a Dedicated Traefik VM
 
-This document outlines the plan to migrate internet-facing services into virtual machines (VMs), fronted by a dedicated Traefik reverse proxy VM. This makes the entire setup host-agnostic and portable.
+This document outlines the plan to migrate internet-facing services into virtual machines (VMs), fronted by Traefik running on the host. This keeps services isolated in VMs while routing is centralized on the host.
 
 ## 1. Guiding Principle
 
@@ -8,7 +8,7 @@ All internet-facing services, including the reverse proxy, will run in their own
 
 ## 2. Project Structure
 
-- **`vms/traefik/`**: This new directory will contain the configuration for the dedicated Traefik reverse proxy VM.
+- **`vms/traefik.nix`**: Traefik reverse proxy configuration that runs on the host.
 - **`vms/matrix/`**: This directory will house the Matrix service VM's configuration.
 - **`modules/services/`**: Generic, reusable service modules (like Traefik, Matrix) will be moved here from `hosts/ivy/services/` to be used by any VM.
 
@@ -20,10 +20,10 @@ All internet-facing services, including the reverse proxy, will run in their own
 
 ## 4. VM Configurations
 
-### Traefik VM (`vms/traefik/`)
+### Traefik (host)
 
-- **`default.nix`**: Defines the VM's resources and its connection to the virtual bridge.
-- **`configuration.nix`**: Imports the generic Traefik service module. The Traefik configuration will use file-based discovery to dynamically route traffic to other service VMs based on configuration files generated during the NixOS build.
+- **`vms/traefik.nix`**: Host Traefik service configuration using file provider for dynamic routing.
+- **`vms/matrix/matrix-route.nix`**: Generates Traefik dynamic route files for Matrix and serves well-known via Caddy on host.
 
 ### Matrix VM (`vms/matrix/`)
 
@@ -32,8 +32,8 @@ All internet-facing services, including the reverse proxy, will run in their own
 
 ## 5. Implementation Steps
 
-1.  **Create `vms/traefik/` directory** and its `default.nix` and `configuration.nix` files.
-2.  **Generalize Service Modules**: Move and refactor the configurations from `hosts/ivy/services/traefik.nix` and `hosts/ivy/services/matrix.nix` into reusable modules in `modules/services/`.
+1.  **Create `vms/traefik.nix`** for host Traefik config and `vms/matrix/matrix-route.nix` for Matrix-specific routing.
+2.  **Generalize Service Modules**: Move and refactor the configurations into reusable modules in `modules/services/`.
 3.  **Update Host Configuration** (e.g., `hosts/ivy/configuration.nix`):
     - Add the virtual bridge configuration.
     - Set up port forwarding rules (80, 443) to the Traefik VM.

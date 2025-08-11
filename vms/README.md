@@ -10,10 +10,10 @@ Host (ivy)
 ├── Matrix VM (10.0.0.10)
 │   ├── Matrix Synapse homeserver
 │   └── PostgreSQL database
-└── Traefik VM (10.0.0.20)
+└── Traefik (runs on host)
     ├── Traefik reverse proxy
-    ├── Matrix routing
-    └── Well-known endpoints
+    ├── Matrix routing (dynamic files)
+    └── Well-known endpoints (served via Caddy on host)
 ```
 
 ## VMs
@@ -27,14 +27,12 @@ Host (ivy)
   - SSH (port 22)
 - **Configuration**: `matrix/`
 
-### Traefik VM (10.0.0.20)
-- **Purpose**: Reverse proxy and load balancer
-- **Resources**: 1 vCPU, 1GB RAM, 4GB storage
+### Traefik (host)
+- **Purpose**: Reverse proxy and load balancer running on the host
 - **Services**:
   - Traefik (ports 80, 443, 8080)
-  - Matrix well-known endpoints
-  - SSH (port 22)
-- **Configuration**: `traefik/`
+  - Caddy (localhost:8081) for well-known endpoints
+- **Configuration**: `vms/traefik.nix` and `vms/matrix/matrix-route.nix`
 
 ## Files
 
@@ -42,10 +40,8 @@ Host (ivy)
 - `matrix/` - Matrix VM configuration
   - `default.nix` - VM system configuration
   - `matrix.nix` - Matrix Synapse configuration
-- `traefik/` - Traefik VM configuration
-  - `default.nix` - VM system configuration
-  - `traefik.nix` - Traefik proxy configuration
-  - `matrix-route.nix` - Matrix routing rules
+- `traefik.nix` - Traefik proxy configuration (host)
+- `matrix/matrix-route.nix` - Matrix routing rules + well-known service (host)
 
 ## Management
 
@@ -113,8 +109,8 @@ The VMs communicate over a bridge network:
 
 Traffic flow:
 ```
-Internet → ivy.local:80 → Traefik VM (10.0.0.20:80)
-Traefik VM → matrix.ivy.local → Matrix VM (10.0.0.10:8008)
+Internet → host:80/443 → Traefik (host)
+Traefik (host) → matrix route → Matrix VM (10.0.0.10:8008)
 ```
 
 ## Storage
@@ -122,8 +118,6 @@ Traefik VM → matrix.ivy.local → Matrix VM (10.0.0.10:8008)
 VMs use image files stored in `/var/lib/microvms/`:
 
 - `/var/lib/microvms/matrix/rootfs.img` - Matrix VM root filesystem
-- `/var/lib/microvms/traefik/rootfs.img` - Traefik VM root filesystem
-
 The Nix store is shared read-only from the host via virtiofs.
 
 ## Building and Deployment

@@ -4,7 +4,7 @@
   lib,
   ...
 }: {
-  # Traefik reverse proxy configuration for microvm
+  # Traefik reverse proxy configuration (runs on host)
   services.traefik = {
     enable = true;
 
@@ -79,7 +79,7 @@
           };
         };
 
-        # Services (matrix service will be added by matrix-route.nix)
+        # Services (matrix service routes added via dynamic files)
         services = {};
 
         # Middlewares
@@ -126,6 +126,7 @@
       };
     };
   };
+
   # Health check service for Traefik
   systemd.services.traefik-health-check = {
     description = "Traefik Health Check";
@@ -159,7 +160,22 @@
     };
   };
 
-  # Ensure traefik user can access log directory
+  # Ensure traefik user can access log directory and exists
+  users.users.traefik = {
+    isSystemUser = true;
+    group = "traefik";
+    home = "/var/lib/traefik";
+    createHome = true;
+  };
+  users.groups.traefik = {};
+
+  # Create traefik directories
+  systemd.tmpfiles.rules = [
+    "d /etc/traefik 0755 root root -"
+    "d /etc/traefik/dynamic 0755 root root -"
+    "d /var/log/traefik 0755 traefik traefik -"
+  ];
+
   systemd.services.traefik = {
     serviceConfig = {
       User = "traefik";
@@ -167,3 +183,4 @@
     };
   };
 }
+
