@@ -1,4 +1,5 @@
 {
+  inputs,
   pkgs,
   lib,
   config,
@@ -46,6 +47,7 @@
     valgrind
     deno
     gemini-cli
+    python3
 
     # 3D/CAD
     freecad-wayland
@@ -61,6 +63,10 @@
     eww # Widget toolkit
     iwd
     iwgtk
+    lutris
+    # support both 32-bit and 64-bit applications
+    wineWowPackages.full
+    piper
 
     # Screen recording/streaming
     (wrapOBS {
@@ -82,6 +88,17 @@
   programs.thunderbird.enable = true;
   # Required programs
   programs.gamescope = {enable = true;};
+  services.foundryvtt = {
+    enable = true;
+    hostName = "willow";
+    minifyStaticFiles = true;
+    proxyPort = 443;
+    package = inputs.foundry.packages.${pkgs.system}.foundryvtt_13.overrideAttrs {
+      #version = "13.0.0+347";
+    };
+    proxySSL = false;
+    upnp = false;
+  };
   programs.steam = {
     enable = true;
     gamescopeSession = {
@@ -112,6 +129,7 @@
         ];
     };
   };
+  services.ratbagd.enable = true;
   # GNOME keyring for credentials
   services.gnome.gnome-keyring.enable = true;
 

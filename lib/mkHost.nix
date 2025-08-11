@@ -28,6 +28,7 @@
     (lib.optional (username != null) inputs.home-manager.nixosModules.home-manager)
     inputs.sops-nix.nixosModules.sops
     inputs.microvm.nixosModules.host
+    inputs.foundry.nixosModules.foundryvtt
     {
       networking.hostName = name;
     }

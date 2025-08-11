@@ -44,9 +44,21 @@
       url = "github:microvm-nix/microvm.nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    codex = {
+      url = "github:openai/codex";
+      #inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    foundry = {
+      url = "github:reckenrode/nix-foundryvtt";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
   outputs = {
     self,
+    foundry,
+    codex,
     microvm,
     nixpkgs,
     home-manager,
