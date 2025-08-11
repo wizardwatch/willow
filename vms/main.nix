@@ -37,14 +37,16 @@ in {
         networking.hostName = "matrix";
         microvm = {
           # Mount host secret directory into the VM for registration_shared_secret
-          shares = (commonConfig.microvm.shares or []) ++ [
-            {
-              source = "/var/lib/matrix";
-              mountPoint = "/run/host-secrets/matrix";
-              tag = "host-secrets-matrix";
-              proto = "virtiofs";
-            }
-          ];
+          shares =
+            (commonConfig.microvm.shares or [])
+            ++ [
+              {
+                source = "/var/lib/vms/matrix";
+                mountPoint = "/run/host-secrets/matrix";
+                tag = "host-secrets-matrix";
+                proto = "virtiofs";
+              }
+            ];
           interfaces = [
             {
               type = "tap";
@@ -158,6 +160,8 @@ in {
     "d /var/lib/microvms 0755 root root -"
     "d /var/lib/microvms/matrix 0755 root root -"
     "d /var/lib/microvms/element 0755 root root -"
+    # Directory to host rendered VM secrets like Synapse registration include
+    "d /var/lib/matrix 0755 root root -"
   ];
 
   # Traefik + routes for VMs
@@ -166,4 +170,7 @@ in {
     ./matrix/matrix-route.nix
     ./element/element-route.nix
   ];
+
+  # Render Synapse registration_shared_secret include from sops secret on the host.
+  # Expects sops.secrets.reg_token to be declared in modules/services/secrets.nix.
 }
