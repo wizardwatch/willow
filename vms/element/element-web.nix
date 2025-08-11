@@ -10,7 +10,7 @@
     virtualHosts.":8082" = {
       extraConfig = ''
         # Serve a generated config.json from a writable path
-        handle_path /config.json {
+        handle /config.json {
           root * /var/lib/element-web
           file_server
         }
@@ -44,4 +44,3 @@
     mode = "0644";
   };
 }
-

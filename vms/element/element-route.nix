@@ -19,7 +19,7 @@
           rule = "PathPrefix(`/element`)";
           service = "element-service";
           entryPoints = ["web"];
-          middlewares = ["allow-lan" "security-headers"];
+          middlewares = ["strip-element-prefix" "allow-lan" "security-headers"];
           priority = 50;
         };
       };
@@ -46,6 +46,12 @@
             sourceRange = ["192.168.0.0/24" "127.0.0.1/32"];
           };
         };
+        # Strip /element prefix for path-based access
+        strip-element-prefix = {
+          stripPrefix = {
+            prefixes = ["/element"];
+          };
+        };
         # Basic headers (reuse same name as in traefik.nix if desired)
         security-headers = {
           headers = {
@@ -62,4 +68,3 @@
 in {
   environment.etc."traefik/dynamic/element.yml".text = lib.generators.toYAML {} elementConfig;
 }
-

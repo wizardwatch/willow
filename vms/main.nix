@@ -69,8 +69,8 @@ in {
               mac = "02:00:00:00:00:02";
             }
           ];
-          vcpu = 1;
-          mem = 1536;
+          vcpu = 2;
+          mem = 3072;
           volumes = [
             {
               image = "/var/lib/microvms/element/rootfs.img";
