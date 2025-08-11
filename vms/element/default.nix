@@ -4,6 +4,26 @@
   pkgs,
   ...
 }: {
+  # Override element-web package inside this VM to embed config.json
+  nixpkgs.overlays = [
+    (final: prev: {
+      element-web = prev.element-web.override {
+        conf = {
+          default_server_config = {
+            "m.homeserver" = {
+              base_url = "https://matrix.holymike.com";
+            };
+            "m.identity_server" = {
+              base_url = "https://vector.im";
+            };
+          };
+          default_server_name = "matrix.holymike.com";
+          disable_custom_urls = true;
+          brand = "Element";
+        };
+      };
+    })
+  ];
   imports = [
     ./element-web.nix
   ];
@@ -50,10 +70,7 @@
     allowedTCPPorts = [22 8082];
   };
 
-  environment.systemPackages = with pkgs; [
-    vim curl htop element-web
-  ];
+  environment.systemPackages = with pkgs; [ vim curl htop element-web ];
 
   system.stateVersion = "23.11";
 }
-

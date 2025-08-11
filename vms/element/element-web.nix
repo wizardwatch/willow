@@ -9,13 +9,7 @@
     enable = true;
     virtualHosts.":8082" = {
       extraConfig = ''
-        # Serve a generated config.json from a writable path
-        handle /config.json {
-          root * /var/lib/element-web
-          file_server
-        }
-
-        # Serve the static Element Web assets from the Nix store
+        # Serve static Element Web assets (config.json embedded in package)
         root * ${pkgs.element-web}
         encode zstd gzip
         file_server
@@ -23,24 +17,5 @@
     };
   };
 
-  # Directory for runtime config.json
-  systemd.tmpfiles.rules = [
-    "d /var/lib/element-web 0755 root root -"
-  ];
-
-  # Element Web configuration pointing at the Matrix VM via Traefik
-  environment.etc."element-web/config.json" = {
-    target = "/var/lib/element-web/config.json";
-    text = builtins.toJSON {
-      default_server_config = {
-        "m.homeserver" = {
-          base_url = "https://matrix.holymike.com";
-          server_name = "matrix.holymike.com";
-        };
-      };
-      disable_custom_urls = true;
-      brand = "Element";
-    };
-    mode = "0644";
-  };
+  # No runtime config.json needed; element-web serves its embedded config.json
 }
