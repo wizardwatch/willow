@@ -63,6 +63,16 @@ in {
               mountPoint = "/";
               size = 8192;
             }
+            {
+              image = "/var/lib/microvms/matrix/postgresql-data.img";
+              mountPoint = "/var/lib/postgresql";
+              size = 4096;
+            }
+            {
+              image = "/var/lib/microvms/matrix/matrix-synapse-data.img";
+              mountPoint = "/var/lib/matrix-synapse";
+              size = 4096;
+            }
           ];
         };
       };

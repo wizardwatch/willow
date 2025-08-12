@@ -108,6 +108,12 @@
     matrix-synapse
   ];
 
+  # Ensure proper ownership of persistent volumes
+  systemd.tmpfiles.rules = [
+    "d /var/lib/postgresql 0755 postgres postgres -"
+    "d /var/lib/matrix-synapse 0700 matrix-synapse matrix-synapse -"
+  ];
+
   # Ensure PostgreSQL starts before Matrix
   systemd.services.matrix-synapse.after = ["postgresql.service"];
   systemd.services.matrix-synapse.requires = ["postgresql.service"];
