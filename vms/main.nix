@@ -195,6 +195,7 @@ in {
           secret=$(tr -d '\n' < "$secret_file")
           umask 022
           printf "registration_shared_secret: %s\n" "$secret" > /var/lib/vms/matrix/registration.yaml
+          printf "%s\n" "$secret" > /var/lib/vms/matrix/registration
           chmod 0444 /var/lib/vms/matrix/registration.yaml
         '';
       });
