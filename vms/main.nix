@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   inputs,
   ...
 }: let
@@ -161,7 +162,7 @@ in {
     "d /var/lib/microvms/matrix 0755 root root -"
     "d /var/lib/microvms/element 0755 root root -"
     # Directory to host rendered VM secrets like Synapse registration include
-    "d /var/lib/matrix 0755 root root -"
+    "d /var/lib/vms/matrix 0755 root root -"
   ];
 
   # Traefik + routes for VMs
@@ -171,6 +172,35 @@ in {
     ./element/element-route.nix
   ];
 
-  # Render Synapse registration_shared_secret include from sops secret on the host.
-  # Expects sops.secrets.reg_token to be declared in modules/services/secrets.nix.
+  # Render a plain file on the host (not a symlink) from the sops secret,
+  # so the VM can include it via the mounted directory.
+  systemd.services.vm-matrix-render-registration = {
+    description = "Render Synapse registration_shared_secret for Matrix VM";
+    wantedBy = ["multi-user.target"];
+    after = ["sops-nix.service"];
+    wants = ["sops-nix.service"];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = lib.getExe (pkgs.writeShellApplication {
+        name = "render-matrix-registration";
+        text = ''
+          set -euo pipefail
+          mkdir -p /var/lib/vms/matrix
+          secret_file='${config.sops.secrets.reg_token.path}'
+          if [ ! -r "$secret_file" ]; then
+            echo "reg_token secret not available at $secret_file" >&2
+            exit 1
+          fi
+          echo "file at " "$secret_file"
+          secret=$(tr -d '\n' < "$secret_file")
+          umask 022
+          printf "registration_shared_secret: %s\n" "$secret" > /var/lib/vms/matrix/registration.yaml
+          chmod 0444 /var/lib/vms/matrix/registration.yaml
+        '';
+      });
+    };
+  };
+
+  # Ensure the microvm for Matrix starts after the registration file is rendered
+  systemd.services."microvm@matrix".after = ["vm-matrix-render-registration.service"];
 }

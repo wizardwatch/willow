@@ -10,7 +10,7 @@
   ];
 
   # Directly include the host-rendered registration secret YAML from the mounted path
-  services.matrix-synapse.settings.include = [
+  services.matrix-synapse.settings.app_service_config_files = [
     "/run/host-secrets/matrix/registration.yaml"
   ];
 
