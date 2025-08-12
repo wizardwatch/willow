@@ -8,8 +8,6 @@
   imports = [
     # Import Zsh and Starship configuration
     ../modules/other/starshipZsh.nix
-    # Import pomodoro timer module
-    ../modules/other/pomodoro.nix
     # Import essential modules
     ../modules/terminal
     ../modules/editor

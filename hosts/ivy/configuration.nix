@@ -7,10 +7,18 @@
   # Import SSH keys from the willow user
   imports = [
     ../../users/willow/keys/ssh.nix
-    ../../vms/main.nix
   ];
 
   networking.bridges.br0.interfaces = [];
+
+  # Enable systemd-networkd for microvm networking
+  systemd.network.enable = true;
+
+  # Configure primary interface for DHCP
+  systemd.network.networks."10-enp1s0-dhcp" = {
+    matchConfig.Name = "enp1s0";
+    networkConfig.DHCP = "ipv4";
+  };
   nix.settings = {
     trusted-users = ["root" "willow" "nixremote"];
 

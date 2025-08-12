@@ -23,6 +23,7 @@
 
   # Willow-specific services
   imports = [
+    # Import VMs configuration
     ../../vms/main.nix
   ];
 

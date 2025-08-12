@@ -148,7 +148,7 @@ in {
   networking.nat = {
     enable = true;
     enableIPv6 = true;
-    externalInterface = "wlo1";
+    externalInterface = "wlo1"; # Using willow's wireless interface
     internalInterfaces = ["microvm"];
   };
 

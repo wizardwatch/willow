@@ -48,7 +48,7 @@
   services.openssh = {
     enable = true;
     settings = {
-      PasswordAuthentication = true;
+      PasswordAuthentication = false;
       PermitRootLogin = "no";
     };
   };
@@ -70,7 +70,7 @@
     allowedTCPPorts = [22 8082];
   };
 
-  environment.systemPackages = with pkgs; [ vim curl htop element-web ];
+  environment.systemPackages = with pkgs; [vim curl htop element-web];
 
   system.stateVersion = "23.11";
 }

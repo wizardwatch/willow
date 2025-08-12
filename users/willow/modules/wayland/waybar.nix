@@ -3,9 +3,6 @@
   inputs ? {},
   lib,
   host ? {isDesktop = false;},
-  pomodoroScript ? null,
-  pomodoroControl ? null,
-  pomodoroMenu ? null,
   ...
 }: let
   # Only use this module if we're on a desktop system
@@ -21,7 +18,6 @@ in
           height = 30;
           layer = "top";
           modules-left = [
-            "custom/pomodoro"
             "hyprland/workspaces"
             "tray"
           ];
@@ -36,16 +32,6 @@ in
           ];
           "hyprland/workspaces" = {
             on-click = "activate";
-          };
-          "custom/pomodoro" = lib.mkIf (pomodoroScript != null) {
-            format = "{}";
-            return-type = "json";
-            interval = 5;
-            exec = "${pomodoroScript}";
-            on-click = "${pomodoroControl}";
-            on-click-right = "${pomodoroMenu}";
-            tooltip = true;
-            signal = 10;
           };
         };
       };
@@ -110,8 +96,7 @@ in
         #idle_inhibitor,
         #custom-date,
         #custom-wireguard,
-        #custom-teavpn,
-        #custom-pomodoro {
+        #custom-teavpn {
           padding: 0 10px;
           margin: 2px 3px;
           background-color: rgba(60, 56, 54, 0.8);
@@ -119,27 +104,7 @@ in
           border-radius: 5px;
         }
 
-        #custom-pomodoro {
-          background-color: rgba(60, 56, 54, 0.8);
-          color: #a89984;
-        }
 
-        #custom-pomodoro.inactive {
-          background-color: rgba(60, 56, 54, 0.8);
-          color: #a89984;
-        }
-
-        #custom-pomodoro.active {
-          background-color: rgba(69, 133, 136, 0.9);
-          color: #ebdbb2;
-          animation: pomodoroActive 2s ease-in-out infinite alternate;
-        }
-
-        #custom-pomodoro.finished {
-          background-color: rgba(204, 36, 29, 0.9);
-          color: #ebdbb2;
-          animation: pomodoroFinished 1s ease-in-out infinite;
-        }
 
 
 
