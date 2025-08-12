@@ -11,7 +11,7 @@
       suppress_key_server_warning = true;
       enable_registration = true;
       registration_requires_token = true;
-      registration_shared_secret = "";
+      registration_shared_secret_path = "/run/host-secrets/matrix/registration.yaml";
       listeners = [
         {
           port = 8008;

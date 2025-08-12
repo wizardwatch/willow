@@ -7,6 +7,23 @@
   matrixConfig = {
     http = {
       routers = {
+        # Guarded registration endpoints (external): require BasicAuth
+        matrix-register-external = {
+          rule = "Host(`matrix.holymike.com`) && (Path(`/ _matrix/client/v3/register`) || Path(`/_matrix/client/r0/register`))";
+          service = "matrix-service";
+          entryPoints = ["web"];
+          middlewares = ["matrix-headers" "matrix-register-basicauth"];
+          priority = 300;
+        };
+
+        # Guarded registration (local path access), still LAN-gated
+        matrix-register-local = {
+          rule = "Path(`/_matrix/client/v3/register`) || Path(`/_matrix/client/r0/register`)";
+          service = "matrix-service";
+          entryPoints = ["web"];
+          middlewares = ["matrix-headers" "matrix-register-basicauth" "allow-lan"];
+          priority = 300;
+        };
         # Local-only Matrix (no Host), allow LAN by IP
         matrix-local = {
           rule = "PathPrefix(`/_matrix`)";
@@ -59,6 +76,14 @@
       };
 
       middlewares = {
+        # BasicAuth for registration endpoints, reads htpasswd file managed via sops
+        matrix-register-basicauth = {
+          basicAuth = {
+            usersFile = "/etc/traefik/basicauth/matrix.htpasswd";
+            removeHeader = true;
+            headerField = "X-Forwarded-User";
+          };
+        };
         matrix-headers = {
           headers = {
             customRequestHeaders = {

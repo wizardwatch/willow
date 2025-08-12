@@ -173,6 +173,7 @@
   systemd.tmpfiles.rules = [
     "d /etc/traefik 0755 root root -"
     "d /etc/traefik/dynamic 0755 root root -"
+    "d /etc/traefik/basicauth 0750 root traefik -"
     "d /var/log/traefik 0755 traefik traefik -"
   ];
 
@@ -182,5 +183,9 @@
       Group = "traefik";
     };
   };
-}
 
+  # Expose an htpasswd file for guarding registration; expects sops.secrets.matrixRegisterHtpasswd
+  # to be declared in your secrets module (path content is the htpasswd line).
+  environment.etc."traefik/basicauth/matrix.htpasswd".source =
+    config.sops.secrets.matrixRegisterHtpasswd.path or "/etc/traefik/basicauth/.missing";
+}

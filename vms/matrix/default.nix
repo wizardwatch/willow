@@ -10,7 +10,7 @@
   ];
 
   # Directly include the host-rendered registration secret YAML from the mounted path
-  services.matrix-synapse.settings.app_service_config_files = [
+  services.matrix-synapse.settings.include = [
     "/run/host-secrets/matrix/registration.yaml"
   ];
 
@@ -105,6 +105,7 @@
     curl
     htop
     postgresql
+    matrix-synapse
   ];
 
   # Ensure PostgreSQL starts before Matrix
