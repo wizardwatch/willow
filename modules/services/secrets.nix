@@ -49,8 +49,8 @@
       sopsFile = ./secrets/matrix_reg.yaml;
       path = "/var/lib/vms/matrix/reg";
     };
-    ddns_password = {
-      sopsFile = ./secrets/ddns_password.yaml;
+    ddns-pass = {
+      sopsFile = ./secrets/ddns.yaml;
       path = "/var/lib/vms/ddns/password";
     };
   };

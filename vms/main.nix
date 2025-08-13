@@ -173,6 +173,7 @@ in {
   imports = [
     ./vm-hardening.nix # Add VM security hardening
     ./traefik.nix
+    ./ddns.nix
     ./matrix/matrix-route.nix
     ./element/element-route.nix
   ];
