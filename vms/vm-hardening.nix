@@ -17,6 +17,7 @@
       80 # HTTP (Traefik)
       443 # HTTPS (Traefik)
       8080 # Traefik dashboard (restricted to local)
+      8000
     ];
 
     allowedUDPPorts = [

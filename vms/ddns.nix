@@ -5,10 +5,20 @@
 }: {
   sops.templates."ddns-updater.json" = {
     content = ''
-      SETTINGS=[{"provider":"namecheap","domain":"holymike.com","password":"${config.sops.placeholder.ddns-pass}"}]
+      {
+        "settings": [
+          {
+            "provider":"cloudflare",
+            "zone_identifier": "${config.sops.placeholder.zone-id}",
+            "domain":"*.onepagerpolitics.com",
+            "token":"${config.sops.placeholder.ddns-pass}",
+            "ttl": 1
+          }
+        ]
+      }
     '';
-    # Ensure only root/systemd can read it
-    mode = "0400";
+
+    mode = "0666";
   };
 
   services.ddns-updater = {

@@ -53,6 +53,10 @@
       sopsFile = ./secrets/ddns.yaml;
       path = "/var/lib/vms/ddns/password";
     };
+    zone-id = {
+      sopsFile = ./secrets/ddns.yaml;
+      path = "/var/lib/vms/ddns/zone_id";
+    };
   };
 
   users.users."willow".openssh.authorizedKeys = {
