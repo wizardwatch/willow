@@ -74,9 +74,9 @@
   # Ensure systemd-networkd manages interfaces (needed for microvm bridge/DHCP)
   systemd.network.enable = true;
 
-  # Configure wlo1 for DHCP using systemd-networkd
-  systemd.network.networks."10-wlo1-dhcp.network" = {
-    name = "wlo1";
+  # Configure wlan0 for DHCP using systemd-networkd
+  systemd.network.networks."10-wlan0-dhcp.network" = {
+    name = "wlan0";
     networkConfig.DHCP = "ipv4";
   };
 
