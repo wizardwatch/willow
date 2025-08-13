@@ -12,7 +12,7 @@
           service = "element-service";
           entryPoints = ["websecure"];
           middlewares = ["element-headers"];
-          tls = { certResolver = "letsencrypt"; };
+          tls = { certResolver = "letsencrypt_dns"; };
           priority = 100;
         };
         element-external-http-redirect = {

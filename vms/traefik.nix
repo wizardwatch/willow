@@ -11,11 +11,14 @@
 
     staticConfigOptions = {
       certificatesResolvers = {
-        letsencrypt = {
+        # DNS-01 via Cloudflare (uses lego under the hood)
+        letsencrypt_dns = {
           acme = {
             storage = "/var/lib/traefik/acme.json";
-            httpChallenge = {
-              entryPoint = "web";
+            dnsChallenge = {
+              provider = "cloudflare";
+              # Explicit resolvers can speed up propagation checks
+              resolvers = ["1.1.1.1:53" "8.8.8.8:53"];
             };
           };
         };
@@ -209,6 +212,22 @@
       User = "traefik";
       Group = "traefik";
     };
+  };
+
+  # Provide DNS credentials to Traefik via environment file managed by sops
+  # Re-uses the existing Cloudflare token used by DDNS (ddns-pass). Consider
+  # creating a narrower-scope token for ACME later.
+  services.traefik.environmentFiles = [config.sops.templates."traefik/dns.env".path];
+
+  sops.templates."traefik/dns.env" = {
+    content = ''
+      # Tokens for lego Cloudflare provider (Traefik ACME)
+      CLOUDFLARE_API_TOKEN=${config.sops.placeholder.ddns-pass}
+      CLOUDFLARE_DNS_API_TOKEN=${config.sops.placeholder.ddns-pass}
+      CF_DNS_API_TOKEN=${config.sops.placeholder.ddns-pass}
+    '';
+    mode = "0640";
+    group = "traefik";
   };
 
   # Expose an htpasswd file for guarding registration; expects sops.secrets.matrixRegisterHtpasswd

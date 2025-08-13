@@ -13,7 +13,7 @@
           service = "matrix-service";
           entryPoints = ["websecure"];
           middlewares = ["matrix-headers" "matrix-register-basicauth"];
-          tls = { certResolver = "letsencrypt"; };
+          tls = { certResolver = "letsencrypt_dns"; };
           priority = 350;
         };
 
@@ -40,7 +40,7 @@
           service = "matrix-service";
           entryPoints = ["websecure"];
           middlewares = ["matrix-headers"];
-          tls = { certResolver = "letsencrypt"; };
+          tls = { certResolver = "letsencrypt_dns"; };
           priority = 200;
         };
 
@@ -58,7 +58,7 @@
           rule = "PathPrefix(`/.well-known/matrix`)";
           service = "matrix-wellknown-service";
           entryPoints = ["websecure"];
-          tls = { certResolver = "letsencrypt"; };
+          tls = { certResolver = "letsencrypt_dns"; };
           priority = 150;
         };
 
@@ -148,13 +148,13 @@ in {
           rule = "Path(`/.well-known/matrix/server`)";
           service = "wellknown-server-service";
           entryPoints = ["websecure"];
-          tls = { certResolver = "letsencrypt"; };
+          tls = { certResolver = "letsencrypt_dns"; };
         };
         wellknown-client-https = {
           rule = "Path(`/.well-known/matrix/client`)";
           service = "wellknown-client-service";
           entryPoints = ["websecure"];
-          tls = { certResolver = "letsencrypt"; };
+          tls = { certResolver = "letsencrypt_tls"; };
         };
         # HTTP redirectors
         wellknown-server-http-redirect = {

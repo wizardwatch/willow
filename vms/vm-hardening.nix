@@ -32,7 +32,7 @@
     enable = true;
     enableIPv6 = true;
     # Primary interface (wireless)
-    externalInterface = "wlo1";
+    externalInterface = "wlan0";
     internalInterfaces = ["microvm"];
   };
 }

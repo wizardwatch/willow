@@ -137,21 +137,14 @@ in {
     matchConfig.Name = "vm-*";
     networkConfig.Bridge = "microvm";
   };
-
+  /*
   # Enable IP forwarding on the host
   boot.kernel.sysctl = {
     "net.ipv4.ip_forward" = 1;
     "net.ipv6.conf.all.forwarding" = 1;
   };
 
-  # Provide Internet Access with NAT
-  networking.nat = {
-    enable = true;
-    enableIPv6 = true;
-    externalInterface = "wlo1"; # Using willow's wireless interface
-    internalInterfaces = ["microvm"];
-  };
-
+  */
   # Ensure necessary kernel modules are available
   boot.kernelModules = [
     "kvm-intel"
