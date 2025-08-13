@@ -5,10 +5,21 @@
   ...
 }: {
   # Traefik reverse proxy configuration (runs on host)
+  networking.firewall.allowedTCPPorts = [80 443];
   services.traefik = {
     enable = true;
 
     staticConfigOptions = {
+      certificatesResolvers = {
+        letsencrypt = {
+          acme = {
+            storage = "/var/lib/traefik/acme.json";
+            httpChallenge = {
+              entryPoint = "web";
+            };
+          };
+        };
+      };
       # API and dashboard configuration
       api = {
         dashboard = true;
@@ -84,6 +95,13 @@
 
         # Middlewares
         middlewares = {
+          # Redirect HTTP -> HTTPS (reusable)
+          redirect-https = {
+            redirectScheme = {
+              scheme = "https";
+              permanent = true;
+            };
+          };
           # Add trailing slash for dashboard
           dashboard-redirect = {
             redirectRegex = {
@@ -174,6 +192,7 @@
     "d /etc/traefik 0755 root root -"
     "d /etc/traefik/dynamic 0755 root root -"
     "d /etc/traefik/basicauth 0750 root traefik -"
+    "f /var/lib/traefik/acme.json 0600 traefik traefik -"
     "d /var/log/traefik 0755 traefik traefik -"
   ];
 

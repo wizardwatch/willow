@@ -7,13 +7,20 @@
   elementConfig = {
     http = {
       routers = {
-        element-external = {
-          rule = "Host(`element.holymike.com`)";
+        element-external-https = {
+          rule = "Host(`chat.onepagerpolitics.com`)";
           service = "element-service";
-          entryPoints = ["web" "websecure"];
+          entryPoints = ["websecure"];
           middlewares = ["security-headers@file"];
-          tls = {};
+          tls = { certResolver = "letsencrypt"; };
           priority = 100;
+        };
+        element-external-http-redirect = {
+          rule = "Host(`chat.onepagerpolitics.com`)";
+          service = "noop@internal";
+          entryPoints = ["web"];
+          middlewares = ["redirect-https@file"];
+          priority = 90;
         };
         # Optional local path-based access for LAN without DNS
         element-local = {
