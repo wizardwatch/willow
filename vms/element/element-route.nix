@@ -11,7 +11,7 @@
           rule = "Host(`chat.onepagerpolitics.com`)";
           service = "element-service";
           entryPoints = ["websecure"];
-          middlewares = ["security-headers@file"];
+          middlewares = ["element-headers"];
           tls = { certResolver = "letsencrypt"; };
           priority = 100;
         };
@@ -27,7 +27,7 @@
           rule = "PathPrefix(`/element`)";
           service = "element-service";
           entryPoints = ["web" "websecure"];
-          middlewares = ["strip-element-prefix" "allow-lan" "security-headers@file"];
+          middlewares = ["strip-element-prefix" "allow-lan" "element-headers"];
           tls = {};
           priority = 50;
         };
@@ -53,6 +53,17 @@
         allow-lan = {
           ipWhiteList = {
             sourceRange = ["192.168.0.0/24" "127.0.0.1/32"];
+          };
+        };
+        # Security headers local to this file
+        element-headers = {
+          headers = {
+            customResponseHeaders = {
+              X-Frame-Options = "DENY";
+              X-Content-Type-Options = "nosniff";
+              X-XSS-Protection = "1; mode=block";
+              Strict-Transport-Security = "max-age=31536000; includeSubDomains";
+            };
           };
         };
         # Strip /element prefix for path-based access
