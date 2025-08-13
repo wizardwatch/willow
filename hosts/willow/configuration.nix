@@ -68,12 +68,6 @@
     '';
   };
 
-  # Firewall configuration
-  networking.firewall = {
-    allowedTCPPorts = [27036 27037 49737 6969 80 443];
-    allowedUDPPorts = [27031 27036 6969 122];
-  };
-
   # State version
   system.stateVersion = "23.05";
 

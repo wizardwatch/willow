@@ -152,12 +152,6 @@ in {
     internalInterfaces = ["microvm"];
   };
 
-  # Firewall configuration for NAT on the host
-  networking.firewall = {
-    enable = true;
-    trustedInterfaces = ["microvm"]; # Trust the internal bridge
-  };
-
   # Ensure necessary kernel modules are available
   boot.kernelModules = [
     "kvm-intel"
@@ -177,6 +171,7 @@ in {
 
   # Traefik + routes for VMs
   imports = [
+    ./vm-hardening.nix # Add VM security hardening
     ./traefik.nix
     ./matrix/matrix-route.nix
     ./element/element-route.nix
