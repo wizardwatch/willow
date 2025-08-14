@@ -10,19 +10,6 @@
     enable = true;
 
     staticConfigOptions = {
-      certificatesResolvers = {
-        # DNS-01 via Cloudflare (uses lego under the hood)
-        letsencrypt_dns = {
-          acme = {
-            storage = "/var/lib/traefik/acme.json";
-            dnsChallenge = {
-              provider = "cloudflare";
-              # Explicit resolvers can speed up propagation checks
-              resolvers = ["1.1.1.1:53" "8.8.8.8:53"];
-            };
-          };
-        };
-      };
       # API and dashboard configuration
       api = {
         dashboard = true;
@@ -155,40 +142,6 @@
       };
     };
   };
-
-  # Health check service for Traefik
-  systemd.services.traefik-health-check = {
-    description = "Traefik Health Check";
-    after = ["traefik.service"];
-    wants = ["traefik.service"];
-    wantedBy = ["multi-user.target"];
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-      ExecStart = pkgs.writeShellScript "traefik-health-check" ''
-        sleep 5
-        echo "=== Traefik Health Check ==="
-        echo "Checking if Traefik is listening on port 80:"
-        ${pkgs.nettools}/bin/netstat -tlnp | grep :80 || echo "Port 80 not listening"
-
-        echo "Checking if Traefik is listening on port 8080:"
-        ${pkgs.nettools}/bin/netstat -tlnp | grep :8080 || echo "Port 8080 not listening"
-
-        echo "Testing Traefik API:"
-        ${pkgs.curl}/bin/curl -s http://localhost:8080/api/http/routers 2>&1 | head -5 || echo "Cannot connect to Traefik API"
-
-        echo "Testing dashboard access:"
-        ${pkgs.curl}/bin/curl -s -I http://localhost:8080/dashboard/ 2>&1 | head -3 || echo "Dashboard not accessible"
-
-        echo "Traefik service status:"
-        systemctl is-active traefik || echo "Traefik service not active"
-
-        echo "Dynamic configuration files:"
-        ls -la /etc/traefik/dynamic/ || echo "No dynamic config files found"
-      '';
-    };
-  };
-
   # Ensure traefik user can access log directory and exists
   users.users.traefik = {
     isSystemUser = true;
@@ -229,9 +182,4 @@
     mode = "0640";
     group = "traefik";
   };
-
-  # Expose an htpasswd file for guarding registration; expects sops.secrets.matrixRegisterHtpasswd
-  # to be declared in your secrets module (path content is the htpasswd line).
-  environment.etc."traefik/basicauth/matrix.htpasswd".source =
-    config.sops.secrets.matrixRegisterHtpasswd.path or "/etc/traefik/basicauth/.missing";
 }

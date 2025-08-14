@@ -167,6 +167,7 @@ in {
     ./vm-hardening.nix # Add VM security hardening
     ./traefik.nix
     ./ddns.nix
+    ./acme.nix
     ./matrix/matrix-route.nix
     ./element/element-route.nix
   ];

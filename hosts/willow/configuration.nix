@@ -78,11 +78,17 @@
   systemd.network.networks."10-wlan0-dhcp.network" = {
     name = "wlan0";
     networkConfig.DHCP = "ipv4";
+    # Use systemd-resolved's global DNS instead of DHCP-provided
+    dhcpV4Config.UseDNS = false;
+    dhcpV6Config.UseDNS = false;
   };
 
   # Configure enp6s0 for DHCP using systemd-networkd
   systemd.network.networks."10-enp6s0-dhcp.network" = {
     name = "enp6s0";
     networkConfig.DHCP = "ipv4";
+    # Use systemd-resolved's global DNS instead of DHCP-provided
+    dhcpV4Config.UseDNS = false;
+    dhcpV6Config.UseDNS = false;
   };
 }

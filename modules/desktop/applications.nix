@@ -67,6 +67,7 @@
     # support both 32-bit and 64-bit applications
     wineWowPackages.full
     piper
+    radeontop
 
     # Screen recording/streaming
     (wrapOBS {

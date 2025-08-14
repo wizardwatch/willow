@@ -10,7 +10,7 @@
           {
             "provider":"cloudflare",
             "zone_identifier": "${config.sops.placeholder.zone-id}",
-            "domain":"*.onepagerpolitics.com",
+            "domain":"*.holymike.com",
             "token":"${config.sops.placeholder.ddns-pass}",
             "ttl": 1
           }
