@@ -9,7 +9,7 @@
       routers = {
         # HTTPS: Guarded registration endpoints (external): require BasicAuth
         matrix-register-external-https = {
-          rule = "Host(`matrix.onepagerpolitics.com`) && (Path(`/_matrix/client/v3/register`) || Path(`/_matrix/client/r0/register`))";
+          rule = "Host(`matrix.holymike.com`) && (Path(`/_matrix/client/v3/register`) || Path(`/_matrix/client/r0/register`))";
           service = "matrix-service";
           entryPoints = ["websecure"];
           middlewares = ["matrix-headers" "matrix-register-basicauth"];
@@ -19,7 +19,7 @@
 
         # HTTP: redirect registration to HTTPS
         matrix-register-external-http-redirect = {
-          rule = "Host(`matrix.onepagerpolitics.com`) && (Path(`/_matrix/client/v3/register`) || Path(`/_matrix/client/r0/register`))";
+          rule = "Host(`matrix.holymike.com`) && (Path(`/_matrix/client/v3/register`) || Path(`/_matrix/client/r0/register`))";
           service = "noop@internal";
           entryPoints = ["web"];
           middlewares = ["redirect-https@file"];
@@ -36,7 +36,7 @@
         };
         # HTTPS: External Matrix on apex domain
         matrix-external-https = {
-          rule = "Host(`matrix.onepagerpolitics.com`) && PathPrefix(`/_matrix`)";
+          rule = "Host(`matrix.holymike.com`) && PathPrefix(`/_matrix`)";
           service = "matrix-service";
           entryPoints = ["websecure"];
           middlewares = ["matrix-headers"];
@@ -46,7 +46,7 @@
 
         # HTTP: redirect to HTTPS for Matrix paths
         matrix-external-http-redirect = {
-          rule = "Host(`matrix.onepagerpolitics.com`) && PathPrefix(`/_matrix`)";
+          rule = "Host(`matrix.holymike.com`) && PathPrefix(`/_matrix`)";
           service = "noop@internal";
           entryPoints = ["web"];
           middlewares = ["redirect-https@file"];
@@ -108,10 +108,10 @@
           headers = {
             customRequestHeaders = {
               X-Forwarded-Proto = "https";
-              X-Forwarded-Host = "matrix.onepagerpolitics.com";
+              X-Forwarded-Host = "matrix.holymike.com";
             };
             customResponseHeaders = {
-              X-Matrix-Server = "matrix.onepagerpolitics.com";
+              X-Matrix-Server = "matrix.holymike.com";
               Access-Control-Allow-Origin = "*";
               Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS";
               Access-Control-Allow-Headers = "Origin, X-Requested-With, Content-Type, Accept, Authorization";

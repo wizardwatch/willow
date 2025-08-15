@@ -9,7 +9,7 @@
       # Keep server_name stable (MXIDs stay @user:matrix.holymike.com)
       server_name = "matrix.holymike.com";
       # Serve the homeserver via this HTTPS base URL
-      public_baseurl = "https://matrix.onepagerpolitics.com";
+      public_baseurl = "https://matrix.holymike.com";
       suppress_key_server_warning = true;
       enable_registration = true;
       registration_requires_token = true;

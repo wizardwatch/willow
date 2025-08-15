@@ -8,7 +8,7 @@
     http = {
       routers = {
         element-external-https = {
-          rule = "Host(`chat.onepagerpolitics.com`)";
+          rule = "Host(`chat.holymike.com`)";
           service = "element-service";
           entryPoints = ["websecure"];
           middlewares = ["element-headers"];
@@ -16,7 +16,7 @@
           priority = 100;
         };
         element-external-http-redirect = {
-          rule = "Host(`chat.onepagerpolitics.com`)";
+          rule = "Host(`chat.holymike.com`)";
           service = "noop@internal";
           entryPoints = ["web"];
           middlewares = ["redirect-https@file"];
