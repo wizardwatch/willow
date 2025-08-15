@@ -27,7 +27,7 @@ in {
   # Enable microvm support on the host
   microvm.host.enable = true;
   # Autostart MicroVMs on boot
-  microvm.autostart = ["matrix" "element"];
+  microvm.autostart = ["matrix" "element" "foundry"];
 
   # Configure microvm storage and network interfaces
   microvm.vms = {
@@ -103,6 +103,39 @@ in {
         };
       };
     };
+
+    # Foundry VTT VM
+    foundry = {
+      config = lib.recursiveUpdate commonConfig {
+        imports = [inputs.foundry.nixosModules.foundryvtt ./foundry/default.nix];
+        networking.hostName = "foundry";
+        microvm = {
+          interfaces = [
+            {
+              type = "tap";
+              id = "vm-foundry";
+              mac = "02:00:00:00:00:03";
+            }
+          ];
+          vcpu = 2;
+          mem = 3072;
+          volumes = [
+            {
+              image = "/var/lib/microvms/foundry/rootfs.img";
+              mountPoint = "/";
+              size = 4096;
+            }
+            {
+              image = "/var/lib/microvms/foundry/data.img";
+              mountPoint = "/var/lib/foundryvtt";
+              size = 4096;
+            }
+          ];
+        };
+        # Provide Foundry package from flake input
+        services.foundryvtt.package = inputs.foundry.packages.${pkgs.system}.foundryvtt_13;
+      };
+    };
   };
 
   # Create a bridge for the microvms
@@ -158,6 +191,7 @@ in {
     "d /var/lib/microvms 0755 root root -"
     "d /var/lib/microvms/matrix 0755 root root -"
     "d /var/lib/microvms/element 0755 root root -"
+    "d /var/lib/microvms/foundry 0755 root root -"
     # Directory to host rendered VM secrets like Synapse registration include
     "d /var/lib/vms/matrix 0755 root root -"
   ];
@@ -170,6 +204,7 @@ in {
     ./acme.nix
     ./matrix/matrix-route.nix
     ./element/element-route.nix
+    ./foundry/foundry-route.nix
   ];
 
   # Render a plain file on the host (not a symlink) from the sops secret,

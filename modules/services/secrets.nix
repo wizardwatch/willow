@@ -57,6 +57,12 @@
       sopsFile = ./secrets/ddns.yaml;
       path = "/var/lib/vms/ddns/zone_id";
     };
+    basicPass = {
+      sopsFile = ./secrets/basicAuth.yaml;
+      path = "/var/lib/vms/pass";
+      mode = "640";
+      group = "traefik";
+    };
   };
 
   users.users."willow".openssh.authorizedKeys = {

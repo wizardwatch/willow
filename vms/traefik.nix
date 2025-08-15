@@ -37,6 +37,16 @@
         };
       };
 
+      # Use host-provisioned ACME wildcard cert (NixOS security.acme)
+      tls = {
+        certificates = [
+          {
+            certFile = "/var/lib/acme/holymike_real/fullchain.pem";
+            keyFile = "/var/lib/acme/holymike_real/key.pem";
+          }
+        ];
+      };
+
       # Providers configuration
       providers = {
         file = {
@@ -166,11 +176,6 @@
       Group = "traefik";
     };
   };
-
-  # Provide DNS credentials to Traefik via environment file managed by sops
-  # Re-uses the existing Cloudflare token used by DDNS (ddns-pass). Consider
-  # creating a narrower-scope token for ACME later.
-  services.traefik.environmentFiles = [config.sops.templates."traefik/dns.env".path];
 
   sops.templates."traefik/dns.env" = {
     content = ''

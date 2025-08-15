@@ -90,7 +90,7 @@
   # Required programs
   programs.gamescope = {enable = true;};
   services.foundryvtt = {
-    enable = true;
+    enable = false;
     hostName = "willow";
     minifyStaticFiles = true;
     proxyPort = 443;
