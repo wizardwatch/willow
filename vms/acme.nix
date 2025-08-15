@@ -12,7 +12,7 @@
     acceptTerms = true;
     defaults.email = "osterling2705@icloud.com";
     certs = {
-      "holymike.com" = {
+      "holymike" = {
         domain = "*.holymike.com";
         group = "traefik";
         dnsProvider = "cloudflare";
