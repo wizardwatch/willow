@@ -9,6 +9,11 @@
 - Tools: `tools/deploy_cli.py` (+ `tools/README.md`) and `build-iso.sh`.
 - VMs: `vms/` contains service-specific VM configs and docs.
 
+## VM Storage & Persistence
+- Current state: VM images are stored in a non‑persistent location and may be lost on reboot.
+- Action item: move VM images to a persistent path (e.g., `/var/lib/vms` or a service account home) and update modules/docs accordingly.
+- Considerations: ensure correct ownership/permissions, sufficient disk space/quota, and include the path in backups/monitoring.
+
 ## Build, Test, and Development Commands
 - Build + switch locally: `sudo nixos-rebuild switch --flake .#<host>` (e.g., `.#willow`).
 - Dry build system: `nix build .#nixosConfigurations.<host>.config.system.build.toplevel`.

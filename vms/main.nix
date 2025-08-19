@@ -24,6 +24,14 @@
     ];
   };
 in {
+  # Dedicated system user/group for VM storage management
+  users.groups.vmm = {};
+  users.users.vmm = {
+    isSystemUser = true;
+    group = "vmm";
+    home = "/home/microvms";
+    createHome = true;
+  };
   # Enable microvm support on the host
   microvm.host.enable = true;
   # Autostart MicroVMs on boot
@@ -42,7 +50,7 @@ in {
             (commonConfig.microvm.shares or [])
             ++ [
               {
-                source = "/var/lib/vms/matrix";
+                source = "/home/microvms/matrix";
                 mountPoint = "/run/host-secrets/matrix";
                 tag = "host-secrets-matrix";
                 proto = "virtiofs";
@@ -59,17 +67,17 @@ in {
           mem = 3072;
           volumes = [
             {
-              image = "/var/lib/microvms/matrix/rootfs.img";
+              image = "/home/microvms/matrix/rootfs.img";
               mountPoint = "/";
               size = 8192;
             }
             {
-              image = "/var/lib/microvms/matrix/postgresql-data.img";
+              image = "/home/microvms/matrix/postgresql-data.img";
               mountPoint = "/var/lib/postgresql";
               size = 4096;
             }
             {
-              image = "/var/lib/microvms/matrix/matrix-synapse-data.img";
+              image = "/home/microvms/matrix/matrix-synapse-data.img";
               mountPoint = "/var/lib/matrix-synapse";
               size = 4096;
             }
@@ -95,7 +103,7 @@ in {
           mem = 3072;
           volumes = [
             {
-              image = "/var/lib/microvms/element/rootfs.img";
+              image = "/home/microvms/element/rootfs.img";
               mountPoint = "/";
               size = 4096;
             }
@@ -121,12 +129,12 @@ in {
           mem = 3072;
           volumes = [
             {
-              image = "/var/lib/microvms/foundry/rootfs.img";
+              image = "/home/microvms/foundry/rootfs.img";
               mountPoint = "/";
               size = 4096;
             }
             {
-              image = "/var/lib/microvms/foundry/data.img";
+              image = "/home/microvms/foundry/data.img";
               mountPoint = "/var/lib/foundryvtt";
               size = 4096;
             }
@@ -188,12 +196,11 @@ in {
 
   # Create microvm storage directories
   systemd.tmpfiles.rules = [
-    "d /var/lib/microvms 0755 root root -"
-    "d /var/lib/microvms/matrix 0755 root root -"
-    "d /var/lib/microvms/element 0755 root root -"
-    "d /var/lib/microvms/foundry 0755 root root -"
+    "d /home/microvms 0750 vmm vmm -"
+    "d /home/microvms/matrix 0750 vmm vmm -"
+    "d /home/microvms/element 0750 vmm vmm -"
+    "d /home/microvms/foundry 0750 vmm vmm -"
     # Directory to host rendered VM secrets like Synapse registration include
-    "d /var/lib/vms/matrix 0755 root root -"
   ];
 
   # Traefik + routes for VMs
@@ -220,7 +227,7 @@ in {
         name = "render-matrix-registration";
         text = ''
           set -euo pipefail
-          mkdir -p /var/lib/vms/matrix
+          mkdir -p /home/microvms/matrix
           secret_file='${config.sops.secrets.reg_token.path}'
           if [ ! -r "$secret_file" ]; then
             echo "reg_token secret not available at $secret_file" >&2
@@ -229,9 +236,9 @@ in {
           echo "file at " "$secret_file"
           secret=$(tr -d '\n' < "$secret_file")
           umask 022
-          printf "registration_shared_secret: %s\n" "$secret" > /var/lib/vms/matrix/registration.yaml
-          printf "%s\n" "$secret" > /var/lib/vms/matrix/registration
-          chmod 0444 /var/lib/vms/matrix/registration.yaml
+          printf "registration_shared_secret: %s\n" "$secret" > /home/microvms/matrix/registration.yaml
+          printf "%s\n" "$secret" > /home/microvms/matrix/registration
+          chmod 0444 /home/microvms/matrix/registration.yaml
         '';
       });
     };

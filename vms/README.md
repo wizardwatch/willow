@@ -127,10 +127,45 @@ Traefik (host) → element route → Element VM (10.0.0.11:8082)
 
 ## Storage
 
-VMs use image files stored in `/var/lib/microvms/`:
+VMs use image files stored in `/home/microvms/`.
 
-- `/var/lib/microvms/matrix/rootfs.img` - Matrix VM root filesystem
-The Nix store is shared read-only from the host via virtiofs.
+- Example: `/home/microvms/matrix/rootfs.img` (Matrix VM root filesystem)
+- The Nix store is shared read-only from the host via virtiofs.
+
+### Ownership and permissions
+
+- A dedicated system user/group `vmm` manages the storage path:
+  - Base dir: `/home/microvms` (0750 `vmm:vmm`)
+  - Per-VM dirs: `/home/microvms/{matrix,element,foundry}` (0750 `vmm:vmm`)
+
+### Persistence
+
+- If your system uses an impermanent root, persist the storage path. With the
+  impermanence module, add:
+
+  ```nix
+  environment.persistence."/persist".directories = [
+    "/home/microvms"
+  ];
+  ```
+
+- Alternatively, mount a dedicated dataset/partition at `/home/microvms`.
+
+### Backups and monitoring
+
+- Include `/home/microvms` in your backup plan and disk space monitoring.
+
+### Migration from previous path
+
+If you previously stored images under `/var/lib/microvms`, stop the VMs, move the files, and start them again:
+
+```bash
+sudo systemctl stop microvm@matrix microvm@element microvm@foundry
+sudo mkdir -p /home/microvms/{matrix,element,foundry}
+sudo rsync -avh --progress /var/lib/microvms/ /home/microvms/
+sudo chown -R vmm:vmm /home/microvms
+sudo systemctl start microvm@matrix microvm@element microvm@foundry
+```
 
 ## Building and Deployment
 

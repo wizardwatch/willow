@@ -47,7 +47,7 @@
 
     reg_token = {
       sopsFile = ./secrets/matrix_reg.yaml;
-      path = "/var/lib/vms/matrix/reg";
+      path = "/home/microvms/matrix/reg";
     };
     ddns-pass = {
       sopsFile = ./secrets/ddns.yaml;

@@ -171,9 +171,14 @@
   ];
 
   systemd.services.traefik = {
+    after = [ "systemd-tmpfiles-setup.service" ];
+    requires = [ "systemd-tmpfiles-setup.service" ];
     serviceConfig = {
       User = "traefik";
       Group = "traefik";
+      # Ensure /var/log/traefik exists before start
+      LogsDirectory = "traefik";
+      LogsDirectoryMode = "0755";
     };
   };
 
