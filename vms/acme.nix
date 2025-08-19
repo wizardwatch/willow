@@ -16,7 +16,13 @@
         domain = "*.holymike.com";
         group = "traefik";
         dnsProvider = "cloudflare";
-        environmentFile = config.sops.templates."traefik/dns.env".path;
+        environmentFile = config.sops.templates."acme/dns".path;
+      };
+      "holymike_apex" = {
+        domain = "holymike.com";
+        group = "traefik";
+        dnsProvider = "cloudflare";
+        environmentFile = config.sops.templates."acme/dns".path;
       };
     };
   };

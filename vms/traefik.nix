@@ -44,6 +44,10 @@
             certFile = "/var/lib/acme/holymike_real/fullchain.pem";
             keyFile = "/var/lib/acme/holymike_real/key.pem";
           }
+          {
+            certFile = "/var/lib/acme/holymike_apex/fullchain.pem";
+            keyFile = "/var/lib/acme/holymike_apex/key.pem";
+          }
         ];
       };
 
@@ -152,6 +156,20 @@
       };
     };
   };
+
+  # Common dynamic middlewares shared by file provider configs
+  environment.etc."traefik/dynamic/common.yml".text = lib.generators.toYAML {} {
+    http = {
+      middlewares = {
+        redirect-https = {
+          redirectScheme = {
+            scheme = "https";
+            permanent = true;
+          };
+        };
+      };
+    };
+  };
   # Ensure traefik user can access log directory and exists
   users.users.traefik = {
     isSystemUser = true;
@@ -171,8 +189,16 @@
   ];
 
   systemd.services.traefik = {
-    after = [ "systemd-tmpfiles-setup.service" ];
+    after = [ "systemd-tmpfiles-setup.service" "acme-holymike_real.service" "acme-holymike_apex.service" ];
+    wants = [ "acme-holymike_real.service" "acme-holymike_apex.service" ];
     requires = [ "systemd-tmpfiles-setup.service" ];
+    restartTriggers = [
+      "/etc/traefik/dynamic" # dynamic config
+      "/var/lib/acme/holymike_real/fullchain.pem"
+      "/var/lib/acme/holymike_real/key.pem"
+      "/var/lib/acme/holymike_apex/fullchain.pem"
+      "/var/lib/acme/holymike_apex/key.pem"
+    ];
     serviceConfig = {
       User = "traefik";
       Group = "traefik";
