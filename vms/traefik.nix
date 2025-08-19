@@ -37,28 +37,7 @@
         };
       };
 
-      # Use host-provisioned ACME certs (NixOS security.acme)
-      tls = {
-        certificates = [
-          {
-            certFile = "/var/lib/acme/holymike_real/fullchain.pem";
-            keyFile = "/var/lib/acme/holymike_real/key.pem";
-          }
-          {
-            certFile = "/var/lib/acme/holymike_apex/fullchain.pem";
-            keyFile = "/var/lib/acme/holymike_apex/key.pem";
-          }
-        ];
-        # Optional: fallback default certificate to avoid Traefik's self-signed
-        stores = {
-          default = {
-            defaultCertificate = {
-              certFile = "/var/lib/acme/holymike_apex/fullchain.pem";
-              keyFile = "/var/lib/acme/holymike_apex/key.pem";
-            };
-          };
-        };
-      };
+      # (TLS certificates configured via file provider common.yml)
 
       # Providers configuration
       providers = {
@@ -166,7 +145,7 @@
     };
   };
 
-  # Common dynamic middlewares shared by file provider configs
+  # Common dynamic config shared by file provider configs
   environment.etc."traefik/dynamic/common.yml".text = lib.generators.toYAML {} {
     http = {
       middlewares = {
@@ -178,6 +157,27 @@
         };
       };
     };
+    # Load ACME certificates via dynamic provider (ensures visibility without static TLS)
+    tls = {
+      certificates = [
+        {
+          certFile = "/var/lib/acme/holymike_apex/fullchain.pem";
+          keyFile = "/var/lib/acme/holymike_apex/key.pem";
+        }
+        {
+          certFile = "/var/lib/acme/holymike_real/fullchain.pem";
+          keyFile = "/var/lib/acme/holymike_real/key.pem";
+        }
+      ];
+      stores = {
+        default = {
+          defaultCertificate = {
+            certFile = "/var/lib/acme/holymike_apex/fullchain.pem";
+            keyFile = "/var/lib/acme/holymike_apex/key.pem";
+          };
+        };
+      };
+    };
   };
   # Ensure traefik user can access log directory and exists
   users.users.traefik = {
@@ -185,6 +185,7 @@
     group = "traefik";
     home = "/var/lib/traefik";
     createHome = true;
+    extraGroups = [ "acme" ];
   };
   users.groups.traefik = {};
 

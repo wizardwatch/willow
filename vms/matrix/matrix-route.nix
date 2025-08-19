@@ -93,14 +93,14 @@ in {
     http = {
       routers = {
         wellknown-client-https = {
-          rule = "Path(`/.well-known/matrix/client`)";
+          rule = "Host(`holymike.com`) && Path(`/.well-known/matrix/client`)";
           service = "wellknown-client-service";
           entryPoints = ["websecure"];
           tls = {};
         };
         # HTTP redirectors
         wellknown-client-http-redirect = {
-          rule = "Path(`/.well-known/matrix/client`)";
+          rule = "Host(`holymike.com`) && Path(`/.well-known/matrix/client`)";
           service = "noop@internal";
           entryPoints = ["web"];
           middlewares = ["redirect-https@file"];
