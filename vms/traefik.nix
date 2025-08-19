@@ -37,7 +37,7 @@
         };
       };
 
-      # Use host-provisioned ACME wildcard cert (NixOS security.acme)
+      # Use host-provisioned ACME certs (NixOS security.acme)
       tls = {
         certificates = [
           {
@@ -49,6 +49,15 @@
             keyFile = "/var/lib/acme/holymike_apex/key.pem";
           }
         ];
+        # Optional: fallback default certificate to avoid Traefik's self-signed
+        stores = {
+          default = {
+            defaultCertificate = {
+              certFile = "/var/lib/acme/holymike_apex/fullchain.pem";
+              keyFile = "/var/lib/acme/holymike_apex/key.pem";
+            };
+          };
+        };
       };
 
       # Providers configuration

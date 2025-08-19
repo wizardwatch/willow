@@ -7,12 +7,12 @@
   matrixConfig = {
     http = {
       routers = {
-        # HTTPS: Guarded registration endpoints (external): require BasicAuth
+        # HTTPS: Registration endpoints (external)
         matrix-register-external-https = {
           rule = "Host(`matrix.holymike.com`) && (Path(`/_matrix/client/v3/register`) || Path(`/_matrix/client/r0/register`))";
           service = "matrix-service";
           entryPoints = ["websecure"];
-          middlewares = ["matrix-headers" "matrix-register-basicauth"];
+          middlewares = ["matrix-headers"];
           tls = {};
           priority = 350;
         };
@@ -65,14 +65,6 @@
       };
 
       middlewares = {
-        # BasicAuth for registration endpoints, reads htpasswd file managed via sops
-        matrix-register-basicauth = {
-          basicAuth = {
-            usersFile = "/etc/traefik/basicauth/matrix.htpasswd";
-            removeHeader = true;
-            headerField = "X-Forwarded-User";
-          };
-        };
         matrix-headers = {
           headers = {
             customRequestHeaders = {

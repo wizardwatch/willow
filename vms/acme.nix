@@ -17,12 +17,14 @@
         group = "traefik";
         dnsProvider = "cloudflare";
         environmentFile = config.sops.templates."acme/dns".path;
+        reloadServices = ["traefik"];
       };
       "holymike_apex" = {
         domain = "holymike.com";
         group = "traefik";
         dnsProvider = "cloudflare";
         environmentFile = config.sops.templates."acme/dns".path;
+        reloadServices = ["traefik"];
       };
     };
   };
