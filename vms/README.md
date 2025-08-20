@@ -127,21 +127,28 @@ Traefik (host) → element route → Element VM (10.0.0.11:8082)
 
 ## Storage
 
-VMs use image files stored in `/home/microvms/`.
+VMs are diskless: root filesystem is tmpfs, and only application data is persisted.
 
-- Example: `/home/microvms/matrix/rootfs.img` (Matrix VM root filesystem)
+- Root filesystem: tmpfs (fully ephemeral)
+- Persistent data via virtiofs shares from host directories:
+  - Matrix: `/home/microvms/matrix/postgresql` → `/var/lib/postgresql`
+  - Matrix: `/home/microvms/matrix/matrix-synapse` → `/var/lib/matrix-synapse`
+  - Foundry: `/home/microvms/foundry/data` → `/var/lib/foundryvtt`
+  - Element: stateless (no persistent data by default)
 - The Nix store is shared read-only from the host via virtiofs.
 
 ### Ownership and permissions
 
-- A dedicated system user/group `vmm` manages the storage path:
-  - Base dir: `/home/microvms` (0750 `vmm:vmm`)
-  - Per-VM dirs: `/home/microvms/{matrix,element,foundry}` (0750 `vmm:vmm`)
+- A dedicated system user/group `vmm` manages storage paths:
+  - Persistent base: `/home/microvms` (0750 `vmm:vmm`)
+  - Persistent per-VM: `/home/microvms/{matrix,element,foundry}` (0750 `vmm:vmm`)
+  - Per-service dirs: created under `/home/microvms/<vm>/...` (0750 `vmm:vmm`)
+  - No rootfs images are used; VM `/` is tmpfs
 
 ### Persistence
 
-- If your system uses an impermanent root, persist the storage path. With the
-  impermanence module, add:
+- Persist only important data under `/home/microvms`. If using impermanence,
+  add:
 
   ```nix
   environment.persistence."/persist".directories = [
@@ -149,21 +156,37 @@ VMs use image files stored in `/home/microvms/`.
   ];
   ```
 
+- VM root is tmpfs and does not need persistence.
+  Data is stored directly on host directories via virtiofs.
+
 - Alternatively, mount a dedicated dataset/partition at `/home/microvms`.
 
-### Backups and monitoring
+### Backups, ownership, and monitoring
 
-- Include `/home/microvms` in your backup plan and disk space monitoring.
+- Include `/home/microvms` in backups and disk monitoring.
+- virtiofs passes numeric UIDs/GIDs. On first start, services in the VM will
+  chown the mounted directories to their service users (e.g., `postgres`,
+  `matrix-synapse`, `foundry`). This changes ownership on the host directories
+  to matching numeric IDs. Ensure this is acceptable for your host policy.
 
-### Migration from previous path
+### Migration
 
-If you previously stored images under `/var/lib/microvms`, stop the VMs, move the files, and start them again:
+If you previously used .img data volumes, migrate to directories and remove images:
 
 ```bash
 sudo systemctl stop microvm@matrix microvm@element microvm@foundry
+
 sudo mkdir -p /home/microvms/{matrix,element,foundry}
-sudo rsync -avh --progress /var/lib/microvms/ /home/microvms/
 sudo chown -R vmm:vmm /home/microvms
+
+sudo mkdir -p /home/microvms/matrix/{postgresql,matrix-synapse}
+sudo mkdir -p /home/microvms/foundry/data
+sudo chown -R vmm:vmm /home/microvms
+
+# Optional: remove old images after verifying data
+sudo rm -f /home/microvms/matrix/*.img \
+            /home/microvms/foundry/*.img || true
+
 sudo systemctl start microvm@matrix microvm@element microvm@foundry
 ```
 

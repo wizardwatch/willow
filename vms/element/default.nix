@@ -29,6 +29,14 @@
     ./element-web.nix
   ];
 
+  # Diskless root: use tmpfs for /
+  boot.kernelParams = ["root=tmpfs"];
+  fileSystems."/" = {
+    device = "tmpfs";
+    fsType = "tmpfs";
+    options = ["mode=0755"]; # optionally size=X
+  };
+
   # Static addressing on the microvm network
   networking.useDHCP = false;
   systemd.network.enable = true;

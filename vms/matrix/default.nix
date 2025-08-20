@@ -9,6 +9,14 @@
     ./wellknown-caddy.nix
   ];
 
+  # Diskless root: use tmpfs for /
+  boot.kernelParams = ["root=tmpfs"];
+  fileSystems."/" = {
+    device = "tmpfs";
+    fsType = "tmpfs";
+    options = ["mode=0755"]; # optionally size=X
+  };
+
   # Directly include the host-rendered registration secret YAML from the mounted path
   services.matrix-synapse.settings.include = [
     "/run/host-secrets/matrix/registration.yaml"
@@ -65,6 +73,7 @@
     openssh.authorizedKeys.keys = [
       # Willow's public key
       (builtins.readFile ../../users/willow/keys/willow_ssh.pub)
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDCKqTXBGkGK8KYtZRDOt/wRGAf/7nwz5tzvkvaBp7NV wyatt.osterling@wizardwatch.net"
     ];
   };
 

@@ -44,7 +44,7 @@ in {
       config = lib.recursiveUpdate commonConfig {
         imports = [./matrix/default.nix];
         networking.hostName = "matrix";
-        microvm = {
+          microvm = {
           # Mount host secret directory into the VM for registration_shared_secret
           shares =
             (commonConfig.microvm.shares or [])
@@ -53,6 +53,18 @@ in {
                 source = "/home/microvms/matrix";
                 mountPoint = "/run/host-secrets/matrix";
                 tag = "host-secrets-matrix";
+                proto = "virtiofs";
+              }
+              {
+                source = "/home/microvms/matrix/postgresql";
+                mountPoint = "/var/lib/postgresql";
+                tag = "matrix-postgresql";
+                proto = "virtiofs";
+              }
+              {
+                source = "/home/microvms/matrix/matrix-synapse";
+                mountPoint = "/var/lib/matrix-synapse";
+                tag = "matrix-synapse";
                 proto = "virtiofs";
               }
             ];
@@ -65,23 +77,7 @@ in {
           ];
           vcpu = 2;
           mem = 3072;
-          volumes = [
-            {
-              image = "/home/microvms/matrix/rootfs.img";
-              mountPoint = "/";
-              size = 8192;
-            }
-            {
-              image = "/home/microvms/matrix/postgresql-data.img";
-              mountPoint = "/var/lib/postgresql";
-              size = 4096;
-            }
-            {
-              image = "/home/microvms/matrix/matrix-synapse-data.img";
-              mountPoint = "/var/lib/matrix-synapse";
-              size = 4096;
-            }
-          ];
+          volumes = [ ];
         };
       };
     };
@@ -91,8 +87,8 @@ in {
       config = lib.recursiveUpdate commonConfig {
         imports = [./element/default.nix];
         networking.hostName = "element";
-        microvm = {
-          interfaces = [
+          microvm = {
+            interfaces = [
             {
               type = "tap";
               id = "vm-element";
@@ -101,13 +97,7 @@ in {
           ];
           vcpu = 2;
           mem = 3072;
-          volumes = [
-            {
-              image = "/home/microvms/element/rootfs.img";
-              mountPoint = "/";
-              size = 4096;
-            }
-          ];
+          volumes = [ ];
         };
       };
     };
@@ -127,18 +117,17 @@ in {
           ];
           vcpu = 2;
           mem = 3072;
-          volumes = [
-            {
-              image = "/home/microvms/foundry/rootfs.img";
-              mountPoint = "/";
-              size = 4096;
-            }
-            {
-              image = "/home/microvms/foundry/data.img";
-              mountPoint = "/var/lib/foundryvtt";
-              size = 4096;
-            }
-          ];
+          shares =
+            (commonConfig.microvm.shares or [])
+            ++ [
+              {
+                source = "/home/microvms/foundry/data";
+                mountPoint = "/var/lib/foundryvtt";
+                tag = "foundry-data";
+                proto = "virtiofs";
+              }
+            ];
+          volumes = [ ];
         };
         # Provide Foundry package from flake input
         services.foundryvtt.package = inputs.foundry.packages.${pkgs.system}.foundryvtt_13;
@@ -196,10 +185,16 @@ in {
 
   # Create microvm storage directories
   systemd.tmpfiles.rules = [
+    # Persistent data directory (back up this path)
     "d /home/microvms 0750 vmm vmm -"
     "d /home/microvms/matrix 0750 vmm vmm -"
     "d /home/microvms/element 0750 vmm vmm -"
     "d /home/microvms/foundry 0750 vmm vmm -"
+    # Per-service data directories for virtiofs shares
+    "d /home/microvms/matrix/postgresql 0750 vmm vmm -"
+    "d /home/microvms/matrix/matrix-synapse 0750 vmm vmm -"
+    "d /home/microvms/foundry/data 0750 vmm vmm -"
+
     # Directory to host rendered VM secrets like Synapse registration include
   ];
 

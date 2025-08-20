@@ -12,10 +12,11 @@
   _module.args.sshKeys = let
     # Import the public key from the file
     willowPublicKey = builtins.readFile ./willow_ssh.pub;
+    #ssh2 = builtins.readFile ./ssh2.pub;
   in {
     # Personal keys
     personal = [
-      # Willow's personal key
+      #ssh2
       willowPublicKey
     ];
 
