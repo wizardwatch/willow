@@ -44,7 +44,7 @@ in {
       config = lib.recursiveUpdate commonConfig {
         imports = [./matrix/default.nix];
         networking.hostName = "matrix";
-          microvm = {
+        microvm = {
           # Mount host secret directory into the VM for registration_shared_secret
           shares =
             (commonConfig.microvm.shares or [])
@@ -77,7 +77,7 @@ in {
           ];
           vcpu = 2;
           mem = 3072;
-          volumes = [ ];
+          volumes = [];
         };
       };
     };
@@ -87,8 +87,8 @@ in {
       config = lib.recursiveUpdate commonConfig {
         imports = [./element/default.nix];
         networking.hostName = "element";
-          microvm = {
-            interfaces = [
+        microvm = {
+          interfaces = [
             {
               type = "tap";
               id = "vm-element";
@@ -97,7 +97,7 @@ in {
           ];
           vcpu = 2;
           mem = 3072;
-          volumes = [ ];
+          volumes = [];
         };
       };
     };
@@ -127,7 +127,7 @@ in {
                 proto = "virtiofs";
               }
             ];
-          volumes = [ ];
+          volumes = [];
         };
         # Provide Foundry package from flake input
         services.foundryvtt.package = inputs.foundry.packages.${pkgs.system}.foundryvtt_13;
@@ -194,8 +194,6 @@ in {
     "d /home/microvms/matrix/postgresql 0750 vmm vmm -"
     "d /home/microvms/matrix/matrix-synapse 0750 vmm vmm -"
     "d /home/microvms/foundry/data 0750 vmm vmm -"
-
-    # Directory to host rendered VM secrets like Synapse registration include
   ];
 
   # Traefik + routes for VMs
@@ -233,6 +231,9 @@ in {
           umask 022
           printf "registration_shared_secret: %s\n" "$secret" > /home/microvms/matrix/registration.yaml
           printf "%s\n" "$secret" > /home/microvms/matrix/registration
+          chown -R 224:224 /home/microvms/matrix/
+          chown -R 71:71   /home/microvms/matrix/postgresql/
+          chmod 0444 /home/microvms/matrix/registration
           chmod 0444 /home/microvms/matrix/registration.yaml
         '';
       });

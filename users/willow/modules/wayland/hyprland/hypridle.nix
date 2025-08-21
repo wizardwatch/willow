@@ -5,7 +5,7 @@
 }: {
   # Hypridle service configuration
   services.hypridle = {
-    enable = true;
+    enable = false;
     settings = {
       general = {
         lock_cmd = "pidof hyprlock || hyprlock";
@@ -16,10 +16,6 @@
         {
           timeout = 120; # 2 minutes
           on-timeout = "loginctl lock-session";
-        }
-        {
-          timeout = 300; # 5 minutes
-          on-timeout = "bash -c 'if ! playerctl -a status 2>/dev/null | grep -q \"Playing\"; then systemctl suspend; fi'";
         }
       ];
     };
